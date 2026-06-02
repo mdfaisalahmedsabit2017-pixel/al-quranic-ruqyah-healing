@@ -1,0 +1,26 @@
+{
+  "name": "ruqyah-audio-app",
+  "version": "1.0.0",
+  "description": "Al Quranic Ruqyah Healing Audio Library",
+  "main": "app.js",
+  "scripts": {
+    "build": "copy index.html www\\index.html && copy app.js www\\app.js && copy audio.json www\\audio.json && copy pdf_list.json www\\pdf_list.json && copy manifest.json www\\manifest.json && copy service-worker.js www\\service-worker.js && xcopy /E /I /Y pdf www\\pdf",
+    "sync": "npm run build && npx cap sync",
+    "assets": "npx capacitor-assets generate --android"
+  },
+  "keywords": [
+    "ruqyah",
+    "audio",
+    "healing"
+  ],
+  "author": "Raqi Faisal Ahmed Sabit",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
+  }
+}
