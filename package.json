@@ -4,7 +4,7 @@
   "description": "Al Quranic Ruqyah Healing Audio Library",
   "main": "app.js",
   "scripts": {
-    "build": "copy index.html www\\index.html && copy app.js www\\app.js && copy audio.json www\\audio.json && copy pdf_list.json www\\pdf_list.json && copy manifest.json www\\manifest.json && copy service-worker.js www\\service-worker.js && xcopy /E /I /Y pdf www\\pdf",
+    "build": "mkdir -p www && cp index.html www/index.html && cp app.js www/app.js && cp audio.json www/audio.json && cp pdf_list.json www/pdf_list.json && cp manifest.json www/manifest.json && cp service-worker.js www/service-worker.js && cp -r pdf www/pdf",
     "sync": "npm run build && npx cap sync",
     "assets": "npx capacitor-assets generate --android"
   },
