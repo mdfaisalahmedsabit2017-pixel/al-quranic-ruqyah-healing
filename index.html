@@ -34,15 +34,44 @@
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Hind Siliguri', sans-serif; }
         .active-nav { border-bottom: 3px solid #4f46e5; color: #4f46e5; }
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .card-animate { animation: fadeInUp 0.3s ease both; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .skeleton { background: linear-gradient(90deg,#e2e8f0 25%,#f1f5f9 50%,#e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+        .dark .skeleton { background: linear-gradient(90deg,#1e293b 25%,#334155 50%,#1e293b 75%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+        .line-clamp-1 { display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
+        .line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300 pb-20">
     
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white dark:bg-slate-800 shadow-sm p-4">
-        <div class="container mx-auto flex justify-between items-center">
+        <div class="container mx-auto flex justify-between items-center relative">
             <h1 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">Al Quranic Ruqyah Healing</h1>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <button id="search-toggle" onclick="showSearchOverlay()" class="p-2 rounded-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition" title="খুঁজুন">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </button>
+                <button id="auth-btn" onclick="openLoginModal()" class="p-2 rounded-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 transition hidden" title="লগইন করুন">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </button>
+                <div id="user-avatar-btn" onclick="toggleProfileDropdown()" class="hidden cursor-pointer relative" title="প্রোফাইল">
+                    <img id="user-photo" src="" alt="" class="w-8 h-8 rounded-full object-cover border-2 border-indigo-400 hidden"/>
+                    <div id="user-initials" class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm font-bold hidden"></div>
+                </div>
+                <!-- Profile Dropdown -->
+                <div id="profile-dropdown" class="hidden absolute right-0 top-10 z-50 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-700 p-4 min-w-[210px]">
+                    <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-slate-700">
+                        <img id="dropdown-photo" src="" alt="" class="w-10 h-10 rounded-full object-cover hidden"/>
+                        <div id="dropdown-initials" class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold hidden"></div>
+                        <div class="min-w-0">
+                            <p id="dropdown-name" class="font-bold text-sm truncate"></p>
+                            <p id="dropdown-email" class="text-xs text-gray-500 truncate"></p>
+                        </div>
+                    </div>
+                    <button onclick="signOutUser()" class="w-full py-2 px-3 text-left text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition font-medium">🚪 লগআউট করুন</button>
+                </div>
                 <button id="favorite-toggle-btn" class="p-2 rounded-full bg-gray-100 dark:bg-slate-700 hover:bg-gray-200">
                     <span class="text-xl">⭐</span>
                 </button>
@@ -54,21 +83,84 @@
         </div>
     </header>
 
-    <!-- Global Founder Profile Badge -->
-    <div class="container mx-auto px-4 mt-6">
-        <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
-            <div class="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-xl">👤</div>
-            <div>
-                <h2 class="font-bold text-gray-900 dark:text-white leading-tight">Raqi Faisal Ahmed Sabit</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Founder, Al Quranic Ruqyah Healing • Medical Student, CuMC</p>
-            </div>
-        </div>
-    </div>
-
     <!-- App Content -->
     <main class="container mx-auto p-4 max-w-4xl" id="main-content">
+        <!-- Home Section -->
+        <div id="section-home">
+            <!-- Founder Profile Badge -->
+            <div class="mb-6">
+                <div class="bg-white dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
+                    <div class="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-3xl shadow-inner">👤</div>
+                    <div>
+                        <h2 class="font-bold text-xl text-gray-900 dark:text-white leading-tight">Raqi Faisal Ahmed Sabit</h2>
+                        <p class="text-sm text-indigo-600 dark:text-indigo-400 font-medium">Founder, Al Quranic Ruqyah Healing</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Medical Student, Comilla Medical College</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recently Played -->
+            <div id="recently-played-section" class="mb-6 hidden">
+                <h3 class="text-base font-bold mb-3 flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                    <span>🕐</span> সম্প্রতি শোনা
+                </h3>
+                <div id="recently-played-list" class="space-y-2"></div>
+            </div>
+
+            <!-- Intro Card -->
+            <div class="bg-gradient-to-br from-indigo-600 to-slate-800 rounded-3xl p-8 text-white shadow-xl mb-8">
+                <h2 class="text-2xl font-bold mb-4">আসসালামু আলাইকুম! 🌿</h2>
+                <p class="text-indigo-100 leading-relaxed mb-6">
+                    আলহামদুলিল্লাহ, বাংলা ভাষাভাষী মুসলিমদের জন্য কুরআন ও সুন্নাহভিত্তিক রুকিয়াহ, আত্মউন্নয়ন এবং আধ্যাত্মিক সচেতনতাকে সহজলভ্য করার একটি ক্ষুদ্র প্রচেষ্টা এটি।
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="document.querySelector('[data-section=\'library\']').click()" class="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:bg-indigo-50 transition">🎧 অডিও লাইব্রেরি</button>
+                    <button onclick="document.querySelector('[data-section=\'prescriptions\']').click()" class="bg-indigo-500/30 backdrop-blur-md text-white border border-white/20 px-6 py-3 rounded-xl font-bold text-sm hover:bg-white/20 transition">📋 ডায়াগনোসিস</button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+                    <h4 class="text-xl font-bold text-indigo-600 dark:text-indigo-400" id="stat-audio-count-home">৬৫+</h4>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider">অডিও</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+                    <h4 class="text-xl font-bold text-indigo-600 dark:text-indigo-400" id="stat-pdf-count-home">৫৬+</h4>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider">পিডিএফ</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+                    <h4 class="text-xl font-bold text-indigo-600 dark:text-indigo-400">৫+</h4>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-wider">ক্যাটাগরি</p>
+                </div>
+            </div>
+
+            <!-- Facebook Review Section -->
+            <div class="mb-8">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span>⭐</span> ইউজার রিভিউ
+                </h3>
+                <div class="bg-white dark:bg-slate-800 p-2 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden flex justify-center">
+                    <div class="w-full max-w-[500px] overflow-x-auto">
+                        <iframe src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fraqi.faisal.ahmed%2Fposts%2Fpfbid0nuLk93Fm89JKeYSxc7EWDHkERQETq75wknDXbQcfizXk2KTuw3buxeL1gnkvS5T6l&show_text=true&width=500" width="500" height="450" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+                    </div>
+                </div>
+                <p class="text-center mt-3">
+                    <a href="https://www.facebook.com/raqi.faisal.ahmed" target="_blank" class="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline">আরো রিভিউ দেখতে এখানে ক্লিক করুন →</a>
+                </p>
+            </div>
+
+            <!-- About Section (Condensed) -->
+            <div class="bg-emerald-50 dark:bg-emerald-900/10 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-800/30 mb-8">
+                <h3 class="text-lg font-bold text-emerald-800 dark:text-emerald-300 mb-2">আমাদের লক্ষ্য 🎯</h3>
+                <p class="text-sm text-emerald-700 dark:text-emerald-400 leading-relaxed">
+                    সঠিক রুকিয়াহ চর্চা ছড়িয়ে দেওয়া এবং মানুষকে শিরক ও কুসংস্কারমুক্ত জীবন গড়তে সহায়তা করা। আমরা আধুনিক প্রযুক্তির মাধ্যমে রুকিয়াহর রিসোর্সগুলোকে সবার হাতের কাছে পৌঁছে দিচ্ছি।
+                </p>
+            </div>
+        </div>
+
         <!-- Audio Library Section -->
-        <div id="section-library">
+        <div id="section-library" class="hidden">
             <div class="my-6">
                 <input type="text" id="search-input" placeholder="নাম বা কোড (যেমন: S04) দিয়ে খুঁজুন..." class="w-full p-4 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
             </div>
@@ -343,7 +435,11 @@
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-gray-200 dark:border-slate-700 flex justify-around p-2 z-50 shadow-lg">
-        <button class="nav-btn flex flex-col items-center p-2 text-indigo-600 active-nav" data-section="library">
+        <button class="nav-btn flex flex-col items-center p-2 text-indigo-600 active-nav" data-section="home">
+            <span class="text-xl">🏠</span>
+            <span class="text-xs font-medium">Home</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center p-2 text-gray-500" data-section="library">
             <span class="text-xl">🎧</span>
             <span class="text-xs font-medium">Library</span>
         </button>
@@ -353,11 +449,7 @@
         </button>
         <button class="nav-btn flex flex-col items-center p-2 text-gray-500" data-section="prescriptions">
             <span class="text-xl">📖</span>
-            <span class="text-xs font-medium">Prescriptions</span>
-        </button>
-        <button class="nav-btn flex flex-col items-center p-2 text-gray-500" data-section="followup">
-            <span class="text-xl">📊</span>
-            <span class="text-xs font-medium">Follow-up</span>
+            <span class="text-xs font-medium">Diagnosis</span>
         </button>
     </nav>
 
@@ -376,6 +468,81 @@
             <iframe id="pdf-frame" class="w-full h-full border-none" src=""></iframe>
         </div>
     </div>
+
+    <!-- YouTube Player Modal -->
+    <div id="yt-modal" class="fixed inset-0 z-[100] hidden bg-black flex flex-col">
+        <header class="p-3 bg-slate-900 text-white flex justify-between items-center gap-2 shrink-0">
+            <div class="min-w-0 flex-1">
+                <p id="yt-modal-code" class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider mb-0.5"></p>
+                <h3 id="yt-modal-title" class="font-bold text-sm leading-tight line-clamp-2"></h3>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+                <button id="yt-fav-btn" onclick="toggleFavoriteFromPlayer()" class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-xl leading-none transition">☆</button>
+                <button onclick="copyLinkFromPlayer()" class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition" title="লিঙ্ক কপি">📋</button>
+                <a id="yt-external-link" href="#" target="_blank" rel="noopener" class="p-2 rounded-lg bg-slate-700 hover:bg-slate-600 transition text-white flex items-center" title="YouTube-এ দেখুন">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+                <button onclick="closePlayer()" class="p-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold text-xs transition">✕</button>
+            </div>
+        </header>
+        <div class="relative w-full shrink-0" style="padding-top:56.25%">
+            <iframe id="yt-frame" class="absolute inset-0 w-full h-full border-none" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="flex-1 overflow-y-auto bg-slate-900 p-4">
+            <div id="yt-related" class="space-y-2"></div>
+        </div>
+    </div>
+
+    <!-- Global Search Overlay -->
+    <div id="search-overlay" class="fixed inset-0 z-[90] hidden bg-gray-50 dark:bg-slate-900 flex flex-col">
+        <div class="p-4 bg-white dark:bg-slate-800 shadow-sm flex items-center gap-3 shrink-0">
+            <button onclick="closeSearchOverlay()" class="p-2.5 rounded-xl bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 font-bold text-base leading-none transition">←</button>
+            <input id="global-search-input" type="text" placeholder="অডিও বা পিডিএফ খুঁজুন..."
+                   class="flex-1 p-3 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition">
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 pb-24" id="global-search-results">
+            <p class="text-center text-gray-400 mt-16 text-sm">🔍 কী খুঁজছেন লিখুন...</p>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-[110] hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 relative">
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 p-2 rounded-xl bg-gray-100 dark:bg-slate-700 text-sm font-bold leading-none transition hover:bg-gray-200">✕</button>
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-3">🌿</div>
+                <h2 class="text-xl font-bold">Al Quranic Ruqyah Healing</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1" id="auth-subtitle">লগইন করুন ও ফেভারিট সেভ করুন</p>
+            </div>
+            <button onclick="signInWithGoogle()" class="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition font-medium text-sm mb-4">
+                <svg class="w-5 h-5 shrink-0" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.2 30.2 0 24 0 14.7 0 6.7 5.5 2.7 13.5l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.2-.4-4.7H24v9h12.7c-.6 3-2.4 5.5-5 7.2l7.7 6c4.5-4.1 7.1-10.2 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.5c-.6-1.6-.9-3.3-.9-5s.3-3.4.9-5l-7.8-6C1 15 0 19.4 0 24s1 9 2.7 12.5l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.5-2 15.3-5.5l-7.7-6c-2 1.4-4.6 2.2-7.6 2.2-6.3 0-11.7-3.7-13.5-9l-7.8 6C6.7 42.5 14.7 48 24 48z"/></svg>
+                Google দিয়ে প্রবেশ করুন
+            </button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="flex-1 h-px bg-gray-200 dark:bg-slate-600"></div>
+                <span class="text-xs text-gray-400">অথবা</span>
+                <div class="flex-1 h-px bg-gray-200 dark:bg-slate-600"></div>
+            </div>
+            <form onsubmit="handleEmailAuth(event)" class="space-y-3">
+                <input id="auth-email" type="email" placeholder="ইমেইল" required
+                       class="w-full p-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition">
+                <input id="auth-password" type="password" placeholder="পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)" required
+                       class="w-full p-3 rounded-xl border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 text-sm transition">
+                <p id="auth-error" class="text-red-500 text-xs hidden px-1"></p>
+                <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm transition">লগইন করুন</button>
+            </form>
+            <div class="flex items-center justify-between mt-4 text-xs">
+                <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">নতুন? নিবন্ধন করুন</button>
+                <button onclick="resetPassword()" class="text-gray-400 hover:underline">পাসওয়ার্ড ভুলে গেছেন?</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js" onerror="console.warn('firebase-config.js not found — auth disabled')"></script>
 
     <script src="app.js"></script>
 </body>

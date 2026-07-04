@@ -1,9 +1,10 @@
-const CACHE_NAME = 'ruqyah-pro-v1';
+const CACHE_NAME = 'ruqyah-pro-v2';
 const ASSETS = [
   './',
   './index.html',
   './app.js',
   './audio.json',
+  './pdf_list.json',
   './manifest.json',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap'
