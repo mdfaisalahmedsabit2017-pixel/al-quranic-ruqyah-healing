@@ -139,6 +139,30 @@ if (fs.existsSync(fontsSrc)) {
     console.warn('Warning: fonts/ not found — run `node tools/fetch_fonts.js`.');
 }
 
+// pdf.js. Goes into both targets: Android WebView cannot render a PDF at all,
+// and desktop browsers disagree about how an <iframe> PDF behaves.
+//
+// cmaps/ (1.4 MB) is web-only. It matters for CID-keyed fonts, in practice CJK,
+// which these guides do not use — so rather than carry it in the APK, app.js
+// points cMapUrl at the website for the rare PDF that needs it. standard_fonts/
+// ships in both because a PDF that references Helvetica without embedding it is
+// ordinary, and that must work offline.
+const pdfjsSrc = path.join(__dirname, 'vendor', 'pdfjs');
+if (fs.existsSync(pdfjsSrc)) {
+    const pdfjsDest = path.join(distDir, 'vendor', 'pdfjs');
+    fs.mkdirSync(pdfjsDest, { recursive: true });
+    for (const entry of fs.readdirSync(pdfjsSrc, { withFileTypes: true })) {
+        if (isNative && entry.name === 'cmaps') continue;
+        const from = path.join(pdfjsSrc, entry.name);
+        const to = path.join(pdfjsDest, entry.name);
+        if (entry.isDirectory()) copyDirSync(from, to);
+        else fs.copyFileSync(from, to);
+    }
+    console.log(`Copied vendor/pdfjs/${isNative ? ' (without cmaps)' : ''}`);
+} else {
+    console.warn('Warning: vendor/pdfjs/ not found — run `node tools/fetch_pdfjs.js`.');
+}
+
 if (isNative) {
     // Everything below is web-only: the blog and the SEO catalogue pages exist
     // for crawlers, and the PDFs are streamed from the live site by the in-app

@@ -197,8 +197,9 @@ function renderPDFs() {
     pdfContainer.innerHTML = pdfData.map(pdf => {
         const bmKey = `bm_${pdf.filename}`;
         const saved = pdfBookmarks[pdf.filename];
-        const inputId = `bm-input-${pdf.filename.replace(/[^a-z0-9]/gi,'_')}`;
-        const savedId = `bm-saved-${pdf.filename.replace(/[^a-z0-9]/gi,'_')}`;
+        const safeId = pdf.filename.replace(/[^a-z0-9]/gi,'_');
+        const inputId = `bm-input-${safeId}`;
+        const savedId = `bm-saved-${safeId}`;
         return `
         <div class="pdf-card">
             <div class="pdf-card-header">
@@ -213,6 +214,9 @@ function renderPDFs() {
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                     পড়ুন${saved ? ` (পেজ ${saved})` : ''}
                 </button>
+                <button id="pdfdl-${safeId}" onclick="togglePdfDownload('${pdf.filename}')" class="pdf-dl-btn" title="অফলাইনে রাখুন">
+                    ${downloadedPdfs.includes(pdf.filename) ? '✓' : '📥'}
+                </button>
             </div>
             <div class="pdf-bm-row">
                 <input id="${inputId}" type="number" min="1" placeholder="পেজ নম্বর..." class="pdf-bm-input" value="${saved || ''}">
@@ -223,21 +227,187 @@ function renderPDFs() {
     }).join('');
 }
 
-window.viewPDF = (url, title) => {
+// ── PDF viewer (pdf.js) ─────────────────────────────────────────────────────
+//
+// The guides are streamed rather than bundled: 130 MB of PDFs would not fit in
+// an APK, and they never rendered there anyway because Android System WebView
+// has no PDF viewer. pdf.js draws each page onto a canvas instead, which works
+// identically on the phone and the web, and makes the page-bookmark feature
+// that already existed in the markup actually functional.
+const PDF_BASE = IS_NATIVE ? 'https://alquranicruqyahhealing.com' : '';
+
+// Opportunistic, not a promise: a guide the reader has tapped "keep offline" on
+// stays readable on a plane, everything else needs the network. Mirrors the
+// audio downloads engine (cacheTrack) so the two behave the same way.
+const PDF_CACHE = 'ruqyah-pdf-v1';
+let downloadedPdfs = JSON.parse(localStorage.getItem('downloadedPdfs') || '[]');
+
+function pdfUrlFor(filename) {
+    return `${PDF_BASE}/pdf/${filename}`;
+}
+
+window.togglePdfDownload = async function(filename) {
+    const btn = document.getElementById(`pdfdl-${filename.replace(/[^a-z0-9]/gi,'_')}`);
+    const url = pdfUrlFor(filename);
+    haptic(10);
+    try {
+        const cache = await caches.open(PDF_CACHE);
+        if (downloadedPdfs.includes(filename)) {
+            await cache.delete(url);
+            downloadedPdfs = downloadedPdfs.filter(f => f !== filename);
+            localStorage.setItem('downloadedPdfs', JSON.stringify(downloadedPdfs));
+            if (btn) btn.textContent = '📥';
+            showToast('অফলাইন কপি মুছে ফেলা হয়েছে');
+            return;
+        }
+        if (btn) btn.textContent = '…';
+        const res = await fetch(url, { mode: 'cors' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        await cache.put(url, res);
+        downloadedPdfs.push(filename);
+        localStorage.setItem('downloadedPdfs', JSON.stringify(downloadedPdfs));
+        if (btn) btn.textContent = '✓';
+        showToast('✓ অফলাইনে সংরক্ষিত');
+    } catch (e) {
+        console.warn('PDF download failed:', e);
+        if (btn) btn.textContent = '📥';
+        showToast('ডাউনলোড করা গেল না — ইন্টারনেট দেখুন');
+    }
+};
+
+let pdfDoc = null;
+let pdfPage = 1;
+let pdfFile = null;         // filename, used as the bookmark key
+let pdfRenderTask = null;
+let pdfjsLibPromise = null;
+
+// 1.8 MB of engine, loaded the first time someone opens a guide rather than on
+// every cold start. Dynamic import keeps app.js a plain classic script.
+function loadPdfJs() {
+    if (!pdfjsLibPromise) {
+        pdfjsLibPromise = import('./vendor/pdfjs/pdf.min.mjs').then((lib) => {
+            lib.GlobalWorkerOptions.workerSrc = './vendor/pdfjs/pdf.worker.min.mjs';
+            return lib;
+        }).catch((e) => { pdfjsLibPromise = null; throw e; });
+    }
+    return pdfjsLibPromise;
+}
+
+function pdfSetStatus(msg) {
+    const el = document.getElementById('pdf-status');
+    const canvas = document.getElementById('pdf-canvas');
+    if (!el) return;
+    if (msg) { el.innerHTML = msg; el.classList.remove('hidden'); canvas?.classList.add('hidden'); }
+    else { el.classList.add('hidden'); canvas?.classList.remove('hidden'); }
+}
+
+async function pdfRender(n) {
+    if (!pdfDoc) return;
+    pdfPage = Math.min(Math.max(1, n | 0), pdfDoc.numPages);
+
+    // Cancel an in-flight render, or fast page taps stack up and fight over the
+    // same canvas.
+    if (pdfRenderTask) { try { pdfRenderTask.cancel(); } catch (e) {} pdfRenderTask = null; }
+
+    const page = await pdfDoc.getPage(pdfPage);
+    const canvas = document.getElementById('pdf-canvas');
+    const stage = document.getElementById('pdf-stage');
+    if (!canvas || !stage) return;
+
+    // Fit the page width to the stage, then multiply by DPR so text stays sharp
+    // on a phone screen. Capped so a huge scan cannot allocate a giant bitmap.
+    const unscaled = page.getViewport({ scale: 1 });
+    const avail = Math.max(240, stage.clientWidth - 20);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const viewport = page.getViewport({ scale: (avail / unscaled.width) * dpr });
+
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+    canvas.style.width = Math.floor(viewport.width / dpr) + 'px';
+
+    pdfRenderTask = page.render({ canvasContext: canvas.getContext('2d'), viewport });
+    try { await pdfRenderTask.promise; } catch (e) { if (e?.name !== 'RenderingCancelledException') throw e; }
+    pdfRenderTask = null;
+
+    const input = document.getElementById('pdf-page-input');
+    if (input) { input.value = pdfPage; input.max = pdfDoc.numPages; }
+    const total = document.getElementById('pdf-page-total');
+    if (total) total.textContent = `/ ${toBn(pdfDoc.numPages)}`;
+    document.getElementById('pdf-prev').disabled = pdfPage <= 1;
+    document.getElementById('pdf-next').disabled = pdfPage >= pdfDoc.numPages;
+    stage.scrollTop = 0;
+    pdfSetStatus('');
+}
+
+// Signature unchanged from the old iframe version, so renderPDFs and the search
+// overlay call it exactly as before.
+window.viewPDF = async (url, title, page) => {
     const modal = document.getElementById('pdf-modal');
-    const frame = document.getElementById('pdf-frame');
     const modalTitle = document.getElementById('pdf-modal-title');
-    modalTitle.innerText = title;
-    frame.src = url;
+    if (modalTitle) modalTitle.innerText = title;
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+    document.getElementById('pdf-toolbar')?.classList.add('hidden');
+    pdfSetStatus('লোড হচ্ছে…');
+
+    pdfFile = url.split('/').pop();
+    const absolute = /^https?:/.test(url) ? url : `${PDF_BASE}/${url.replace(/^\//, '')}`;
+
+    try {
+        const pdfjsLib = await loadPdfJs();
+
+        // Prefer a copy the reader explicitly kept offline. Checking the Cache
+        // API directly rather than relying on the service worker means this
+        // works on the very first launch too, before any worker has activated.
+        let source = { url: absolute };
+        try {
+            const hit = await caches.match(absolute);
+            if (hit) source = { data: new Uint8Array(await hit.arrayBuffer()) };
+        } catch (e) { /* Cache API unavailable — fall through to the network */ }
+
+        pdfDoc = await pdfjsLib.getDocument({
+            ...source,
+            // Both are the documented hardening for CVE-2024-4367-style font
+            // tricks; nothing here needs eval or XFA forms.
+            isEvalSupported: false,
+            enableXfa: false,
+            // Bundled in both builds — a PDF that names Helvetica without
+            // embedding it is ordinary, and must still render offline.
+            standardFontDataUrl: './vendor/pdfjs/standard_fonts/',
+            // Left on the server for the native build; only CID-keyed (in
+            // practice CJK) PDFs ever reach for these.
+            cMapUrl: `${PDF_BASE}/vendor/pdfjs/cmaps/`,
+            cMapPacked: true,
+        }).promise;
+        document.getElementById('pdf-toolbar')?.classList.remove('hidden');
+        await pdfRender(page || pdfBookmarks[pdfFile] || 1);
+    } catch (e) {
+        console.warn('PDF load failed:', e);
+        pdfSetStatus(navigator.onLine
+            ? 'গাইডটি খোলা গেল না।<br>একটু পরে আবার চেষ্টা করুন।'
+            : 'এই গাইডটি ডাউনলোড করা নেই।<br>ইন্টারনেট সংযোগ দিন।');
+    }
+};
+
+window.pdfPrevPage = () => pdfRender(pdfPage - 1);
+window.pdfNextPage = () => pdfRender(pdfPage + 1);
+window.pdfGoToPage = (n) => pdfRender(Number(n) || 1);
+
+window.pdfSaveCurrentPage = () => {
+    if (!pdfFile) return;
+    pdfBookmarks[pdfFile] = pdfPage;
+    localStorage.setItem('pdfBookmarks', JSON.stringify(pdfBookmarks));
+    haptic(10);
+    showToast(`📌 পাতা ${toBn(pdfPage)} মনে রাখা হলো`);
+    renderPDFs();
 };
 
 window.closePDF = () => {
-    const modal = document.getElementById('pdf-modal');
-    const frame = document.getElementById('pdf-frame');
-    modal.classList.add('hidden');
-    frame.src = '';
+    if (pdfRenderTask) { try { pdfRenderTask.cancel(); } catch (e) {} pdfRenderTask = null; }
+    if (pdfDoc) { try { pdfDoc.destroy(); } catch (e) {} pdfDoc = null; }
+    pdfFile = null;
+    document.getElementById('pdf-modal').classList.add('hidden');
+    document.getElementById('pdf-toolbar')?.classList.add('hidden');
     document.body.style.overflow = 'auto';
 };
 

@@ -1,0 +1,20 @@
+# Git's text/binary autodetection is a heuristic. Vendored assets are checked in
+# byte-for-byte and must never get line-ending conversion — a mangled .bcmap or
+# .woff2 fails at runtime in ways that are painful to trace back to git.
+*.bcmap  binary
+*.woff2  binary
+*.pfb    binary
+*.ttf    binary
+*.otf    binary
+*.png    binary
+*.jpg    binary
+*.webp   binary
+*.pdf    binary
+*.m4a    binary
+*.apk    binary
+*.aab    binary
+*.jks    binary
+*.keystore binary
+
+# Minified vendor code: keep it exactly as published upstream.
+vendor/**  -text

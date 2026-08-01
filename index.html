@@ -1379,6 +1379,55 @@
             background: var(--surface); border-bottom: 1px solid var(--border);
         }
         .pdf-modal-title { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+        .pdf-dl-btn {
+            flex-shrink: 0; width: 44px; min-height: 44px;
+            border-radius: var(--r-md); border: 1px solid var(--border-md);
+            background: var(--raised); color: var(--text-sub);
+            font-size: 0.95rem; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, color 0.15s;
+        }
+        .pdf-dl-btn:active { background: var(--overlay); color: var(--green); }
+        .pdf-stage {
+            flex: 1; overflow: auto; background: #202124;
+            display: flex; align-items: flex-start; justify-content: center;
+            padding: 10px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .pdf-canvas {
+            max-width: 100%; height: auto;
+            background: #fff; border-radius: 4px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+        }
+        .pdf-status {
+            color: var(--text-sub); font-size: 0.85rem;
+            text-align: center; padding: 40px 20px; line-height: 1.8;
+            align-self: center;
+        }
+        .pdf-toolbar {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 10px 14px calc(10px + var(--sab));
+            background: var(--surface); border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .pdf-nav-btn {
+            min-width: 48px; height: 44px;
+            border-radius: var(--r-md); border: 1px solid var(--border-md);
+            background: var(--raised); color: var(--text);
+            font-size: 1.25rem; font-weight: 700; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, opacity 0.15s;
+        }
+        .pdf-nav-btn:active { background: var(--overlay); }
+        .pdf-nav-btn:disabled { opacity: 0.35; cursor: default; }
+        .pdf-pageinfo { display: flex; align-items: center; gap: 6px; }
+        .pdf-page-input {
+            width: 62px; height: 44px; text-align: center;
+            border-radius: var(--r-md); border: 1px solid var(--border-md);
+            background: var(--surface); color: var(--text);
+            font-family: inherit; font-size: 0.9rem; font-weight: 700;
+        }
+        .pdf-page-total { font-size: 0.85rem; color: var(--text-sub); min-width: 42px; }
 
         /* YT modal */
         #yt-modal { background: #000; display: flex; flex-direction: column; }
@@ -2548,13 +2597,26 @@
     <div id="toast">লিঙ্ক কপি হয়েছে!</div>
 
     <!-- ── PDF VIEWER MODAL ────────────────────────────────── -->
+    <!-- Rendered by pdf.js onto a canvas. It used to be an <iframe src="*.pdf">,
+         which Android System WebView cannot display at all — every guide was a
+         blank white screen on the phone. -->
     <div id="pdf-modal" class="modal hidden">
         <div class="pdf-modal-hdr">
             <h3 id="pdf-modal-title" class="pdf-modal-title clamp1">পিডিএফ ভিউয়ার</h3>
             <button onclick="closePDF()" style="background:rgba(255,100,100,0.15);border:1px solid rgba(255,100,100,0.2);color:#ff6b6b;padding:8px 16px;border-radius:var(--r-md);font-weight:700;font-size:0.8rem;cursor:pointer">বন্ধ করুন</button>
         </div>
-        <div style="flex:1;overflow:hidden;background:#fff">
-            <iframe id="pdf-frame" style="width:100%;height:100%;border:none" src=""></iframe>
+        <div id="pdf-stage" class="pdf-stage">
+            <div id="pdf-status" class="pdf-status">লোড হচ্ছে…</div>
+            <canvas id="pdf-canvas" class="pdf-canvas hidden"></canvas>
+        </div>
+        <div id="pdf-toolbar" class="pdf-toolbar hidden">
+            <button onclick="pdfPrevPage()" id="pdf-prev" class="pdf-nav-btn" aria-label="আগের পাতা">‹</button>
+            <div class="pdf-pageinfo">
+                <input id="pdf-page-input" type="number" min="1" class="pdf-page-input" onchange="pdfGoToPage(this.value)" aria-label="পাতা নম্বর">
+                <span id="pdf-page-total" class="pdf-page-total"></span>
+            </div>
+            <button onclick="pdfNextPage()" id="pdf-next" class="pdf-nav-btn" aria-label="পরের পাতা">›</button>
+            <button onclick="pdfSaveCurrentPage()" id="pdf-bookmark-btn" class="pdf-nav-btn" title="এই পাতাটি মনে রাখুন">📌</button>
         </div>
     </div>
 
