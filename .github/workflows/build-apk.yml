@@ -1,5 +1,8 @@
 name: Build Android APK
 
+# Produces an installable debug APK for on-device testing. The release/signed
+# path is a separate workflow (see Phase 4) so this one can stay secret-free.
+
 on:
   push:
     branches: [ main, master ]
@@ -17,30 +20,48 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
+      # Capacitor 7 generates capacitor.build.gradle with
+      # sourceCompatibility/targetCompatibility = VERSION_21. This job used to
+      # install Java 17, which cannot compile that — the mismatch was a standing
+      # build failure.
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: 'temurin'
+          java-version: '21'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build Web Assets
-        run: npm run build
+      # --target=native, not the default web target: the web build copies 130 MB
+      # of PDFs plus the generated blog into public/, none of which belongs in an
+      # APK. build.js fails the build if native/ ever exceeds 20 MB.
+      - name: Build Web Assets (native target)
+        run: npm run build:native
 
       - name: Sync Capacitor
         run: npx cap sync android
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('android/**/*.gradle', 'android/gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
 
       - name: Build APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: ruqyah-pro-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

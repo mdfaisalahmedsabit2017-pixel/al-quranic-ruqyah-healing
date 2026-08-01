@@ -1,5 +1,29 @@
 {
   "appId": "com.ruqyah.pro",
   "appName": "Ruqyah Pro",
-  "webDir": "www"
+  "webDir": "native",
+  "android": {
+    "backgroundColor": "#080808"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 400,
+      "launchAutoHide": true,
+      "backgroundColor": "#080808",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#080808",
+      "overlaysWebView": true
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#00E599"
+    }
+  }
 }

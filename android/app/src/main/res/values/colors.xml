@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  This file did not exist. styles.xml referenced @color/colorPrimary and friends,
+  which resolved to the capacitor-android library's defaults — Capacitor blue.
+  These are the app's own tokens, matching :root in index.html.
+-->
+<resources>
+    <color name="colorPrimary">#080808</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#00E599</color>
+
+    <!-- Splash backdrop. Keep in step with --bg.
+         ic_launcher_background lives in its own file because @capacitor/assets
+         generates it; defining it here too is a duplicate-resource build error. -->
+    <color name="splash_bg">#080808</color>
+</resources>

@@ -1,0 +1,18 @@
+www/
+native/
+pdf_archive/
+docx/
+conversion_progress.json
+convert_pdfs.py
+Master_Template.html
+run_app.bat
+public/
+node_modules/
+
+# Big local-only trees — none of this is read by the build, and uploading it
+# would add well over a gigabyte to every deploy.
+audio_files/
+android/
+.git/
+.claude/
+__pycache__/

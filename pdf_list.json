@@ -1,58 +1,413 @@
 [
-  { "title_bn": "আশিক জ্বিনের সেলফ রুকিয়াহ", "filename": "ashik-jinn.pdf", "category": "জ্বিন" },
-  { "title_bn": "জ্বিনকে বেঁধে রাখার আমল", "filename": "bind-jinn.pdf", "category": "জ্বিন" },
-  { "title_bn": "রক্ত ও শরীরের জাদুর চিকিৎসা", "filename": "body-blood-magic.pdf", "category": "জাদু" },
-  { "code": "PDF04", "title_bn": "মস্তিষ্কের গিঁট কাটার গাইড", "filename": "brain-knots.pdf", "category": "গিঁট" },
-  { "title_bn": "জ্বিন পুড়িয়ে ফেলার রুকিয়াহ", "filename": "burning-punishment.pdf", "category": "জ্বিন" },
-  { "title_bn": "ক্যান্সার ও টিউমারের রুকিয়াহ গাইড", "filename": "cancer-tumor.pdf", "category": "অসুখ" },
-  { "title_bn": "বুক ধড়ফড় ও শ্বাসকষ্টের রুকিয়াহ", "filename": "chest-breath.pdf", "category": "অসুখ" },
-  { "title_bn": "বাচ্চা ও ঘর সুরক্ষার আমল", "filename": "child-home-protection.pdf", "category": "সুরক্ষা" },
-  { "title_bn": "দৈনিক মাসনুন আযকার", "filename": "daily-azkar.pdf", "category": "আমল" },
-  { "title_bn": "বদনজর দূর করার গাইডলাইন", "filename": "evil-eye-removal.pdf", "category": "বদনজর" },
-  { "title_bn": "বদনজর ও হাসাদ থেকে মুক্তি", "filename": "evil-eye.pdf", "category": "বদনজর" },
-  { "title_bn": "চোখের ও বদনজরের রুকিয়াহ", "filename": "eyes-evil-eye.pdf", "category": "বদনজর" },
-  { "title_bn": "কঠিন দুর্গ ধ্বংসের রুকিয়াহ", "filename": "fortress-destruction.pdf", "category": "জ্বিন" },
-  { "title_bn": "সাধারণ জাদুর রুকিয়াহ গাইড", "filename": "general-magic.pdf", "category": "জাদু" },
-  { "title_bn": "কবর জাদুর শক্তিশালী চিকিৎসা", "filename": "grave-magic.pdf", "category": "জাদু" },
-  { "title_bn": "হাসবানাহ (শক্তিশালী দোয়া)", "filename": "hasbanah.pdf", "category": "আমল" },
-  { "title_bn": "হাসবুনাল্লাহু ওয়া নি'মাল ওয়াকিল", "filename": "hasbunallah.pdf", "category": "আমল" },
-  { "title_bn": "মাথা, মুখ ও ঘাড়ের সমস্যার রুকিয়াহ", "filename": "head-face-shoulder.pdf", "category": "অসুখ" },
-  { "title_bn": "মাথার গিঁট কাটার আমল", "filename": "head-knots.pdf", "category": "গিঁট" },
-  { "title_bn": "মাথার ওয়াসওয়াসা ও জ্বিন দূর করা", "filename": "head-waswasa-jinn.pdf", "category": "জ্বিন" },
-  { "title_bn": "বংশগত জ্বিনের সমস্যা ও সমাধান", "filename": "hereditary-jinn.pdf", "category": "জ্বিন" },
-  { "title_bn": "পরীক্ষায় সাফল্য ও পড়ার মনোযোগের দোয়া", "filename": "hsc-ssc-admission.pdf", "category": "শিক্ষা" },
-  { "title_bn": "স্বামীর চরিত্র সংশোধনের আমল", "filename": "husband-rectification.pdf", "category": "পারিবারিক" },
-  { "title_bn": "জ্বিন ও বদনজরের শিফা", "filename": "jinn-evil-eye-shifa.pdf", "category": "বদনজর" },
-  { "title_bn": "জ্বিন কর্তৃক টাকা চুরি ঠেকানোর আমল", "filename": "jinn-money-theft.pdf", "category": "সুরক্ষা" },
-  { "title_bn": "হক ও ইনসাফের দোয়া", "filename": "justice-rights.pdf", "category": "আমল" },
-  { "title_bn": "শরীরের গিঁট কাটার গাইড", "filename": "knots.pdf", "category": "গিঁট" },
-  { "title_bn": "পা ও চলার পথের জাদুর চিকিৎসা", "filename": "leg-walking-magic.pdf", "category": "জাদু" },
-  { "title_bn": "জাদু ও গিঁট কাটার বিশেষ রুকিয়াহ", "filename": "magic-knots.pdf", "category": "জাদু" },
-  { "title_bn": "বিয়ের বাধা দূর করার আমল", "filename": "marriage-blockage.pdf", "category": "পারিবারিক" },
-  { "title_bn": "হারানো মানুষ ফিরে পাওয়ার দোয়া", "filename": "missing-person.pdf", "category": "আমল" },
-  { "title_bn": "বমি ভাব ও গ্যাস্ট্রিকের রুকিয়াহ", "filename": "nausea-gastric.pdf", "category": "অসুখ" },
-  { "title_bn": "আক্রমণাত্মক রুকিয়াহ গাইড", "filename": "offensive-ruqyah.pdf", "category": "জ্বিন" },
-  { "title_bn": "পাইলস থেকে মুক্তির দোয়া ও চিকিৎসা", "filename": "piles-shifa-dua.pdf", "category": "অসুখ" },
-  { "title_bn": "সমস্যার মূল উৎস খুঁজে বের করা", "filename": "problem-source.pdf", "category": "গাইড" },
-  { "title_bn": "রমজানে রুহানি উন্নতির আমল", "filename": "ramadan-ruhani.pdf", "category": "আমল" },
-  { "title_bn": "রিজিকে বরকত ও অভাব দূর করার আমল", "filename": "rizq-blessings.pdf", "category": "আমল" },
-  { "title_bn": "রুকিয়াহ দোয়া (সাবিত)", "filename": "ruqyah-dua-sabit.pdf", "category": "আমল" },
-  { "title_bn": "চোখের দৃষ্টি ও বদনজরের রুকিয়াহ", "filename": "ruqyah-for-eyes-sight-evileye.pdf", "category": "বদনজর" },
-  { "title_bn": "অরুচি ও পেটের সমস্যার গাইডলাইন", "filename": "ruqyah-guideline-aruchi-pet.pdf", "category": "অসুখ" },
-  { "title_bn": "সেলফ রুকিয়াহ পূর্ণাঙ্গ গাইড", "filename": "self-ruqyah-guide.pdf", "category": "গাইড" },
-  { "title_bn": "সেলফ রুকিয়াহ পদ্ধতি", "filename": "self-ruqyah.pdf", "category": "গাইড" },
-  { "title_bn": "শক্তিশালী ছিটানো জাদুর চিকিৎসা", "filename": "sihr-marshush-strong.pdf", "category": "জাদু" },
-  { "title_bn": "ছিটানো জাদুর সাধারণ রুকিয়াহ", "filename": "sihr-marshush.pdf", "category": "জাদু" },
-  { "title_bn": "ঘুমানোর মাসনুন দোয়া ও আমল", "filename": "sleeping-dua.pdf", "category": "আমল" },
-  { "title_bn": "সাপ জ্বিনের সমস্যা ও চিকিৎসা", "filename": "snake-jinn.pdf", "category": "জ্বিন" },
-  { "title_bn": "স্বামীকে ফিরিয়ে আনার আমল", "filename": "spouse-return.pdf", "category": "পারিবারিক" },
-  { "title_bn": "৪১ দিনের রুকিয়াহ কোর্স (ধাপ-১)", "filename": "step-1-41days.pdf", "category": "গাইড" },
-  { "title_bn": "পেটের বদনজর ও হাসাদের রুকিয়াহ", "filename": "stomach-evil-eye.pdf", "category": "বদনজর" },
-  { "title_bn": "পেটের জাদুর শক্তিশালী রুকিয়াহ", "filename": "stomach-magic.pdf", "category": "জাদু" },
-  { "title_bn": "অবাধ্য ও একগুঁয়ে জ্বিনের চিকিৎসা", "filename": "stubborn-jinn.pdf", "category": "জ্বিন" },
-  { "title_bn": "শিক্ষার্থীদের বদনজর ও মনোযোগের গাইড", "filename": "student-evil-eye.pdf", "category": "শিক্ষা" },
-  { "title_bn": "সুরা ইয়াসিন আমল ও ফজিলত", "filename": "surah-yasin-amal.pdf", "category": "আমল" },
-  { "title_bn": "জটিল ও দীর্ঘস্থায়ী রোগের রুকিয়াহ", "filename": "terminal-illness.pdf", "category": "অসুখ" },
-  { "title_bn": "জরায়ু ও প্রস্রাবের জাদুর চিকিৎসা", "filename": "uterus-magic.pdf", "category": "জাদু" },
-  { "title_bn": "পুতুল বা ভুদু জাদুর চিকিৎসা", "filename": "voodoo-doll.pdf", "category": "জাদু" }
+  {
+    "title_bn": "আশিক জ্বিনের সেলফ রুকিয়াহ",
+    "filename": "ashik-jinn.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "জ্বিনকে বেঁধে রাখার আমল",
+    "filename": "bind-jinn.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "রক্ত ও শরীরের জাদুর চিকিৎসা",
+    "filename": "body-blood-magic.pdf",
+    "category": "জাদু"
+  },
+  {
+    "code": "PDF04",
+    "title_bn": "মস্তিষ্কের গিঁট কাটার গাইড",
+    "filename": "brain-knots.pdf",
+    "category": "গিঁট"
+  },
+  {
+    "title_bn": "জ্বিন পুড়িয়ে ফেলার রুকিয়াহ",
+    "filename": "burning-punishment.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "ক্যান্সার ও টিউমারের রুকিয়াহ গাইড",
+    "filename": "cancer-tumor.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "বুক ধড়ফড় ও শ্বাসকষ্টের রুকিয়াহ",
+    "filename": "chest-breath.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "বাচ্চা ও ঘর সুরক্ষার আমল",
+    "filename": "child-home-protection.pdf",
+    "category": "সুরক্ষা"
+  },
+  {
+    "title_bn": "দৈনিক মাসনুন আযকার",
+    "filename": "daily-azkar.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "বদনজর দূর করার গাইডলাইন",
+    "filename": "evil-eye-removal.pdf",
+    "category": "বদনজর"
+  },
+  {
+    "title_bn": "বদনজর ও হাসাদ থেকে মুক্তি",
+    "filename": "evil-eye.pdf",
+    "category": "বদনজর"
+  },
+  {
+    "title_bn": "চোখের ও বদনজরের রুকিয়াহ",
+    "filename": "eyes-evil-eye.pdf",
+    "category": "বদনজর"
+  },
+  {
+    "title_bn": "কঠিন দুর্গ ধ্বংসের রুকিয়াহ",
+    "filename": "fortress-destruction.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "সাধারণ জাদুর রুকিয়াহ গাইড",
+    "filename": "general-magic.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "কবর জাদুর শক্তিশালী চিকিৎসা",
+    "filename": "grave-magic.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "হাসবানাহ (শক্তিশালী দোয়া)",
+    "filename": "hasbanah.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "হাসবুনাল্লাহু ওয়া নি'মাল ওয়াকিল",
+    "filename": "hasbunallah.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "মাথা, মুখ ও ঘাড়ের সমস্যার রুকিয়াহ",
+    "filename": "head-face-shoulder.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "মাথার গিঁট কাটার আমল",
+    "filename": "head-knots.pdf",
+    "category": "গিঁট"
+  },
+  {
+    "title_bn": "মাথার ওয়াসওয়াসা ও জ্বিন দূর করা",
+    "filename": "head-waswasa-jinn.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "বংশগত জ্বিনের সমস্যা ও সমাধান",
+    "filename": "hereditary-jinn.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "পরীক্ষায় সাফল্য ও পড়ার মনোযোগের দোয়া",
+    "filename": "hsc-ssc-admission.pdf",
+    "category": "শিক্ষা"
+  },
+  {
+    "title_bn": "স্বামীর চরিত্র সংশোধনের আমল",
+    "filename": "husband-rectification.pdf",
+    "category": "পারিবারিক"
+  },
+  {
+    "title_bn": "জ্বিন ও বদনজরের শিফা",
+    "filename": "jinn-evil-eye-shifa.pdf",
+    "category": "বদনজর"
+  },
+  {
+    "title_bn": "জ্বিন কর্তৃক টাকা চুরি ঠেকানোর আমল",
+    "filename": "jinn-money-theft.pdf",
+    "category": "সুরক্ষা"
+  },
+  {
+    "title_bn": "হক ও ইনসাফের দোয়া",
+    "filename": "justice-rights.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "শরীরের গিঁট কাটার গাইড",
+    "filename": "knots.pdf",
+    "category": "গিঁট"
+  },
+  {
+    "title_bn": "পা ও চলার পথের জাদুর চিকিৎসা",
+    "filename": "leg-walking-magic.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "জাদু ও গিঁট কাটার বিশেষ রুকিয়াহ",
+    "filename": "magic-knots.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "বিয়ের বাধা দূর করার আমল",
+    "filename": "marriage-blockage.pdf",
+    "category": "পারিবারিক"
+  },
+  {
+    "title_bn": "হারানো মানুষ ফিরে পাওয়ার দোয়া",
+    "filename": "missing-person.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "বমি ভাব ও গ্যাস্ট্রিকের রুকিয়াহ",
+    "filename": "nausea-gastric.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "আক্রমণাত্মক রুকিয়াহ গাইড",
+    "filename": "offensive-ruqyah.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "পাইলস থেকে মুক্তির দোয়া ও চিকিৎসা",
+    "filename": "piles-shifa-dua.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "সমস্যার মূল উৎস খুঁজে বের করা",
+    "filename": "problem-source.pdf",
+    "category": "গাইড"
+  },
+  {
+    "title_bn": "রমজানে রুহানি উন্নতির আমল",
+    "filename": "ramadan-ruhani.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "রিজিকে বরকত ও অভাব দূর করার আমল",
+    "filename": "rizq-blessings.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "রুকিয়াহ দোয়া (সাবিত)",
+    "filename": "ruqyah-dua-sabit.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "চোখের দৃষ্টি ও বদনজরের রুকিয়াহ",
+    "filename": "ruqyah-for-eyes-sight-evileye.pdf",
+    "category": "বদনজর"
+  },
+  {
+    "title_bn": "অরুচি ও পেটের সমস্যার গাইডলাইন",
+    "filename": "ruqyah-guideline-aruchi-pet.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "সেলফ রুকিয়াহ পূর্ণাঙ্গ গাইড",
+    "filename": "self-ruqyah-guide.pdf",
+    "category": "গাইড"
+  },
+  {
+    "title_bn": "সেলফ রুকিয়াহ পদ্ধতি",
+    "filename": "self-ruqyah.pdf",
+    "category": "গাইড"
+  },
+  {
+    "title_bn": "শক্তিশালী ছিটানো জাদুর চিকিৎসা",
+    "filename": "sihr-marshush-strong.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "ছিটানো জাদুর সাধারণ রুকিয়াহ",
+    "filename": "sihr-marshush.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "ঘুমানোর মাসনুন দোয়া ও আমল",
+    "filename": "sleeping-dua.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "সাপ জ্বিনের সমস্যা ও চিকিৎসা",
+    "filename": "snake-jinn.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "স্বামীকে ফিরিয়ে আনার আমল",
+    "filename": "spouse-return.pdf",
+    "category": "পারিবারিক"
+  },
+  {
+    "title_bn": "৪১ দিনের রুকিয়াহ কোর্স (ধাপ-১)",
+    "filename": "step-1-41days.pdf",
+    "category": "গাইড"
+  },
+  {
+    "title_bn": "পেটের বদনজর ও হাসাদের রুকিয়াহ",
+    "filename": "stomach-evil-eye.pdf",
+    "category": "বদনজর"
+  },
+  {
+    "title_bn": "পেটের জাদুর শক্তিশালী রুকিয়াহ",
+    "filename": "stomach-magic.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "অবাধ্য ও একগুঁয়ে জ্বিনের চিকিৎসা",
+    "filename": "stubborn-jinn.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "শিক্ষার্থীদের বদনজর ও মনোযোগের গাইড",
+    "filename": "student-evil-eye.pdf",
+    "category": "শিক্ষা"
+  },
+  {
+    "title_bn": "সুরা ইয়াসিন আমল ও ফজিলত",
+    "filename": "surah-yasin-amal.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "জটিল ও দীর্ঘস্থায়ী রোগের রুকিয়াহ",
+    "filename": "terminal-illness.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "জরায়ু ও প্রস্রাবের জাদুর চিকিৎসা",
+    "filename": "uterus-magic.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "পুতুল বা ভুদু জাদুর চিকিৎসা",
+    "filename": "voodoo-doll.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "বুকে থাকা জাদু ও শ্বাসকষ্টের রুকিয়াহ",
+    "filename": "chest-pain-ruqyah.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "হাসাদুল কারীন ও জাদুর নবায়ন রোধের রুকিয়াহ",
+    "filename": "hasadul-qarin-magic-renewal.pdf",
+    "category": "কারীন"
+  },
+  {
+    "title_bn": "বদনজর, চোখের বিষ ও শরীরের ভিতরের গিঁট খোলার রুকিয়াহ",
+    "filename": "evil-eye-body-knots-ruqyah.pdf",
+    "category": "বদনজর"
+  },
+  {
+    "title_bn": "হিজবুস সাইফুল কাতি' (তীক্ষ্ণ তরবারির আমল)",
+    "filename": "hizbus-saiful-qatit.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "বিয়ের রুকিয়াহ: লজ্জাস্থানের জাদুর গিরা খোলা ও আশিক জ্বিন ধ্বংসের আমল",
+    "filename": "marriage-sihr-sufli-private-parts-ashik-jinn.pdf",
+    "category": "পারিবারিক"
+  },
+  {
+    "title_bn": "রগ-শিরা ও রক্তে ছড়িয়ে থাকা জাদুর বিশেষ রুকিয়াহ",
+    "filename": "veins-blood-magic-guideline.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "পড়াশোনা ও বুদ্ধিমত্তা বৃদ্ধির আয়াতসমূহ (ইলম ও হিকমাহ)",
+    "filename": "ilm-hikmah-verses.pdf",
+    "category": "শিক্ষা"
+  },
+  {
+    "title_bn": "নতুন জাদুতে আক্রান্ত নাকি পুরনো জাদুর নবায়ন?",
+    "filename": "new-vs-old-magic.pdf",
+    "category": "গাইড"
+  },
+  {
+    "title_bn": "সালাম ফিরানোর পরের মাসনুন দোয়া ও যিকরসমূহ",
+    "filename": "after-salah-azkar.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "বক্ষ প্রসারণ ও শ্বাসকষ্ট দূর করার আয়াত",
+    "filename": "sadr-chest-verses.pdf",
+    "category": "অসুখ"
+  },
+  {
+    "title_bn": "সালাতুল ফাতাহ ও দরুদ শরীফ",
+    "filename": "salatul-fatih.pdf",
+    "category": "আমল"
+  },
+  {
+    "title_bn": "ঘর ও শরীরে আক্রমণকারী জ্বীন এবং জাদুটোনার তাহরীজ",
+    "filename": "home-body-tafreej-ruqyah.pdf",
+    "category": "সুরক্ষা"
+  },
+  {
+    "title_bn": "যিলহজ মাসে যাদু নবায়নের ৩টি লক্ষণ ও প্রতিকার",
+    "filename": "dhul-hijjah-magic-renewal.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "জ্বীন আশিক ও সেহের এর ধ্বংসাত্মক রুকিয়াহ গাইডলাইন",
+    "filename": "ashik-jinn-sihr-ruqyah.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "পড়াশোনায় বাধা এবং ব্যর্থতার জাদুর রুকিয়াহ",
+    "filename": "study-obstruction-magic-ruqyah.pdf",
+    "category": "শিক্ষা"
+  },
+  {
+    "title_bn": "পায়ে করা জাদু, গিরা ও ব্লকেজ দূর করার রুকিয়াহ",
+    "filename": "leg-magic-knots-ruqyah.pdf",
+    "category": "গিঁট"
+  },
+  {
+    "title_bn": "ফাক্কুত তাতিল (লুক্কায়িত বাধা ও রিজিকের ব্লকেজ)",
+    "filename": "fakkut-tatil-rizq-blockage.pdf",
+    "category": "গাইড"
+  },
+  {
+    "title_bn": "বাড়ি ও শরীর থেকে জাদু, নজর ও জ্বিন তাড়ানোর তাহরীজ",
+    "filename": "home-body-protection-tahreez.pdf",
+    "category": "সুরক্ষা"
+  },
+  {
+    "title_bn": "মাথা, মুখমণ্ডল ও কাঁধের জাদু এবং গিঁট খোলার রুকিয়াহ",
+    "filename": "head-face-shoulder-magic-knots.pdf",
+    "category": "গিঁট"
+  },
+  {
+    "title_bn": "সেহের মাশমুম (ঘ্রাণযুক্ত জাদু) নষ্ট করার আমল",
+    "filename": "sihr-mashmum-smell-magic.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "রুকিয়াহর ফলাফল প্রকাশে বাধাদানকারী ৭টি গোপন কারণ",
+    "filename": "ruqyah-result-obstruction-reasons.pdf",
+    "category": "গাইড"
+  },
+  {
+    "title_bn": "লিখিত জাদু ও তাবিজ নষ্ট করার আমল",
+    "filename": "written-sihr-amulet-destruction.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "শরীরে জ্বীনের জীবন, তার খাদ্য ও শক্তি রহস্য",
+    "filename": "jinn-body-life-secrets.pdf",
+    "category": "জ্বিন"
+  },
+  {
+    "title_bn": "শারীরিক ও আত্মিক সুরক্ষায় রুকইয়াহ গাইডলাইন",
+    "filename": "physical-spiritual-ruqyah-guideline.pdf",
+    "category": "সুরক্ষা"
+  },
+  {
+    "title_bn": "স্বপ্নে জাদু নবায়নের চিকিৎসা (সাবিত)",
+    "filename": "dream-magic-renewal-treatment.pdf",
+    "category": "জাদু"
+  },
+  {
+    "title_bn": "স্বামী-স্ত্রীর মাঝে বিচ্ছেদ ও বিদ্বেষ দূর করার রুকিয়াহ",
+    "filename": "spouse-separation-magic-destruction.pdf",
+    "category": "পারিবারিক"
+  }
 ]

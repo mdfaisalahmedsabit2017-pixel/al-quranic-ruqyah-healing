@@ -4,8 +4,9 @@
   "description": "Al Quranic Ruqyah Healing Audio Library",
   "main": "app.js",
   "scripts": {
-    "build": "mkdir -p www && cp index.html www/index.html && cp app.js www/app.js && cp audio.json www/audio.json && cp pdf_list.json www/pdf_list.json && cp manifest.json www/manifest.json && cp service-worker.js www/service-worker.js && cp -r pdf www/pdf && mv www public",
-    "sync": "npm run build && npx cap sync",
+    "build": "node build.js --target=web",
+    "build:native": "node build.js --target=native",
+    "sync": "npm run build:native && npx cap sync android",
     "assets": "npx capacitor-assets generate --android"
   },
   "keywords": [
@@ -17,8 +18,15 @@
   "license": "MIT",
   "dependencies": {
     "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/browser": "^7.0.5",
     "@capacitor/cli": "^7.0.0",
-    "@capacitor/core": "^7.0.0"
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/haptics": "^7.0.5",
+    "@capacitor/local-notifications": "^7.0.7",
+    "@capacitor/share": "^7.0.4",
+    "@capacitor/splash-screen": "^7.0.5",
+    "@capacitor/status-bar": "^7.0.6"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5"
