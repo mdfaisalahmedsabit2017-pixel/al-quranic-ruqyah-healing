@@ -19,9 +19,9 @@
 const fs = require('fs');
 const path = require('path');
 
-let JSDOM;
+let JSDOM, VirtualConsole;
 try {
-    ({ JSDOM } = require('jsdom'));
+    ({ JSDOM, VirtualConsole } = require('jsdom'));
 } catch {
     console.error('jsdom is not installed. Run `npm install` (it is a devDependency).');
     process.exit(1);
@@ -41,10 +41,19 @@ const htmlFile = fs.existsSync(path.join(dir, 'app.html'))
 const audio = JSON.parse(fs.readFileSync(path.join(dir, 'audio.json'), 'utf8'));
 const pdfs = JSON.parse(fs.readFileSync(path.join(dir, 'pdf_list.json'), 'utf8'));
 
+// jsdom announces every unimplemented browser API it is asked for
+// ("HTMLMediaElement's pause() method"). That is a statement about jsdom, not
+// about the app, and it buries the actual results in CI output.
+const virtualConsole = new VirtualConsole();
+virtualConsole.on('jsdomError', e => {
+    if (!/Not implemented/.test(e.message)) console.error('jsdom:', e.message);
+});
+
 const dom = new JSDOM(fs.readFileSync(htmlFile, 'utf8'), {
     runScripts: 'outside-only',
     pretendToBeVisual: true,
     url: 'https://localhost/',
+    virtualConsole,
 });
 const { window } = dom;
 
@@ -154,10 +163,45 @@ setTimeout(() => {
             d.querySelector(`.fav-btn[data-code="${code}"]`)?.classList.contains('on'));
     }
 
+    // Mini player. The assertion that matters is the last one: if the iframe's
+    // parent chain changes between states, the embed reloads and the recitation
+    // restarts from zero.
+    if (code) {
+        const frameParentBefore = d.getElementById('yt-frame')?.parentElement?.id;
+        try { window.openPlayer(code); } catch (e) { fatal.push('openPlayer: ' + e.message); }
+        check('player opens full-screen', !d.body.classList.contains('player-mini'));
+
+        try { window.minimizePlayer(); } catch (e) { fatal.push('minimizePlayer: ' + e.message); }
+        check('minimise puts the player in bar state', d.body.classList.contains('player-mini'));
+        check('minimised player is not treated as a back-button overlay', (() => {
+            // With only the bar showing, back must navigate rather than close.
+            const openSheets = [...q('.modal:not(.hidden), .modal-overlay:not(.hidden)')]
+                .filter(el => el.id !== 'yt-modal');
+            return openSheets.length === 0;
+        })());
+
+        try { window.expandPlayer(); } catch (e) { fatal.push('expandPlayer: ' + e.message); }
+        check('expand returns to full-screen', !d.body.classList.contains('player-mini'));
+
+        const frameParentAfter = d.getElementById('yt-frame')?.parentElement?.id;
+        check('the player iframe never changes parent',
+            frameParentBefore === frameParentAfter,
+            `${frameParentBefore} -> ${frameParentAfter}`);
+
+        try { window.closePlayer(); } catch (e) { fatal.push('closePlayer: ' + e.message); }
+        check('close clears the bar state', !d.body.classList.contains('player-mini'));
+    }
+
     console.log(lines.join('\n'));
+
+    // Exit explicitly. The app sets progress intervals and jsdom keeps its own
+    // timers, so node would otherwise sit with a live event loop forever — a
+    // hung CI job that looks like a slow one.
+    dom.window.close();
     if (failed) {
         console.error(`\n❌ ${failed} smoke check(s) failed in ${target}/.`);
         process.exit(1);
     }
     console.log(`\n✅ ${target}/ boots clean.`);
+    process.exit(0);
 }, 300);

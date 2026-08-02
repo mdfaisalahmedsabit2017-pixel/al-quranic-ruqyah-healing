@@ -1512,6 +1512,52 @@
         .yt-player-wrap iframe {
             position: absolute; inset: 0; width: 100%; height: 100%; border: none;
         }
+        /* ═══ MINI PLAYER ═══
+           The single rule that matters: the <iframe> is never moved in the DOM.
+           Re-parenting an iframe reloads it, and a reloaded YouTube player
+           restarts the recitation from zero. So minimising only changes the
+           geometry of the container the iframe already lives in — same node,
+           same document position, playback untouched.
+
+           The video also stays visible at 96x54 rather than being hidden or
+           reduced to audio, which YouTube's embedded-player terms require. */
+        body.player-mini #yt-modal {
+            inset: auto 0 var(--nav-total) 0;
+            height: 64px;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            padding: 0 10px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            z-index: 90;                 /* under full-screen modals, over content */
+            cursor: pointer;
+        }
+        body.player-mini .yt-player-wrap {
+            order: -1;                   /* thumbnail leads the bar */
+            width: 96px; padding-top: 0; height: 54px;
+            border-radius: 8px; overflow: hidden; flex: none;
+        }
+        body.player-mini .yt-hdr {
+            flex: 1; min-width: 0; padding: 0;
+            background: none; border: none;
+        }
+        body.player-mini .yt-title { font-size: 0.8rem; }
+        body.player-mini .yt-code { display: none; }
+        /* Everything that needs room is hidden in the bar; only close survives
+           in the header, and the whole bar taps to expand. */
+        body.player-mini .yt-toolbar,
+        body.player-mini .yt-related,
+        body.player-mini #native-player,
+        body.player-mini #yt-minimize-btn,
+        body.player-mini .yt-hdr-actions > *:not(.yt-close-btn) { display: none; }
+
+        /* The bar sits where the FAB and toast would; push them clear, and give
+           the page enough bottom padding that the last list item is reachable
+           instead of parked permanently behind the bar. */
+        body.player-mini #admin-fab { bottom: calc(var(--nav-total) + 80px); }
+        body.player-mini #main-content { padding-bottom: 68px; }
+
         .yt-related { flex: 1; overflow-y: auto; padding: 16px; background: var(--bg); }
         .yt-related-item {
             display: flex; align-items: center; gap: 12px;
@@ -2183,10 +2229,17 @@
             <button id="favorite-toggle-btn" class="btn-icon" title="ফেভারিট">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </button>
+            <!-- #web-only : there is no light theme. Not one rule in this file
+                 keys off the absence of .dark, so the toggle only ever swaps
+                 its own icon. A control that visibly does nothing is what makes
+                 an app feel unfinished, so the APK does not carry it. Kept on
+                 the web to leave that build byte-identical; delete both if the
+                 light theme is never built. -->
             <button id="theme-toggle" class="btn-icon" title="থিম">
                 <svg id="theme-toggle-dark-icon" class="hidden" width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
                 <svg id="theme-toggle-light-icon" class="hidden" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             </button>
+            <!-- /#web-only -->
         </div>
     </header>
 
@@ -2728,13 +2781,18 @@
     </div>
 
     <!-- ── YOUTUBE PLAYER MODAL ────────────────────────────── -->
-    <div id="yt-modal" class="modal hidden">
+    <div id="yt-modal" class="modal hidden" onclick="expandPlayerFromBar(event)">
         <div class="yt-hdr">
             <div class="yt-hdr-info">
                 <p id="yt-modal-code" class="yt-code"></p>
                 <h3 id="yt-modal-title" class="yt-title clamp2"></h3>
             </div>
             <div class="yt-hdr-actions" style="position:relative">
+                <!-- Shrinks the player to a bar above the tab bar so the rest
+                     of the app is usable while a recitation plays. -->
+                <button id="yt-minimize-btn" onclick="minimizePlayer()" class="yt-action-btn" title="ছোট করুন">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
                 <button id="yt-fav-btn" onclick="toggleFavoriteFromPlayer()" class="yt-action-btn" title="ফেভারিট">☆</button>
                 <!-- Auto-play -->
                 <button id="autoplay-btn" onclick="toggleAutoPlay()" class="yt-action-btn" title="Auto-play পরেরটি">

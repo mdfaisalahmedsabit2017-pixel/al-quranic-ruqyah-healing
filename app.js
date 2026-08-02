@@ -576,7 +576,8 @@ function setupEventListeners() {
         searchQuery = e.target.value;
         renderAudio();
     });
-    themeToggle.addEventListener('click', () => {
+    // Absent in the native build, which does not ship the toggle.
+    themeToggle?.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         updateThemeIcons(document.documentElement.classList.contains('dark'));
@@ -618,8 +619,11 @@ function setupTheme() {
 }
 
 function updateThemeIcons(isDark) {
-    document.getElementById('theme-toggle-dark-icon').classList.toggle('hidden', isDark);
-    document.getElementById('theme-toggle-light-icon').classList.toggle('hidden', !isDark);
+    // The toggle is stripped from the native build, and this runs inside
+    // init()'s try — an unguarded deref here would turn a missing button into
+    // "তথ্য লোড করা যায়নি" across the whole app.
+    document.getElementById('theme-toggle-dark-icon')?.classList.toggle('hidden', isDark);
+    document.getElementById('theme-toggle-light-icon')?.classList.toggle('hidden', !isDark);
 }
 
 function registerServiceWorker() {
@@ -654,6 +658,31 @@ function showSkeleton() {
         </div>
     `;
     audioContainer.innerHTML = Array(6).fill(card()).join('');
+
+    // The PDF grid and the book list load on the same pass as the audio, so
+    // without these two the other tabs are simply empty until the fetch lands —
+    // which on a slow connection reads as a broken tab rather than a loading
+    // one. Cheap: they are replaced by the real render moments later.
+    const pdfEl = document.getElementById('pdf-container');
+    if (pdfEl && !pdfEl.children.length) {
+        pdfEl.innerHTML = Array(6).fill(`
+        <div class="audio-card" style="gap:12px">
+            <div class="skeleton" style="height:16px;width:40%;border-radius:6px"></div>
+            <div class="skeleton" style="height:18px;width:85%;border-radius:6px"></div>
+            <div class="skeleton" style="height:36px;width:100%;border-radius:10px"></div>
+        </div>`).join('');
+    }
+
+    const booksEl = document.getElementById('books-container');
+    if (booksEl && !booksEl.children.length) {
+        booksEl.innerHTML = `
+        <div class="audio-card" style="gap:14px">
+            <div class="skeleton" style="height:150px;width:100%;border-radius:12px"></div>
+            <div class="skeleton" style="height:18px;width:70%;border-radius:6px"></div>
+            <div class="skeleton" style="height:13px;width:45%;border-radius:6px"></div>
+            <div class="skeleton" style="height:40px;width:100%;border-radius:12px"></div>
+        </div>`;
+    }
 }
 
 // ── Swipe Gesture Navigation ────────────────────────────────────────────────
@@ -2754,7 +2783,7 @@ window.openExternal = function(url) {
 // (clearing timers, restoring body scroll, tearing down players). The back
 // button must run these rather than just hiding the element.
 const OVERLAY_CLOSERS = {
-    'yt-modal': 'closePlayer',
+    'yt-modal': 'minimizeOrClosePlayer',
     'pdf-modal': 'closePDF',
     'blog-modal': 'closeBlogPost',
     'search-overlay': 'closeSearchOverlay',
@@ -2782,7 +2811,13 @@ const OVERLAY_CLOSERS = {
 // Topmost = last one opened. DOM order is a good enough proxy here because
 // these are all siblings and only one or two are ever open at once.
 function topmostOpenOverlay() {
+    // A minimised player is a persistent bar, not an overlay. Counting it would
+    // mean back kills the audio instead of navigating, and someone browsing the
+    // library while a recitation plays would lose it on the first back press.
+    // The ✕ on the bar is how you dismiss it.
+    const miniPlayer = document.body.classList.contains('player-mini');
     const open = Object.keys(OVERLAY_CLOSERS)
+        .filter(id => !(miniPlayer && id === 'yt-modal'))
         .map(id => document.getElementById(id))
         .filter(el => el && !el.classList.contains('hidden'));
     return open.length ? open[open.length - 1] : null;
@@ -4012,6 +4047,8 @@ function initVoiceSearch() {
 function openPlayer(code) {
     const item = audioData.find(a => a.code === code);
     if (!item) return;
+    // Picking a new track always opens full-screen, even if the bar was showing.
+    document.body.classList.remove('player-mini');
     currentPlayerItem = item;
     addToRecentlyPlayed(code);
     recordPlay(code);
@@ -4102,7 +4139,41 @@ function openPlayer(code) {
 window.openPlayer = openPlayer;
 
 // Tears down whichever engine is running — YT iframe or native audio.
+// ── Mini player ─────────────────────────────────────────────────────────────
+//
+// Minimising is purely a CSS state change on <body>. The YouTube <iframe> keeps
+// its exact position in the DOM — moving it to another parent would reload it,
+// and a reloaded player restarts the recitation from the beginning, which is
+// the one thing a listener will not forgive. See the .player-mini rules.
+window.minimizePlayer = function() {
+    if (!currentPlayerItem) return;
+    haptic(8);
+    document.body.classList.add('player-mini');
+    // The full player locks scrolling; the bar must not.
+    document.body.style.overflow = 'auto';
+};
+
+window.expandPlayer = function() {
+    document.body.classList.remove('player-mini');
+    document.body.style.overflow = 'hidden';
+};
+
+// The whole bar is tappable, but the close button inside it must still close.
+window.expandPlayerFromBar = function(e) {
+    if (!document.body.classList.contains('player-mini')) return;
+    if (e && e.target.closest && e.target.closest('.yt-close-btn')) return;
+    expandPlayer();
+};
+
+// Android back: a full-screen player collapses to the bar rather than stopping
+// playback outright. From the bar, back belongs to the rest of the app.
+window.minimizeOrClosePlayer = function() {
+    if (document.body.classList.contains('player-mini')) closePlayer();
+    else minimizePlayer();
+};
+
 function closePlayer() {
+    document.body.classList.remove('player-mini');
     clearInterval(ytProgressTimer);
     if (ytPlayer && typeof ytPlayer.destroy === 'function') { ytPlayer.destroy(); ytPlayer = null; }
     stopNativeAudio();
