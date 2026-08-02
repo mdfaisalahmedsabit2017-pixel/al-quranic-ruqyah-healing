@@ -6,7 +6,8 @@
   "scripts": {
     "build": "node build.js --target=web",
     "build:native": "node build.js --target=native",
-    "sync": "npm run build:native && npx cap sync android",
+    "audit:native": "node tools/audit-native.js",
+    "sync": "npm run build:native && npm run audit:native && npx cap sync android",
     "assets": "npx capacitor-assets generate --android"
   },
   "keywords": [

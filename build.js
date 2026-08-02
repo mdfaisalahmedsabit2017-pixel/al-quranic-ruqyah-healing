@@ -11,9 +11,11 @@ const path = require('path');
 // those bytes from the live site instead. Policy: Play forbids selling digital
 // goods outside Play Billing, so every price, buy button and bKash number has
 // to be *absent* from the APK, not merely hidden — a reviewer unzips the
-// bundle. Markup is therefore cut at build time (see stripMarkers); JS
-// behaviour is gated at runtime on IS_NATIVE, because regex-surgery on a
-// 4,300-line global-scope file is how you ship a syntax error.
+// bundle. Markup is therefore cut at build time (see stripMarkers), and so is
+// the purchase code itself (see stripJsMarkers) — but only whole, self-contained
+// top-level assignments, and the result is parse-checked before it is written.
+// Everything else stays gated at runtime on IS_NATIVE, because regex-surgery on
+// a 4,300-line global-scope file is how you ship a syntax error.
 
 const target = (process.argv.find(a => a.startsWith('--target=')) || '--target=web').split('=')[1];
 if (target !== 'web' && target !== 'native') {
@@ -74,8 +76,41 @@ fs.writeFileSync(
 );
 console.log(`Wrote ${outName}/build-flags.js (BUILD_TARGET=${target})`);
 
+// The JS counterpart of stripMarkers. Regions of app.js wrapped in
+//     /* #web-only */ ... /* /#web-only */
+// are cut from the native build. Only ever wrap complete top-level statements —
+// a marker that starts inside a function or a template literal produces broken
+// output — and note that the result is fed to new Function() below, so a
+// mistake fails the build here rather than at runtime on someone's phone.
+function stripJsMarkers(js, tag) {
+    const re = new RegExp(`/\\*\\s*#${tag}\\b[\\s\\S]*?/\\*\\s*/#${tag}\\s*\\*/`, 'g');
+    return js.replace(re, '');
+}
+
+function buildJs(srcFile, destFile) {
+    let js = fs.readFileSync(path.join(__dirname, srcFile), 'utf8');
+    const before = js.length;
+    js = stripJsMarkers(js, isNative ? 'web-only' : 'native-only');
+    if (js.length !== before) {
+        // Parse, do not execute: new Function compiles the body and throws a
+        // SyntaxError on malformed output, without touching the DOM globals
+        // app.js expects.
+        try {
+            new Function(js);
+        } catch (err) {
+            console.error(`\n❌ ${srcFile} does not parse after marker stripping: ${err.message}`);
+            console.error('   A /* #web-only */ region probably opens or closes mid-statement.');
+            process.exit(1);
+        }
+    }
+    fs.writeFileSync(path.join(distDir, destFile), js);
+    const saved = before - js.length;
+    console.log(`Built ${srcFile} -> ${outName}/${destFile}` + (saved ? ` (stripped ${(saved / 1024).toFixed(1)} KB)` : ''));
+}
+
+buildJs('app.js', 'app.js');
+
 const filesToCopy = [
-    'app.js',
     'audio.json',
     'pdf_list.json',
     'service-worker.js',

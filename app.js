@@ -1040,11 +1040,14 @@ window.toggleProfileDropdown = () => {
 // ══════════════════════════════════════════════════════════
 // COURSES & PAYMENT
 // ══════════════════════════════════════════════════════════
-// Supplied by payments.js, which only the web build copies. In the APK these
-// are undefined and every purchase path is gated off — see IS_NATIVE.
+/* #web-only — supplied by payments.js, which only the web build copies. Their
+   single use is inside selectPayMethod, which is stripped from native too, so
+   cutting the declarations leaves nothing dangling. Keeping even the *names*
+   out of the APK means the payment number cannot be reconstructed from it. */
 const PAYMENT_BKASH  = window.PAYMENT_BKASH;
 const PAYMENT_NAGAD  = window.PAYMENT_NAGAD;
 const PAYMENT_ROCKET = window.PAYMENT_ROCKET;
+/* /#web-only */
 
 const COURSES = [
     {
@@ -1235,6 +1238,11 @@ function renderCourses() {
     }).join('');
 }
 
+/* #web-only — the purchase flow: modal, payment-method picker, TrxID
+   submission. build.js cuts this whole region out of the native build, so the
+   APK contains no purchase code at all, not merely unreachable purchase code.
+   The IS_NATIVE guards inside stay anyway: they are what protects the web build
+   if this ever runs somewhere unexpected, and they cost nothing. */
 window.openBuyModal = function(courseId) {
     // Belt-and-braces: the modal markup and every caller are already gone from
     // the native build, but nothing may open a purchase flow inside the APK.
@@ -1365,6 +1373,7 @@ window.submitCoursePurchase = async function() {
     document.getElementById('buy-step1').classList.add('hidden');
     document.getElementById('buy-step2').classList.remove('hidden');
 };
+/* /#web-only */
 
 // ══════════════════════════════════════════════════════════
 // BLOG — written guidelines, shared with the website

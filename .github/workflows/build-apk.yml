@@ -41,6 +41,11 @@ jobs:
       - name: Build Web Assets (native target)
         run: npm run build:native
 
+      # Same audit the release workflow runs. Catching a dropped #web-only
+      # marker on an ordinary push is much cheaper than catching it at tag time.
+      - name: Policy audit
+        run: npm run audit:native
+
       - name: Sync Capacitor
         run: npx cap sync android
 

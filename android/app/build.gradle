@@ -1,5 +1,25 @@
 apply plugin: 'com.android.application'
 
+// Signing credentials come from android/keystore.properties (gitignored, local
+// builds) or from environment variables (CI). Never hardcoded — this repo is
+// public. If neither source is present the release build stays unsigned rather
+// than failing, so `assembleDebug` and IDE syncs keep working on a clean clone.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+def signingStoreFile = keystoreProperties['storeFile'] ?: System.getenv('ANDROID_KEYSTORE_PATH')
+def signingStorePassword = keystoreProperties['storePassword'] ?: System.getenv('ANDROID_KEYSTORE_PASSWORD')
+def signingKeyAlias = keystoreProperties['keyAlias'] ?: System.getenv('ANDROID_KEY_ALIAS')
+def signingKeyPassword = keystoreProperties['keyPassword'] ?: System.getenv('ANDROID_KEY_PASSWORD')
+// Resolved against android/ (not android/app/) so a relative path in
+// keystore.properties means what it looks like it means. Absolute paths — the
+// recommended form, keystore lives outside the repo — pass through unchanged.
+def signingStoreResolved = signingStoreFile == null ? null : rootProject.file(signingStoreFile)
+def hasSigningConfig = signingStoreResolved != null && signingStoreResolved.exists()
+
 android {
     namespace "com.ruqyah.pro"
     compileSdk rootProject.ext.compileSdkVersion
@@ -7,6 +27,11 @@ android {
         applicationId "com.ruqyah.pro"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        // Bump BOTH by hand for every upload that reaches Play — including
+        // internal-testing builds you end up discarding. Play permanently
+        // rejects a versionCode it has already seen. Deliberately not derived
+        // from the CI run number, so a local build and a CI build of the same
+        // commit produce the same artifact.
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -16,11 +41,44 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (hasSigningConfig) {
+            release {
+                storeFile signingStoreResolved
+                storePassword signingStorePassword
+                keyAlias signingKeyAlias
+                keyPassword signingKeyPassword
+                // Play requires v2 at minimum; v1 keeps API 23 devices happy.
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Stays false on purpose. proguard-rules.pro is the stock empty
+            // file with no Capacitor keep rules, and Capacitor resolves plugins
+            // by reflection over @CapacitorPlugin annotations — R8 would strip
+            // them and the app would throw PluginNotFound at runtime, in a way
+            // debug builds never reproduce. The APK is ~6 MB; there is nothing
+            // worth shrinking.
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (hasSigningConfig) {
+                signingConfig signingConfigs.release
+            }
         }
+    }
+}
+
+// Loud at configuration time rather than a silently unsigned AAB that Play
+// rejects twenty minutes later at upload.
+gradle.taskGraph.whenReady { graph ->
+    if (!hasSigningConfig && graph.allTasks.any { it.name.toLowerCase().contains('release') }) {
+        logger.warn("WARNING: no signing config found (android/keystore.properties or " +
+                    "ANDROID_KEYSTORE_* env vars). The release artifact will be UNSIGNED " +
+                    "and Play will refuse it. See docs/release.md.")
     }
 }
 
