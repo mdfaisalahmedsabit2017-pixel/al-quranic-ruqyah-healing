@@ -13,4 +13,16 @@ ext {
     androidxJunitVersion = '1.2.1'
     androidxEspressoCoreVersion = '3.6.1'
     cordovaAndroidVersion = '10.1.1'
+
+    // @capacitor-firebase/authentication defaults this to false, which declares
+    // the Google Sign-In libraries `compileOnly` — they compile fine and are
+    // then missing at runtime, so signInWithGoogle dies with NoClassDefFoundError
+    // on the device rather than failing the build. Must be true for the Google
+    // provider to actually work.
+    rgcfaIncludeGoogle = true
+    firebaseAuthVersion = '23.1.0'
+    playServicesAuthVersion = '21.2.0'
+    androidxCredentialsVersion = '1.3.0'
+    androidxCredentialsPlayServicesAuthVersion = '1.3.0'
+    librariesIdentityGoogleidVersion = '1.1.1'
 }

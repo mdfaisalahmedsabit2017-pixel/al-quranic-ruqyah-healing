@@ -2749,6 +2749,9 @@
                 <input id="auth-email" type="email" placeholder="ইমেইল" class="auth-input">
                 <input id="auth-password" type="password" placeholder="পাসওয়ার্ড" class="auth-input">
                 <p id="auth-error" class="auth-error" style="min-height:18px"></p>
+                <!-- Shown only when the Firebase SDK failed to load, which on a
+                     phone means the app started with no usable connection. -->
+                <button id="auth-retry-btn" onclick="retryFirebase()" class="btn-primary w-full hidden" style="margin-top:4px">আবার চেষ্টা করুন</button>
                 <button onclick="doEmailLogin()" class="btn-primary w-full" style="margin-top:4px">লগইন করুন</button>
                 <div class="auth-footer">
                     <button onclick="resetPassword()" class="auth-footer-muted">পাসওয়ার্ড ভুলে গেছেন?</button>

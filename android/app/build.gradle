@@ -56,6 +56,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Google Sign-In checks the app's signing certificate against the
+            // SHA-1 fingerprints registered on the Firebase project. A CI runner
+            // generates a throwaway debug keystore per job, so a debug APK would
+            // present a different fingerprint every build and Play Services would
+            // reject it with a bare DEVELOPER_ERROR. Signing test builds with the
+            // upload key instead gives one stable fingerprint to register.
+            // Without the keystore this falls back to the normal debug key and
+            // everything except Google sign-in still works.
+            if (hasSigningConfig) {
+                signingConfig signingConfigs.release
+            }
+        }
         release {
             // Stays false on purpose. proguard-rules.pro is the stock empty
             // file with no Capacitor keep rules, and Capacitor resolves plugins

@@ -684,8 +684,65 @@ function renderSearchResults(query) {
 }
 
 // ── Firebase Auth ───────────────────────────────────────────────────────────
+// The three Firebase SDK files load synchronously from gstatic.com. On a phone
+// that is offline or on a slow connection at cold start they simply do not
+// arrive, and `firebase` is undefined by the time init() runs. That used to
+// leave #auth-btn hidden — the button starts hidden in the markup and only
+// initFirebase revealed it — so the app showed no way to log in and no reason
+// why. Now the button is always there and says what is wrong when tapped.
+let firebaseReady = false;
+
+function firebaseSdkPresent() {
+    return typeof firebase !== 'undefined' && typeof FIREBASE_CONFIG !== 'undefined';
+}
+
+// Pull the SDK in again after a failed cold start, so a user who was offline
+// does not have to kill and relaunch the app to log in.
+function loadFirebaseSdk() {
+    if (firebaseSdkPresent()) return Promise.resolve(true);
+    const urls = [
+        'https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
+        'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js',
+        'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js',
+    ];
+    // Sequential, not parallel: firebase-app-compat must define the namespace
+    // before the other two attach to it.
+    return urls.reduce(
+        (chain, src) => chain.then(() => new Promise((resolve, reject) => {
+            if (document.querySelector(`script[data-fb="${src}"]`)) return resolve();
+            const s = document.createElement('script');
+            s.src = src;
+            s.dataset.fb = src;
+            s.onload = resolve;
+            s.onerror = () => reject(new Error('network'));
+            document.head.appendChild(s);
+        })),
+        Promise.resolve()
+    ).then(() => firebaseSdkPresent());
+}
+
+// Called from the login modal when the SDK never arrived.
+window.retryFirebase = async () => {
+    showAuthError('সংযোগের চেষ্টা করা হচ্ছে…');
+    try {
+        const ok = await loadFirebaseSdk();
+        if (!ok) throw new Error('unavailable');
+        initFirebase();
+        showAuthError('');
+    } catch {
+        showAuthError('ইন্টারনেটে সংযোগ করা যায়নি। সংযোগ ঠিক করে আবার চেষ্টা করুন।');
+    }
+};
+
 function initFirebase() {
-    if (typeof firebase === 'undefined' || typeof FIREBASE_CONFIG === 'undefined') return;
+    if (!firebaseSdkPresent()) {
+        // Reveal the button anyway. Tapping it opens the modal, which explains
+        // the situation and offers a retry.
+        document.getElementById('auth-btn')?.classList.remove('hidden');
+        console.warn('Firebase SDK unavailable — login will offer a retry.');
+        return;
+    }
+    if (firebaseReady) return;
     try {
         if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
         db = firebase.firestore();
@@ -699,6 +756,7 @@ function initFirebase() {
         firebase.auth().onAuthStateChanged(handleAuthStateChange);
         const authBtn = document.getElementById('auth-btn');
         if (authBtn) authBtn.classList.remove('hidden');
+        firebaseReady = true;
     } catch (e) {
         console.warn('Firebase init failed:', e);
     }
@@ -876,11 +934,33 @@ window.signInWithGoogle = async () => {
             return;
         }
         try {
+            showAuthError('');
             const { credential } = await FirebaseAuth.signInWithGoogle();
+            // skipNativeAuth is on, so the plugin hands back a credential and
+            // signs nobody in. The JS SDK owns the session, which is what the
+            // rest of the app — profile, purchases, Firestore sync — reads.
+            if (!credential?.idToken) {
+                showAuthError('Google থেকে সাইন-ইন তথ্য পাওয়া যায়নি। আবার চেষ্টা করুন।');
+                return;
+            }
             const cred = firebase.auth.GoogleAuthProvider.credential(credential.idToken, credential.accessToken);
             const result = await firebase.auth().signInWithCredential(cred);
             if (result.additionalUserInfo?.isNewUser) await newGoogleUserProfile(result.user);
-        } catch (e) { showAuthError(e.message); }
+        } catch (e) {
+            // Play Services reports a signing-certificate mismatch as a bare
+            // "10" / DEVELOPER_ERROR, which tells the user nothing. It means
+            // this build's SHA-1 is not registered on the Firebase project —
+            // the single most common setup mistake here.
+            const raw = String(e?.message || e);
+            if (/DEVELOPER_ERROR|(^|\D)10(\D|$)/.test(raw)) {
+                showAuthError('এই বিল্ডটি Firebase-এ নিবন্ধিত নয় (SHA-1 মেলেনি)। ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন।');
+                console.warn('Google sign-in DEVELOPER_ERROR — register this build\'s SHA-1 in Firebase.', raw);
+            } else if (/canceled|cancelled|12501/i.test(raw)) {
+                showAuthError('');   // user backed out; not an error worth showing
+            } else {
+                showAuthError(raw);
+            }
+        }
         return;
     }
 
@@ -1025,6 +1105,15 @@ window.openLoginModal = (tab = 'login') => {
     setAuthTab(tab);
     const modal = document.getElementById('login-modal');
     if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    // Silent failure here is what makes "I can't log in" impossible to diagnose:
+    // without the SDK the form posts nowhere and nothing at all happens.
+    if (!firebaseSdkPresent()) {
+        showAuthError('লগইন করতে ইন্টারনেট সংযোগ দরকার। সংযোগ দিয়ে "আবার চেষ্টা করুন"-এ চাপুন।');
+        document.getElementById('auth-retry-btn')?.classList.remove('hidden');
+    } else {
+        showAuthError('');
+        document.getElementById('auth-retry-btn')?.classList.add('hidden');
+    }
 };
 
 window.closeLoginModal = () => {

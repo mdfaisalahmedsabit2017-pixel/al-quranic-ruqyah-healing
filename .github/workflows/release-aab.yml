@@ -80,6 +80,20 @@ jobs:
             exit 1
           fi
 
+      # Required for Google sign-in. Unlike the debug workflow this is a hard
+      # failure: a release that silently cannot sign in with Google is worse
+      # than no release.
+      - name: Restore google-services.json
+        env:
+          GS_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -z "$GS_JSON" ]; then
+            echo "Missing repository secret GOOGLE_SERVICES_JSON. See docs/release.md."
+            exit 1
+          fi
+          echo "$GS_JSON" | base64 -d > android/app/google-services.json
+          test -s android/app/google-services.json
+
       - name: Sync Capacitor
         run: npx cap sync android
 

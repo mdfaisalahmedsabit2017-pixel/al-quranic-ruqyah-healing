@@ -46,8 +46,35 @@ jobs:
       - name: Policy audit
         run: npm run audit:native
 
+      # Gitignored (it is per-project config, not source), so CI gets it from a
+      # secret. Absent, the build still succeeds — Firebase just fails to
+      # initialise at runtime and Google sign-in reports that plainly.
+      - name: Restore google-services.json
+        env:
+          GS_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GS_JSON" ]; then
+            echo "$GS_JSON" | base64 -d > android/app/google-services.json
+            echo "google-services.json restored."
+          else
+            echo "GOOGLE_SERVICES_JSON not set — Google sign-in will be unavailable in this APK."
+          fi
+
       - name: Sync Capacitor
         run: npx cap sync android
+
+      # Signed with the upload key so every test APK presents the same SHA-1 to
+      # Google Sign-In. See android/app/build.gradle for why.
+      - name: Restore signing key
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/upload.keystore"
+            echo "Signing key restored."
+          else
+            echo "ANDROID_KEYSTORE_BASE64 not set — falling back to the throwaway debug key."
+          fi
 
       - name: Cache Gradle
         uses: actions/cache@v4
@@ -59,10 +86,19 @@ jobs:
           restore-keys: gradle-${{ runner.os }}-
 
       - name: Build APK
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/upload.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Remove signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/upload.keystore"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
