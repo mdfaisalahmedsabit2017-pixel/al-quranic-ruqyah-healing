@@ -152,6 +152,27 @@ const filesToCopy = [
 // APK outright rather than merely left unreferenced in it.
 if (!isNative) filesToCopy.push('payments.js', 'features.html');
 
+// firebase-config.js was committed with every field blank and filled in only on
+// one laptop, so CI — which builds from git — produced an APK whose
+// FIREBASE_CONFIG had an empty apiKey. Firebase then initialises against
+// nothing and every sign-in fails, including email and password. Nothing said
+// so; the app simply could not log anybody in. Fail the build instead.
+{
+    const cfgPath = path.join(__dirname, 'firebase-config.js');
+    if (fs.existsSync(cfgPath)) {
+        const cfg = fs.readFileSync(cfgPath, 'utf8');
+        const key = /apiKey\s*:\s*["']([^"']*)["']/.exec(cfg);
+        if (!key || !key[1].trim()) {
+            console.error('\n❌ firebase-config.js has no apiKey.');
+            console.error('   A build from this checkout cannot authenticate anyone.');
+            process.exit(1);
+        }
+    } else {
+        console.error('\n❌ firebase-config.js is missing — sign-in would be dead in this build.');
+        process.exit(1);
+    }
+}
+
 filesToCopy.forEach(name => {
     const src = path.join(__dirname, name);
     if (fs.existsSync(src)) {
