@@ -46,6 +46,11 @@ jobs:
       - name: Policy audit
         run: npm run audit:native
 
+      # Boots the built page in jsdom. Catches startup exceptions that a parse
+      # check and a handler cross-reference both sail straight past.
+      - name: Smoke test
+        run: node tools/smoke.js native
+
       # Gitignored (it is per-project config, not source), so CI gets it from a
       # secret. Absent, the build still succeeds — Firebase just fails to
       # initialise at runtime and Google sign-in reports that plainly.

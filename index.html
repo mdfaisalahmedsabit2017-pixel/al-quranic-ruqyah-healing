@@ -660,6 +660,40 @@
             line-height: 1.7; margin-top: 24px;
         }
 
+        /* আমল tab. One column of tappable rows instead of a grid of emoji
+           chips — the chips were the least premium thing on the screen, and a
+           row has space for a live status line ("আজ ৩৩", "দিন ৩ / ৭") that
+           makes the tab worth opening. */
+        .practice-list { display: flex; flex-direction: column; gap: 8px; }
+        .practice-row {
+            display: flex; align-items: center; gap: 14px;
+            width: 100%; text-align: right;
+            background: var(--surface, rgba(255,255,255,0.03));
+            border: 1px solid var(--border, rgba(255,255,255,0.06));
+            border-radius: var(--r-md);
+            padding: 14px 16px;
+            min-height: 64px;               /* comfortably over the 48dp floor */
+            cursor: pointer;
+            transition: background .16s ease, border-color .16s ease, transform .16s ease;
+        }
+        .practice-row:active { transform: scale(0.985); }
+        .practice-row:hover { background: var(--raised); border-color: var(--border-md); }
+        .practice-row-icon {
+            font-size: 1.35rem; line-height: 1;
+            width: 40px; height: 40px; flex: none;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--green-dim); border-radius: 12px;
+        }
+        /* Rows are buttons, so the inner elements are spans — they need an
+           explicit block display to stack. */
+        .practice-row-main { flex: 1; min-width: 0; display: block; }
+        .practice-row-title { display: block; font-size: 0.9rem; font-weight: 700; }
+        .practice-row-status {
+            display: block; font-size: 0.76rem; color: var(--text-dim); margin-top: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .practice-row-arrow { color: var(--text-dim); font-size: 1.1rem; flex: none; }
+
         /* Pinned at the top of every screen that takes symptoms or prescribes a
            routine. Play reviews health-adjacent apps against their own claims,
            and a disclaimer the user has to scroll to find does not count as
@@ -2018,6 +2052,15 @@
             border-radius: var(--r-sm);
         }
 
+        /* Tab switching. Without this a section swap is an instant repaint,
+           which reads as a page reload rather than as movement inside one app.
+           Short on purpose — long enough to be felt, not long enough to wait
+           for. Disabled wholesale by the reduced-motion block below. */
+        @keyframes sectionIn {
+            from { opacity: 0; transform: translateY(8px); }
+        }
+        .section-enter { animation: sectionIn .13s cubic-bezier(.2,.8,.2,1) both; }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -2153,6 +2196,11 @@
         <!-- HOME SECTION -->
         <div id="section-home" class="container">
 
+            <!-- #web-only : the founder block, the course listing and the
+                 features link are marketing. On a phone the home screen has to
+                 open on something the user came back to do, so the APK starts
+                 at the consultation card and the daily routine. The same
+                 information is on the website. -->
             <!-- Profile -->
             <div class="profile-card">
                 <div class="profile-avatar">🌿</div>
@@ -2170,8 +2218,12 @@
                 </div>
                 <div id="courses-container"></div>
             </div>
+            <!-- /#web-only -->
 
             <!-- ── BOOKS ─────────────────────────────────────── -->
+            <!-- In the APK this block is moved into the পিডিএফ tab at runtime
+                 (see initNativeShell) so everything readable lives together. -->
+
             <div class="books-section" id="books-section">
                 <div class="section-header-row" style="margin-bottom:12px">
                     <h2 class="section-title"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3H3Z"/></svg>বইসমূহ</h2>
@@ -2190,6 +2242,8 @@
             </div>
 
             <!-- ── APP FEATURES CARD ─────────────────────────── -->
+            <!-- #web-only : features.html is not bundled, and in a WebView this
+                 opened a window with no way back. -->
             <div class="consult-card" onclick="window.open('features.html','_blank')">
                 <div class="consult-icon"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg></div>
                 <div class="consult-info">
@@ -2198,6 +2252,7 @@
                 </div>
                 <span class="consult-arrow">→</span>
             </div>
+            <!-- /#web-only -->
 
             <!-- ── DAILY ROUTINE ─────────────────────────────── -->
             <div id="daily-routine-section" style="margin-bottom:4px">
@@ -2213,6 +2268,8 @@
                 <div id="dua-container"></div>
 
                 <!-- Utilities -->
+                <!-- #web-only : in the APK these eight live in the আমল tab, as
+                     rows with a status line rather than a grid of emoji. -->
                 <div class="util-row">
                     <button class="util-btn" onclick="openTasbeeh()">
                         <span class="util-btn-icon">📿</span>
@@ -2249,6 +2306,7 @@
                         <span>ডাউনলোড</span>
                     </button>
                 </div>
+                <!-- /#web-only -->
 
                 <!-- Streak + Weekly Goal -->
                 <div class="routine-grid">
@@ -2286,6 +2344,11 @@
                 <div id="recently-played-list" class="space-y-sm"></div>
             </div>
 
+            <!-- #web-only : everything from here to the blog block is website
+                 furniture. The hero's two buttons duplicate nav tabs, the
+                 65+/56+/5+ figures are hardcoded and wrong (init computes the
+                 real ones), and the mission/testimonial/resource cards are
+                 read once and then scrolled past forever. -->
             <!-- Hero -->
             <div class="hero-card">
                 <div class="hero-inner">
@@ -2299,13 +2362,12 @@
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
                             অডিও লাইব্রেরি
                         </button>
-                        <!-- #web-only : the Diagnosis tab does not exist in the
-                             APK, so this querySelector would return null and
-                             throw on tap. -->
+                        <!-- (The whole hero is web-only; this button's
+                             querySelector would return null in the APK, where
+                             the Diagnosis tab does not exist.) -->
                         <button onclick="document.querySelector('.nav-item[data-section=\'prescriptions\']').click()" class="btn-ghost">
                             📋 ডায়াগনোসিস
                         </button>
-                        <!-- /#web-only -->
                     </div>
                 </div>
             </div>
@@ -2332,8 +2394,8 @@
                 <p class="goal-body">সঠিক রুকিয়াহ চর্চা ছড়িয়ে দেওয়া এবং মানুষকে শিরক ও কুসংস্কারমুক্ত জীবন গড়তে সহায়তা করা। আধুনিক প্রযুক্তির মাধ্যমে রুকিয়াহর রিসোর্সগুলোকে সবার হাতের কাছে পৌঁছে দিচ্ছি।</p>
             </div>
 
-            <!-- Reviews -->
-            <!-- #web-only -->
+            <!-- Reviews (third-party tracker, blank offline — the enclosing
+                 web-only region already keeps it out of the APK) -->
             <div style="margin-bottom:24px">
                 <div class="section-hdr">
                     <div class="section-hdr-bar"></div>
@@ -2348,7 +2410,6 @@
                     <a href="https://www.facebook.com/raqi.faisal.ahmed" target="_blank" onclick="openExternal(this.href);return false" style="font-size:0.82rem;font-weight:700;color:var(--green)">আরো রিভিউ দেখতে ক্লিক করুন →</a>
                 </p>
             </div>
-            <!-- /#web-only -->
 
             <!-- Testimonial -->
             <div style="margin-bottom:24px">
@@ -2386,6 +2447,7 @@
                     </div>
                 </div>
             </div>
+            <!-- /#web-only -->
 
             <!-- Latest blog posts (hidden until the first post loads) -->
             <div class="home-blog hidden" style="margin-bottom:8px">
@@ -2445,6 +2507,22 @@
             </div>
             <div id="pdf-container" class="grid-pdf"></div>
         </div>
+
+        <!-- PRACTICE (আমল) SECTION -->
+        <!-- #native-only : replaces the eight emoji buttons that used to sit in
+             the middle of the home screen. Every row opens the modal it always
+             opened — none of that markup or JS changes. The list itself is
+             rendered by renderPracticeList() so each row can show live status. -->
+        <div id="section-practice" class="hidden container">
+            <div class="page-title">
+                <div class="page-title-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2"><path d="M12 2v4"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M12 18v4"/><circle cx="12" cy="12" r="3.2"/></svg>
+                </div>
+                দৈনিক আমল
+            </div>
+            <div id="practice-list" class="practice-list"></div>
+        </div>
+        <!-- /#native-only -->
 
         <!-- PRESCRIPTIONS SECTION -->
         <!-- #web-only : carries a price and the word "ডায়াগনোসিস"; both are
@@ -2588,6 +2666,14 @@
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
             <span>PDF</span>
         </button>
+        <!-- #native-only : the APK's fourth tab. On the web these tools stay
+             where they are on the home screen, because a sixth nav button
+             would not fit alongside Diagnosis and AI Chat. -->
+        <button class="nav-item" data-section="practice">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.9 4.9l2.9 2.9"/><path d="M16.2 16.2l2.9 2.9"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.9 19.1l2.9-2.9"/><path d="M16.2 7.8l2.9-2.9"/></svg>
+            <span>আমল</span>
+        </button>
+        <!-- /#native-only -->
         <!-- #web-only -->
         <button class="nav-item" data-section="prescriptions">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>

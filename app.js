@@ -42,10 +42,81 @@ const navButtons = document.querySelectorAll('.nav-item');
 // nav buttons just call it.
 window.showSection = function(section) {
     document.querySelectorAll('#main-content > div').forEach(div => div.classList.add('hidden'));
-    document.getElementById(`section-${section}`)?.classList.remove('hidden');
+    const el = document.getElementById(`section-${section}`);
+    el?.classList.remove('hidden');
+    // Restart the enter animation on every switch. Removing the class is not
+    // enough on its own — the browser coalesces remove+add in one frame, so the
+    // offsetWidth read forces a reflow between them.
+    if (el) {
+        el.classList.remove('section-enter');
+        void el.offsetWidth;
+        el.classList.add('section-enter');
+    }
     navButtons.forEach(b => b.classList.toggle('active', b.dataset.section === section));
+    // Rendered on entry rather than at startup, so the status lines are current
+    // — a streak or a journal entry may have changed since the app opened.
+    if (section === 'practice') renderPracticeList();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+// ── আমল tab ─────────────────────────────────────────────────────────────────
+//
+// The eight emoji chips that used to sit in the middle of the home screen,
+// rebuilt as one column of rows. Each row opens exactly the modal it always
+// opened; no modal markup or handler changed. The value added is the status
+// line — a tab that shows "দিন ৩ / ৭" is worth opening, a grid of icons is not.
+// Native-only: on the web these tools stay on the home screen (see index.html).
+function practiceRows() {
+    const stats = (() => {
+        try { return JSON.parse(localStorage.getItem('listeningStats') || '{}'); }
+        catch { return {}; }
+    })();
+    const journalCount = Object.keys(journalData || {}).length;
+    const progDay = typeof programCurrentDay === 'function' ? programCurrentDay() : 0;
+    const dlCount = (downloadedAudio?.length || 0) + (downloadedPdfs?.length || 0);
+    const hasSymptom = !!localStorage.getItem('symptomResult');
+
+    return [
+        { icon: '⏰', title: 'দৈনিক রিমাইন্ডার', fn: 'openReminderModal',
+          status: reminderStatusLine() },
+        { icon: '📿', title: 'তাসবিহ', fn: 'openTasbeeh',
+          status: tasbeehState?.sessionTotal ? `আজ ${toBn(tasbeehState.sessionTotal)} বার` : 'শুরু করুন' },
+        { icon: '📅', title: '৭ দিনের আমল রুটিন', fn: 'openProgramModal',
+          status: progDay ? `দিন ${toBn(progDay)} / ৭` : 'এখনো শুরু হয়নি' },
+        { icon: '📔', title: 'জার্নাল', fn: 'openJournalModal',
+          status: journalCount ? `${toBn(journalCount)}টি এন্ট্রি` : 'প্রথম এন্ট্রি লিখুন' },
+        { icon: '🩺', title: 'লক্ষণ যাচাই', fn: 'openSymptomChecker',
+          status: hasSymptom ? 'আগের ফলাফল সংরক্ষিত আছে' : 'কোন আমল দিয়ে শুরু করবেন' },
+        { icon: '📊', title: 'পরিসংখ্যান', fn: 'showStatsModal',
+          status: stats.total ? `মোট ${toBn(stats.total)} বার শোনা` : 'এখনো কিছু শোনা হয়নি' },
+        { icon: '🔖', title: 'প্লেলিস্ট', fn: 'openPlaylistModal',
+          status: playlists?.length ? `${toBn(playlists.length)}টি প্লেলিস্ট` : 'নিজের তালিকা বানান' },
+        { icon: '💾', title: 'অফলাইনে সংরক্ষিত', fn: 'openDownloadsModal',
+          status: dlCount ? `${toBn(dlCount)}টি সংরক্ষিত` : 'কিছু সংরক্ষিত নেই' },
+    ];
+}
+
+function reminderStatusLine() {
+    try {
+        const r = JSON.parse(localStorage.getItem('reminderData') || 'null');
+        return r?.enabled && r?.time ? `প্রতিদিন ${r.time}` : 'বন্ধ আছে';
+    } catch { return 'বন্ধ আছে'; }
+}
+
+function renderPracticeList() {
+    const el = document.getElementById('practice-list');
+    if (!el) return;
+    el.innerHTML = practiceRows().map(r => `
+        <button class="practice-row" onclick="haptic(10); ${r.fn}()">
+            <span class="practice-row-icon">${r.icon}</span>
+            <span class="practice-row-main">
+                <span class="practice-row-title">${r.title}</span>
+                <span class="practice-row-status">${r.status}</span>
+            </span>
+            <span class="practice-row-arrow">‹</span>
+        </button>
+    `).join('');
+}
 const toast = document.getElementById('toast');
 
 async function init() {
@@ -87,6 +158,10 @@ async function init() {
         // with loading the catalogue, and must not surface as "তথ্য লোড করা যায়নি"।
         try { initNativeShell(); } catch (e) { console.warn('Native shell init failed:', e); }
     } catch (e) {
+        // Everything from the fetch to initOnboarding lands here, so without a
+        // log a single thrown line anywhere in startup becomes an unexplained
+        // "তথ্য লোড করা যায়নি" with nothing to go on.
+        console.error('init() failed:', e);
         audioContainer.innerHTML = '<p class="text-red-500 text-center py-10">তথ্য লোড করা যায়নি!</p>';
     }
 }
@@ -127,6 +202,58 @@ function updateCategoryUI() {
     }
 }
 
+// Incremental rendering for the audio list. All 278 cards at once is roughly
+// 3,500 DOM nodes on first paint, and every one of them carries inline SVG —
+// on a mid-range phone that is a visible stall before the library appears.
+// A page of 30 plus a sentinel the IntersectionObserver watches gets the same
+// list on screen for a fraction of the work, and scrolling stays ahead of the
+// user because the sentinel sits below the fold.
+const AUDIO_PAGE = 30;
+let audioShown = AUDIO_PAGE;
+let audioFiltered = [];
+let audioObserver = null;
+
+function audioCardHtml(item, idx) {
+    const isFav = favorites.includes(item.code);
+    return `
+            <div class="audio-card card-animate" style="animation-delay:${Math.min(idx, 12) * 30}ms">` +
+        audioCardBody(item, isFav) + `
+            </div>
+        `;
+}
+
+function appendAudioPage() {
+    const slice = audioFiltered.slice(audioShown - AUDIO_PAGE, audioShown);
+    if (!slice.length) return;
+    const frag = document.createElement('div');
+    frag.innerHTML = slice.map((item, i) => audioCardHtml(item, i)).join('');
+    const sentinel = document.getElementById('audio-sentinel');
+    while (frag.firstElementChild) {
+        audioContainer.insertBefore(frag.firstElementChild, sentinel);
+    }
+}
+
+function observeAudioSentinel() {
+    if (audioObserver) audioObserver.disconnect();
+    const sentinel = document.getElementById('audio-sentinel');
+    if (!sentinel) return;
+    audioObserver = new IntersectionObserver(entries => {
+        if (!entries.some(e => e.isIntersecting)) return;
+        if (audioShown >= audioFiltered.length) {
+            sentinel.remove();
+            audioObserver.disconnect();
+            return;
+        }
+        audioShown += AUDIO_PAGE;
+        appendAudioPage();
+        if (audioShown >= audioFiltered.length) {
+            sentinel.remove();
+            audioObserver.disconnect();
+        }
+    }, { rootMargin: '600px 0px' });   // start the next page well before it shows
+    audioObserver.observe(sentinel);
+}
+
 function renderAudio() {
     let filtered = audioData.filter(item => {
         const matchesCategory = currentCategory === 'all' || item.category === currentCategory;
@@ -147,16 +274,24 @@ function renderAudio() {
         return;
     }
 
-    audioContainer.innerHTML = filtered.map((item, idx) => {
-        const isFav = favorites.includes(item.code);
-        return `
-            <div class="audio-card card-animate" style="animation-delay:${idx * 30}ms">
+    audioFiltered = filtered;
+    audioShown = Math.min(AUDIO_PAGE, filtered.length);
+    audioContainer.innerHTML =
+        filtered.slice(0, audioShown).map((item, i) => audioCardHtml(item, i)).join('')
+        + (filtered.length > audioShown
+            ? '<div id="audio-sentinel" style="grid-column:1/-1;height:1px"></div>'
+            : '');
+    observeAudioSentinel();
+}
+
+function audioCardBody(item, isFav) {
+    return `
                 <div class="audio-card-top">
                     <div class="audio-card-meta">
                         <span class="code-badge">${item.code}</span>
                         <span class="cat-label">${item.category}</span>
                     </div>
-                    <button onclick="toggleFavorite('${item.code}')" class="fav-btn ${isFav ? 'on' : ''}">${isFav ? '⭐' : '☆'}</button>
+                    <button onclick="toggleFavorite('${item.code}')" data-code="${item.code}" class="fav-btn ${isFav ? 'on' : ''}">${isFav ? '⭐' : '☆'}</button>
                 </div>
                 <div>
                     <h3 class="audio-title">${item.title_bn}</h3>
@@ -187,10 +322,7 @@ function renderAudio() {
                             ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>'
                             : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 20h16"/></svg>'}
                     </button>` : ''}
-                </div>
-            </div>
-        `;
-    }).join('');
+                </div>`;
 }
 
 function renderPDFs() {
@@ -417,7 +549,22 @@ window.toggleFavorite = (code) => {
     localStorage.setItem('favorites', JSON.stringify(favorites));
     saveToCloud('favorites', favorites);
     updatePlayerFavBtn();
-    renderAudio();
+
+    // In the favourites-only view, unstarring genuinely removes the card, so a
+    // re-render is what the user expects.
+    if (showFavoritesOnly) { renderAudio(); return; }
+
+    // Otherwise update just this one star. renderAudio() would rebuild the
+    // incremental list from its first page, so starring the 150th track would
+    // scroll it off the screen — the card the user just tapped would vanish.
+    const btn = audioContainer?.querySelector(`.fav-btn[data-code="${code}"]`);
+    if (btn) {
+        const on = favorites.includes(code);
+        btn.classList.toggle('on', on);
+        btn.textContent = on ? '⭐' : '☆';
+    } else {
+        renderAudio();
+    }
 };
 
 window.copyLink = (url) => {
@@ -444,7 +591,7 @@ function setupEventListeners() {
         });
     }
     navButtons.forEach(btn => {
-        btn.addEventListener('click', () => showSection(btn.dataset.section));
+        btn.addEventListener('click', () => { haptic(8); showSection(btn.dataset.section); });
     });
 
     const searchToggle = document.getElementById('search-toggle');
@@ -515,7 +662,7 @@ function setupSwipeGestures() {
     // native build strips the Diagnosis and AI Chat tabs, and swiping to a
     // section with no button would strand the user on a blank screen.
     const sections = IS_NATIVE
-        ? ['home', 'library', 'pdf']
+        ? ['home', 'library', 'pdf', 'practice']
         : ['home', 'library', 'pdf', 'prescriptions', 'chat'];
     let touchStartX = 0, touchStartY = 0;
     const mainContent = document.getElementById('main-content');
@@ -1227,9 +1374,15 @@ window.confirmDeleteAccount = async () => {
         prog.textContent = 'অ্যাকাউন্ট বন্ধ করা হচ্ছে…';
         await user.delete();
 
-        // Local state too, or the next person on this phone inherits it.
-        ['userProfile', 'purchasedCourses', 'favorites', 'playlists',
-         'listeningStats', 'journalEntries', 'programProgress'].forEach(k => {
+        // Local state too, or the next person on this phone inherits it. These
+        // are the exact keys app.js writes — journal and the 7-day program in
+        // particular are personal, and myPatientForm/symptomResult hold health
+        // answers. Playback settings (theme, autoPlay, playbackSpeed) are left
+        // alone: they say nothing about who was signed in.
+        ['purchasedCourses', 'favorites', 'playlists', 'listeningStats',
+         'ruqyahJournal', 'program7', 'myPatientForm', 'symptomResult',
+         'streakData', 'goalData', 'recentlyPlayed', 'pdfBookmarks',
+         'videoProgress', 'reminderData'].forEach(k => {
             try { localStorage.removeItem(k); } catch {}
         });
 
@@ -2646,8 +2799,28 @@ function closeTopmostOverlay() {
 
 let lastBackPress = 0;
 
+// Two structural changes the APK wants and the website does not. Done by moving
+// existing nodes rather than by duplicating markup behind build markers: the
+// ids, the inline onclick handlers and every JS reference survive a move
+// untouched, so there is nothing to keep in sync between two copies.
+function reflowNativeHome() {
+    // Books belong with the other readable things, not on the home screen
+    // between a consultation card and a daily routine.
+    const pdfSection = document.getElementById('section-pdf');
+    const books = document.getElementById('books-section');
+    if (pdfSection && books) pdfSection.insertBefore(books, pdfSection.firstChild);
+
+    // "Continue listening" is the reason someone reopens an audio app, so it
+    // goes directly under the audio of the day instead of below the fold.
+    const recent = document.getElementById('recently-played-section');
+    const dua = document.getElementById('dua-container');
+    if (recent && dua && dua.parentNode) dua.parentNode.insertBefore(recent, dua);
+}
+
 function initNativeShell() {
     if (!IS_NATIVE) return;
+
+    reflowNativeHome();
 
     const StatusBar = nativePlugin('StatusBar');
     if (StatusBar) {
@@ -3237,10 +3410,9 @@ function updateWeeklyGoal() {
     }
     goalData.playsThisWeek++;
     localStorage.setItem('goalData', JSON.stringify(goalData));
-    if (goalData.playsThisWeek === goalData.goal && Notification.permission === 'granted') {
-        new Notification('🎉 সাপ্তাহিক লক্ষ্য পূরণ!', {
-            body: `মাশাআল্লাহ! এই সপ্তাহে ${goalData.goal}টি রুকিয়াহ অডিও শুনেছেন।`,
-        });
+    if (goalData.playsThisWeek === goalData.goal) {
+        notify('🎉 সাপ্তাহিক লক্ষ্য পূরণ!',
+               `মাশাআল্লাহ! এই সপ্তাহে ${goalData.goal}টি রুকিয়াহ অডিও শুনেছেন।`);
     }
     renderGoalWidget();
 }
@@ -3322,9 +3494,10 @@ window.selectReminderPreset = function(time, label) {
 window.closeReminderModal = function() { document.getElementById('reminder-modal')?.classList.add('hidden'); };
 
 window.saveReminder = async function() {
-    if (Notification.permission !== 'granted') {
-        const perm = await Notification.requestPermission();
-        if (perm !== 'granted') { showToast('Notification permission দিন'); return; }
+    if (!notifSupported()) { showToast('এই ডিভাইসে রিমাইন্ডার দেওয়া যাচ্ছে না'); return; }
+    if (!notifGranted() && !(await notifRequest())) {
+        showToast('Notification permission দিন');
+        return;
     }
     const input = document.getElementById('reminder-time-input');
     const time = input?.value || '06:00';
@@ -3362,7 +3535,7 @@ function renderReminderRow() {
 }
 
 function checkDailyReminder() {
-    if (!reminderData.enabled || Notification.permission !== 'granted') return;
+    if (!reminderData.enabled || !notifGranted()) return;
     const today = todayStr();
     if (reminderData.lastShown === today) return;
     const now = new Date();
@@ -3370,9 +3543,8 @@ function checkDailyReminder() {
     if (now.getHours() * 60 + now.getMinutes() >= rH * 60 + rM) {
         reminderData.lastShown = today;
         localStorage.setItem('reminderData', JSON.stringify(reminderData));
-        new Notification('🌿 রুকিয়াহর সময় হয়েছে!', {
-            body: 'আজকের রুকিয়াহ তিলাওয়াত শুরু করুন। আল্লাহর রহমত ও শিফা নিন।',
-        });
+        notify('🌿 রুকিয়াহর সময় হয়েছে!',
+               'আজকের রুকিয়াহ তিলাওয়াত শুরু করুন। আল্লাহর রহমত ও শিফা নিন।');
     }
 }
 
@@ -3388,35 +3560,92 @@ function renderDailySection() {
 // FEATURE 1: Push Notifications
 // ══════════════════════════════════════════════════════════
 window.requestNotifications = async function() {
-    if (!('Notification' in window)) { showToast('এই ব্রাউজারে notification নেই'); return; }
-    if (Notification.permission === 'granted') { showToast('Notification ইতোমধ্যে চালু আছে ✅'); return; }
-    const perm = await Notification.requestPermission();
-    if (perm === 'granted') {
+    if (!notifSupported()) { showToast('এই ডিভাইসে notification নেই'); return; }
+    if (notifGranted()) { showToast('Notification ইতোমধ্যে চালু আছে ✅'); return; }
+    if (await notifRequest()) {
         showToast('✅ Notification চালু হয়েছে!');
         localStorage.setItem('notifEnabled', '1');
         updateNotifBtn();
-        new Notification('🌿 Al Quranic Ruqyah Healing', {
-            body: 'Notification চালু হয়েছে! নতুন অডিও/PDF এলে জানাবো।',
-        });
+        notify('🌿 Al Quranic Ruqyah Healing',
+               'Notification চালু হয়েছে! নতুন অডিও/PDF এলে জানাবো।');
     } else {
         showToast('Notification permission দেওয়া হয়নি');
     }
 };
 
+// ── Notifications ───────────────────────────────────────────────────────────
+//
+// window.Notification does not exist in a good many Android WebView builds.
+// Every call site here used to dereference it directly, and because most of
+// them run inside init()'s try block, one ReferenceError took down the whole
+// startup and the user saw "তথ্য লোড করা যায়নি" — the catalogue failing to
+// load, supposedly, because a notification button could not read a permission.
+//
+// On top of that the Web Notification API does not fire from a backgrounded
+// WebView at all, so the daily reminder never worked in the APK. Native builds
+// now go through @capacitor/local-notifications, which does.
+function notifSupported() {
+    return IS_NATIVE ? !!nativePlugin('LocalNotifications')
+                     : (typeof Notification !== 'undefined');
+}
+
+function notifGranted() {
+    if (IS_NATIVE) return localStorage.getItem('notifEnabled') === '1';
+    return typeof Notification !== 'undefined' && Notification.permission === 'granted';
+}
+
+async function notifRequest() {
+    if (IS_NATIVE) {
+        const LN = nativePlugin('LocalNotifications');
+        if (!LN) return false;
+        try {
+            const res = await LN.requestPermissions();
+            const ok = res?.display === 'granted';
+            localStorage.setItem('notifEnabled', ok ? '1' : '0');
+            return ok;
+        } catch { return false; }
+    }
+    if (typeof Notification === 'undefined') return false;
+    try { return (await Notification.requestPermission()) === 'granted'; }
+    catch { return false; }
+}
+
+// Fire-and-forget; never throws, because every caller is on a path where a
+// failed notification must not break the thing that triggered it.
+function notify(title, body) {
+    try {
+        if (!notifGranted()) return;
+        if (IS_NATIVE) {
+            const LN = nativePlugin('LocalNotifications');
+            if (!LN) return;
+            LN.schedule({ notifications: [{
+                // Android needs a stable-but-unique id per notification.
+                id: Math.floor(Date.now() % 2147483647),
+                title, body,
+                smallIcon: 'ic_stat_icon',
+            }] }).catch(() => {});
+            return;
+        }
+        new Notification(title, { body });
+    } catch (e) {
+        console.warn('Notification failed:', e);
+    }
+}
+
 function updateNotifBtn() {
     const btn = document.getElementById('notif-btn');
     if (!btn) return;
-    const on = Notification.permission === 'granted';
+    if (!notifSupported()) { btn.classList.add('hidden'); return; }
+    const on = notifGranted();
     btn.classList.toggle('active', on);
     btn.title = on ? 'Notification চালু আছে ✅' : 'Notification চালু করুন';
 }
 
 function checkForNewContent() {
     const lastCount = parseInt(localStorage.getItem('lastAudioCount') || '0');
-    if (audioData.length > lastCount && lastCount > 0 && Notification.permission === 'granted') {
-        new Notification('🌿 নতুন কন্টেন্ট!', {
-            body: `${audioData.length - lastCount}টি নতুন রুকিয়াহ অডিও যোগ হয়েছে!`,
-        });
+    if (audioData.length > lastCount && lastCount > 0) {
+        notify('🌿 নতুন কন্টেন্ট!',
+               `${audioData.length - lastCount}টি নতুন রুকিয়াহ অডিও যোগ হয়েছে!`);
     }
     localStorage.setItem('lastAudioCount', audioData.length);
 }

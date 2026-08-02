@@ -45,9 +45,39 @@ function stripMarkers(html, tag) {
     return html.replace(re, '');
 }
 
+// The match above is non-greedy, so a nested pair of the same tag ends the
+// OUTER region early: everything between the inner close and the outer close
+// survives, and the outer closing marker is left behind as a stray. That
+// produces unbalanced HTML and no error at all — it cost an afternoon once.
+// Markers must therefore alternate strictly open, close, open, close.
+function assertMarkersWellFormed(html, tag, srcFile) {
+    const re = new RegExp(`<!--\\s*(/?)#${tag}\\b[^>]*-->`, 'g');
+    let depth = 0, m;
+    while ((m = re.exec(html)) !== null) {
+        const line = html.slice(0, m.index).split('\n').length;
+        if (m[1] === '/') {
+            if (--depth < 0) {
+                console.error(`\n❌ ${srcFile}:${line} — closing #${tag} marker with nothing open.`);
+                process.exit(1);
+            }
+        } else if (++depth > 1) {
+            console.error(`\n❌ ${srcFile}:${line} — #${tag} region opened inside another one.`);
+            console.error('   Nested markers of the same tag silently truncate the outer region.');
+            console.error('   Remove the inner pair; the outer region already covers it.');
+            process.exit(1);
+        }
+    }
+    if (depth !== 0) {
+        console.error(`\n❌ ${srcFile} — ${depth} unclosed #${tag} region(s).`);
+        process.exit(1);
+    }
+}
+
 function buildHtml(srcFile, destFile) {
     let html = fs.readFileSync(path.join(__dirname, srcFile), 'utf8');
     const before = html.length;
+    assertMarkersWellFormed(html, 'web-only', srcFile);
+    assertMarkersWellFormed(html, 'native-only', srcFile);
     html = stripMarkers(html, isNative ? 'web-only' : 'native-only');
     fs.writeFileSync(path.join(distDir, destFile), html);
     const saved = before - html.length;

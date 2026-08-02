@@ -69,6 +69,9 @@ jobs:
       - name: Policy audit (native/)
         run: npm run audit:native
 
+      - name: Smoke test
+        run: node tools/smoke.js native
+
       # Cheap insurance against the 390 MB regression: build.js already caps
       # native/ at 20 MB, this re-checks the directory that actually ships.
       - name: Guard bundle size

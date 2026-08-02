@@ -7,6 +7,8 @@
     "build": "node build.js --target=web",
     "build:native": "node build.js --target=native",
     "audit:native": "node tools/audit-native.js",
+    "smoke": "node tools/smoke.js native && node tools/smoke.js public",
+    "check": "npm run build && npm run build:native && npm run audit:native && npm run smoke",
     "sync": "npm run build:native && npm run audit:native && npx cap sync android",
     "assets": "npx capacitor-assets generate --android"
   },
@@ -31,6 +33,7 @@
     "@capacitor/status-bar": "^7.0.6"
   },
   "devDependencies": {
-    "@capacitor/assets": "^3.0.5"
+    "@capacitor/assets": "^3.0.5",
+    "jsdom": "^29.1.1"
   }
 }
