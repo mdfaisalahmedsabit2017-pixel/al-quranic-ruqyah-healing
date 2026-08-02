@@ -1094,6 +1094,165 @@ function showAuthError(msg) {
     if (el) el.textContent = msg;
 }
 
+// ── Account deletion ─────────────────────────────────────
+//
+// Play requires any app that creates accounts to offer deletion from inside the
+// app AND at a public web URL (privacy.html#delete-account). Missing this is a
+// guaranteed rejection.
+//
+// What the account touches:
+//   users/{uid}                 profile, unlocks, synced app state
+//   patients/{uid}              intake form — health data
+//   reviews/{uid}_{bookId}      rating and written review
+//   purchases (uid field)       payment records
+//
+// The first three are deleted. Purchase rows are stripped of name, email and
+// phone but kept, because they are transaction records the business has to be
+// able to reconcile against a payment statement. privacy.html says so plainly —
+// retaining anything undisclosed is what turns this into a policy problem.
+window.openDeleteAccountModal = () => {
+    if (!currentUser) return;
+    haptic(10);
+    document.getElementById('profile-dropdown')?.classList.add('hidden');
+    document.getElementById('del-acc-email').textContent = currentUser.email || '';
+    document.getElementById('del-acc-confirm').value = '';
+    document.getElementById('del-acc-error').textContent = '';
+    document.getElementById('del-acc-progress').classList.add('hidden');
+    const modal = document.getElementById('delete-account-modal');
+    if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+};
+
+window.closeDeleteAccountModal = () => {
+    const modal = document.getElementById('delete-account-modal');
+    if (modal) { modal.classList.add('hidden'); document.body.style.overflow = 'auto'; }
+};
+
+// Firebase refuses to delete an account whose sign-in is more than a few minutes
+// old. Re-proving identity has to happen through whichever provider they used.
+async function reauthenticate(user) {
+    const isGoogle = user.providerData?.some(p => p.providerId === 'google.com');
+
+    if (isGoogle) {
+        if (IS_NATIVE) {
+            const FirebaseAuth = nativePlugin('FirebaseAuthentication');
+            if (!FirebaseAuth) throw new Error('Google দিয়ে পরিচয় যাচাই করা যাচ্ছে না।');
+            const { credential } = await FirebaseAuth.signInWithGoogle();
+            if (!credential?.idToken) throw new Error('Google থেকে তথ্য পাওয়া যায়নি।');
+            return user.reauthenticateWithCredential(
+                firebase.auth.GoogleAuthProvider.credential(credential.idToken, credential.accessToken));
+        }
+        return user.reauthenticateWithPopup(new firebase.auth.GoogleAuthProvider());
+    }
+
+    const pw = document.getElementById('del-acc-password')?.value;
+    if (!pw) {
+        const e = new Error('need-password');
+        e.needPassword = true;
+        throw e;
+    }
+    return user.reauthenticateWithCredential(
+        firebase.auth.EmailAuthProvider.credential(user.email, pw));
+}
+
+async function purgeUserData(uid) {
+    if (!db) return { ok: false, detail: 'no-db' };
+
+    // allSettled, not all: one denied rule must not stop the rest. Whatever
+    // fails is reported rather than silently swallowed.
+    const jobs = [
+        ['profile',  db.collection('users').doc(uid).delete()],
+        ['patient',  db.collection('patients').doc(uid).delete()],
+    ];
+
+    // Reviews are keyed uid_bookId, so they are found by prefix rather than a
+    // query — no index needed and no reliance on a uid field being present.
+    for (const b of BOOKS) {
+        jobs.push([`review:${b.id}`, db.collection('reviews').doc(`${uid}_${b.id}`).delete()]);
+    }
+
+    const results = await Promise.allSettled(jobs.map(j => j[1]));
+    const failed = results
+        .map((r, i) => (r.status === 'rejected' ? jobs[i][0] : null))
+        .filter(Boolean);
+
+    // Purchases: keep the row, drop the person.
+    try {
+        const snap = await db.collection('purchases').where('uid', '==', uid).get();
+        await Promise.allSettled(snap.docs.map(d => d.ref.update({
+            email: '', name: '', phone: '',
+            uid: 'deleted',
+            anonymizedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        })));
+    } catch (e) {
+        failed.push('purchases');
+    }
+
+    return { ok: failed.length === 0, failed };
+}
+
+window.confirmDeleteAccount = async () => {
+    const user = currentUser;
+    if (!user) return;
+
+    const err  = document.getElementById('del-acc-error');
+    const prog = document.getElementById('del-acc-progress');
+    const typed = document.getElementById('del-acc-confirm')?.value?.trim();
+
+    // A deliberate, unambiguous action — not a button anyone taps by accident.
+    if (typed !== 'DELETE') {
+        err.textContent = 'নিশ্চিত করতে ঘরটিতে DELETE লিখুন।';
+        return;
+    }
+
+    err.textContent = '';
+    prog.classList.remove('hidden');
+    prog.textContent = 'পরিচয় যাচাই করা হচ্ছে…';
+
+    try {
+        try {
+            await reauthenticate(user);
+        } catch (e) {
+            if (e.needPassword) {
+                document.getElementById('del-acc-password-row')?.classList.remove('hidden');
+                prog.classList.add('hidden');
+                err.textContent = 'নিরাপত্তার জন্য পাসওয়ার্ডটি আবার দিন।';
+                return;
+            }
+            throw e;
+        }
+
+        prog.textContent = 'আপনার তথ্য মুছে ফেলা হচ্ছে…';
+        const purge = await purgeUserData(user.uid);
+
+        prog.textContent = 'অ্যাকাউন্ট বন্ধ করা হচ্ছে…';
+        await user.delete();
+
+        // Local state too, or the next person on this phone inherits it.
+        ['userProfile', 'purchasedCourses', 'favorites', 'playlists',
+         'listeningStats', 'journalEntries', 'programProgress'].forEach(k => {
+            try { localStorage.removeItem(k); } catch {}
+        });
+
+        closeDeleteAccountModal();
+        showToast(purge.ok
+            ? 'আপনার অ্যাকাউন্ট ও তথ্য মুছে ফেলা হয়েছে।'
+            : 'অ্যাকাউন্ট মুছে ফেলা হয়েছে। কিছু তথ্য মুছতে দেরি হতে পারে।');
+        if (!purge.ok) console.warn('Partial purge, remaining:', purge.failed);
+    } catch (e) {
+        prog.classList.add('hidden');
+        const code = e?.code || '';
+        if (code === 'auth/requires-recent-login') {
+            err.textContent = 'আবার লগইন করে সাথে সাথে চেষ্টা করুন।';
+        } else if (code === 'auth/wrong-password') {
+            err.textContent = 'পাসওয়ার্ড ভুল হয়েছে।';
+        } else if (/cancel/i.test(String(e?.message))) {
+            err.textContent = '';
+        } else {
+            err.textContent = 'মুছে ফেলা গেল না: ' + (e?.message || e);
+        }
+    }
+};
+
 window.signOutUser = async () => {
     if (typeof firebase !== 'undefined') await firebase.auth().signOut();
     userProfile = null;
@@ -2447,6 +2606,7 @@ const OVERLAY_CLOSERS = {
     'blog-modal': 'closeBlogPost',
     'search-overlay': 'closeSearchOverlay',
     'login-modal': 'closeLoginModal',
+    'delete-account-modal': 'closeDeleteAccountModal',
     'review-modal': 'closeReviewModal',
     'course-buy-modal': 'closeBuyModal',
     'patient-form-modal': 'closePatientForm',

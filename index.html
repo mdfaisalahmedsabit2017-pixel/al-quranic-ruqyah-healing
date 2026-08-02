@@ -660,6 +660,20 @@
             line-height: 1.7; margin-top: 24px;
         }
 
+        /* Pinned at the top of every screen that takes symptoms or prescribes a
+           routine. Play reviews health-adjacent apps against their own claims,
+           and a disclaimer the user has to scroll to find does not count as
+           having made one. Sticky so it stays visible in a long modal. */
+        .health-disclaimer {
+            position: sticky; top: 0; z-index: 2;
+            background: rgba(255,193,7,0.09);
+            border: 1px solid rgba(255,193,7,0.22);
+            border-radius: var(--r-md); padding: 11px 14px;
+            font-size: 0.76rem; color: rgba(255,225,150,0.92);
+            line-height: 1.65; margin: 0 0 16px;
+            backdrop-filter: blur(8px);
+        }
+
         /* ═══════════════════════════════════════════════════
            TESTIMONIAL
         ═══════════════════════════════════════════════════ */
@@ -2111,6 +2125,13 @@
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                         লগআউট করুন
                     </button>
+                    <!-- Play requires an in-app deletion path for any app that
+                         creates accounts, alongside the public URL in
+                         privacy.html#delete-account. -->
+                    <button onclick="openDeleteAccountModal()" class="dropdown-item danger">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+                        অ্যাকাউন্ট মুছে ফেলুন
+                    </button>
                 </div>
             </div>
             <!-- Handler is bound in app.js setupEventListeners. An inline
@@ -2797,6 +2818,51 @@
         </div>
     </div>
 
+    <!-- ── DELETE ACCOUNT ────────────────────────────────
+         Required by Play for any app that lets a user create an account. The
+         same information, and a contact route for people who no longer have
+         the app installed, lives at privacy.html#delete-account. -->
+    <div id="delete-account-modal" class="modal-overlay hidden">
+        <div class="modal-box" style="max-height:92vh;overflow-y:auto">
+            <button onclick="closeDeleteAccountModal()" class="modal-close-btn">✕</button>
+            <div class="login-icon">⚠️</div>
+            <p class="login-title">অ্যাকাউন্ট মুছে ফেলুন</p>
+            <p class="login-sub" id="del-acc-email" style="font-weight:600"></p>
+
+            <div style="text-align:right;font-size:0.82rem;line-height:1.85;margin:14px 0 4px">
+                <p style="color:var(--text-dim);margin-bottom:8px">যা স্থায়ীভাবে মুছে যাবে:</p>
+                <ul style="list-style:none;padding:0;margin:0">
+                    <li>• আপনার প্রোফাইল ও ব্যক্তিগত তথ্য</li>
+                    <li>• রোগী ফরমে দেওয়া স্বাস্থ্য তথ্য</li>
+                    <li>• আপনার দেওয়া রিভিউ ও রেটিং</li>
+                    <li>• কেনা বই ও কোর্সের অ্যাক্সেস</li>
+                </ul>
+                <p style="color:var(--text-dim);margin-top:10px;font-size:0.76rem">
+                    হিসাব মেলানোর প্রয়োজনে পেমেন্টের রেকর্ড থেকে যাবে, তবে তাতে
+                    আপনার নাম, ইমেইল বা ফোন নম্বর আর থাকবে না।
+                </p>
+                <p style="color:var(--red,#ff6b6b);margin-top:10px;font-weight:600">
+                    এটি ফিরিয়ে আনা যাবে না।
+                </p>
+            </div>
+
+            <div id="del-acc-password-row" class="hidden">
+                <input id="del-acc-password" type="password" placeholder="আপনার পাসওয়ার্ড" class="auth-input">
+            </div>
+            <input id="del-acc-confirm" type="text" placeholder="নিশ্চিত করতে DELETE লিখুন" class="auth-input" autocapitalize="characters">
+
+            <p id="del-acc-error" class="auth-error" style="min-height:18px"></p>
+            <p id="del-acc-progress" class="hidden" style="font-size:0.8rem;color:var(--text-dim);min-height:18px"></p>
+
+            <button onclick="confirmDeleteAccount()" class="btn-primary w-full" style="background:var(--red,#c0392b);margin-top:4px">
+                স্থায়ীভাবে মুছে ফেলুন
+            </button>
+            <button onclick="closeDeleteAccountModal()" class="auth-footer-muted w-full" style="margin-top:10px">
+                থাক, বাতিল করুন
+            </button>
+        </div>
+    </div>
+
     <!-- ── BOOK READER ───────────────────────────────────── -->
     <div id="book-reader" class="reader hidden">
         <div class="reader-bar">
@@ -2908,6 +2974,10 @@
     <div id="patient-form-modal" class="modal-overlay hidden">
         <div class="modal-box" style="max-height:90vh;overflow-y:auto">
             <button onclick="closePatientForm()" class="modal-close-btn">✕</button>
+            <div class="health-disclaimer">
+                ⚠️ এটি রুকইয়াহ পরামর্শের জন্য একটি অ্যাপয়েন্টমেন্ট আবেদন, চিকিৎসা
+                সেবা নয়। জরুরি অবস্থায় সরাসরি ডাক্তার বা হাসপাতালের শরণাপন্ন হোন।
+            </div>
 
             <!-- Login required state -->
             <div id="pf-login-required" class="login-required-msg hidden">
@@ -3195,6 +3265,11 @@
     <div id="symptom-modal" class="modal-overlay hidden">
         <div class="modal-box" style="max-height:90vh;overflow-y:auto">
             <button onclick="closeSymptomChecker()" class="modal-close-btn">✕</button>
+            <div class="health-disclaimer">
+                ⚠️ এটি কোনো রোগ নির্ণয় নয়। এখানে শুধু আপনার জানানো লক্ষণ অনুযায়ী
+                রুকইয়াহর আমল সাজিয়ে দেওয়া হয়। শারীরিক বা মানসিক অসুস্থতায়
+                অবশ্যই যোগ্য চিকিৎসকের পরামর্শ নিন।
+            </div>
             <div id="symptom-content"></div>
         </div>
     </div>
@@ -3203,6 +3278,10 @@
     <div id="program-modal" class="modal-overlay hidden">
         <div class="modal-box" style="max-height:90vh;overflow-y:auto">
             <button onclick="closeProgramModal()" class="modal-close-btn">✕</button>
+            <div class="health-disclaimer">
+                ⚠️ এটি একটি <strong>আমলের রুটিন</strong> — কোনো চিকিৎসা প্রোটোকল নয়।
+                চলমান কোনো চিকিৎসা বা ওষুধ এর জন্য বন্ধ করবেন না।
+            </div>
             <div id="program-content"></div>
         </div>
     </div>
