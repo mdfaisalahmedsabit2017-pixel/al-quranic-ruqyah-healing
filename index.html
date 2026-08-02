@@ -2693,7 +2693,11 @@
             <p class="footer-brand">Al Quranic Ruqyah Healing</p>
             <p class="footer-sub">Version 2.0 • Built with dedication for the Ummah</p>
             <div class="footer-links">
+                <!-- #web-only : features.html is not bundled in the APK, so this
+                     is a dead link there — and in a WebView a dead link opens a
+                     blank page with no way back. -->
                 <a href="features.html" class="footer-link">✨ ফিচার তালিকা</a>
+                <!-- /#web-only -->
                 <a href="https://www.facebook.com/raqi.faisal.ahmed" target="_blank" onclick="openExternal(this.href);return false" class="footer-link">👤 Profile</a>
                 <a href="https://t.me/raqisabit" target="_blank" onclick="openExternal(this.href);return false" class="footer-link">📢 Telegram</a>
                 <a href="https://www.facebook.com/al.quranic.ruqyah.healing1" target="_blank" onclick="openExternal(this.href);return false" class="footer-link">🌿 Page</a>
@@ -3480,9 +3484,11 @@
     <!-- Generated per build target; sets window.BUILD_TARGET, which app.js
          reads on its first line to decide what this build is allowed to do. -->
     <script src="build-flags.js"></script>
-    <!-- Web build only — carries the merchant numbers, so it must never be
-         packaged into the APK. build.js simply doesn't copy it for native. -->
-    <script src="payments.js" onerror="/* native build: no purchases */"></script>
+    <!-- #web-only : carries the merchant numbers, so it must never be packaged
+         into the APK. build.js does not copy the file for native, and the tag
+         goes with it — left in, it 404'd on every single app launch. -->
+    <script src="payments.js"></script>
+    <!-- /#web-only -->
     <!-- No capacitor.js here: Capacitor 7 injects its own native bridge into the
          WebView, and the file has never existed in either output dir — the tag
          was a guaranteed 404 on web and on device. -->

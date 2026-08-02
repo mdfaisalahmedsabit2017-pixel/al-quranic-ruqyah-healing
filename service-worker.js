@@ -1,13 +1,18 @@
 // Bump CACHE_NAME on every release that changes index.html / app.js.
 // v5 also switches the app shell off cache-first — see the fetch handler.
-const CACHE_NAME = 'ruqyah-pro-v10';  // v10: resilient install, no remote precache
+const CACHE_NAME = 'ruqyah-pro-v11';  // v11: config files moved off the cache-first path
 const AUDIO_CACHE = 'ruqyah-audio-dl-v1';
 
 // Files that change with every deploy. Cache-first on these meant a returning
 // visitor kept running whatever build they first loaded — new sections (like the
 // book store) never appeared until they cleared site data.
+// firebase-config.js and build-flags.js belong here too. They are small, they
+// are regenerated or edited per deploy, and cache-first on them means a fix
+// never reaches a returning visitor — which matters more than it sounds:
+// a wrong Firebase config does not degrade the app, it stops anyone signing in.
 const SHELL = ['/', '/index.html', '/app.html', '/app.js',
-               '/audio.json', '/pdf_list.json', '/features.html'];
+               '/audio.json', '/pdf_list.json', '/features.html',
+               '/firebase-config.js', '/build-flags.js'];
 
 function isShell(url) {
     try {

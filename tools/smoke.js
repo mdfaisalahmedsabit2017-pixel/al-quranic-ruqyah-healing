@@ -110,6 +110,25 @@ setTimeout(() => {
 
     check('startup produced no errors', fatal.length === 0, fatal.join(' | '));
 
+    // Every local src/href in the shipped markup must resolve to a file that is
+    // actually in the bundle. Marker stripping removes the code that uses a
+    // file but happily leaves a <script> tag or a footer link pointing at it —
+    // that is how payments.js came to 404 on every launch and how the features
+    // link became a dead end with no way back inside a WebView.
+    {
+        const raw = fs.readFileSync(htmlFile, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+        const refs = new Set();
+        for (const m of raw.matchAll(/(?:src|href)="(?!https?:|data:|mailto:|tel:|#)([^"]+)"/g)) {
+            refs.add(m[1]);
+        }
+        const missing = [...refs].filter(r => {
+            const clean = r.split('?')[0].split('#')[0];
+            return clean && clean !== '/' && !fs.existsSync(path.join(dir, clean));
+        });
+        check('every local file the markup references is bundled',
+            missing.length === 0, missing.join(', '));
+    }
+
     const cards = q('#audio-container .audio-card');
     check('audio list renders', cards.length > 0, `${cards.length} cards of ${audio.length}`);
     check('audio list is paged', cards.length <= 30, `${cards.length} on first paint`);
