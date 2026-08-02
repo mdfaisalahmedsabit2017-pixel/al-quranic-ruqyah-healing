@@ -8,6 +8,13 @@ audio_files/
 public/
 native/
 
+# The Capacitor webDir from before the web/native split. Nothing reads it now —
+# capacitor.config.json points at native/, vercel.json at public/, and
+# .vercelignore already excluded it — but it was 142 MB of the repository's
+# 148 MB. Untracked rather than deleted: the files are still on disk, and the
+# 24 PDFs that exist only here are still recoverable from git history.
+www/
+
 # PDFs that pdf_list.json does not reference — parked here rather than deleted,
 # but they must never ship or be deployed again.
 pdf_archive/
