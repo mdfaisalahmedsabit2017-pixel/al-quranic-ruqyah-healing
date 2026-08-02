@@ -134,6 +134,21 @@ setTimeout(() => {
             return r >= 0 && u >= 0 && r < u;
         })());
         check('no purchase modal in the DOM', !d.getElementById('course-buy-modal'));
+
+        // There is no window.Capacitor in this harness, so the Firebase auth
+        // plugin reads as absent — the state a build without google-services.json
+        // is in. initNativeShell must then hide the Google button, and these two
+        // assertions are really a proxy for "initNativeShell ran at all".
+        //
+        // It did not, on the first device build: updateNotifBtn() threw on
+        // window.Notification eleven lines earlier in the same try block, so the
+        // button stayed visible, was tapped, and reported a plugin it could not
+        // have reached. Back-button handling and the status-bar config were lost
+        // in the same silence.
+        check('Google button hidden when the native plugin is absent',
+            d.getElementById('google-signin-btn')?.classList.contains('hidden'));
+        check('native shell ran (or-divider hidden with it)',
+            d.querySelector('#login-modal .or-divider')?.classList.contains('hidden'));
         check('account deletion is reachable', !!d.getElementById('delete-account-modal'));
         check('four nav tabs', q('.nav-item').length === 4, `${q('.nav-item').length}`);
         check('health disclaimers pinned on all three screens',

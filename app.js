@@ -1128,7 +1128,15 @@ window.signInWithGoogle = async () => {
             // this build's SHA-1 is not registered on the Firebase project —
             // the single most common setup mistake here.
             const raw = String(e?.message || e);
-            if (/DEVELOPER_ERROR|(^|\D)10(\D|$)/.test(raw)) {
+            // The plugin is now installed, so the next failure mode is a build
+            // that shipped without google-services.json: the plugin loads, the
+            // native Firebase SDK has no project to talk to, and the thrown
+            // message is about a "Default FirebaseApp" — which tells the user
+            // nothing and the developer only slightly more.
+            if (/FirebaseApp|not initialized|Default FirebaseApp/i.test(raw)) {
+                showAuthError('এই বিল্ডে Google সাইন-ইন এখনো সেট করা হয়নি। ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন।');
+                console.warn('google-services.json missing from this build.', raw);
+            } else if (/DEVELOPER_ERROR|(^|\D)10(\D|$)/.test(raw)) {
                 showAuthError('এই বিল্ডটি Firebase-এ নিবন্ধিত নয় (SHA-1 মেলেনি)। ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন।');
                 console.warn('Google sign-in DEVELOPER_ERROR — register this build\'s SHA-1 in Firebase.', raw);
             } else if (/canceled|cancelled|12501/i.test(raw)) {
