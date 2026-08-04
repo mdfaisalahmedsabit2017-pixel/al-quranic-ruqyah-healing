@@ -9,8 +9,11 @@
 //     3.3 MB base64 font sheet is fetched once and cached across all 70 pages
 //   - the "← সব রুকইয়াহ গাইডলাইন" link points at /guides/ instead of a sibling
 //     index.html that does not exist here
-//   - the PDF/DOCX download links are cut. Those trees are not deployed (127 MB
-//     and 1.9 MB), so shipping the buttons would mean 70 pages of 404s.
+//   - the PDF/DOCX download links are repointed at /guides/_files/, and the files
+//     themselves are copied out of guides_src/files/. Topic pages link both
+//     formats, collection pages only a PDF, exactly as the engine emitted them.
+//     Only the 70 documents' own files ship: the engine's output/pdf/ also holds
+//     21 PDFs with no published page and a 24 MB 781-page master book.
 //   - canonical/OG/JSON-LD are injected, which the source has no way to know
 //
 // Why per-slug pages rather than appending to pdf_list.json: every one of the 82
@@ -63,11 +66,16 @@ function rewrite(html, slug, meta) {
     if (!home.test(out)) throw new Error(`${slug}: no <a class="home"> back-link to rewrite`);
     out = out.replace(home, '$1href="/guides/"');
 
-    // <span class="dl"> holds only <a> elements, never a nested <span>, so the
-    // first </span> is reliably its own.
-    const dl = /\s*<span class="dl">[\s\S]*?<\/span>/;
-    if (!dl.test(out)) throw new Error(`${slug}: no download block to strip`);
-    out = out.replace(dl, '');
+    // Topic pages point at ../pdf/<slug>.pdf and ../docx/<slug>.docx; collection
+    // pages at ../../pdf/alroqya/<slug>.pdf. All three become /guides/_files/.
+    const dl = /href="(?:\.\.\/)+pdf\/(?:alroqya\/)?([^"]+\.pdf)"|href="(?:\.\.\/)+docx\/([^"]+\.docx)"/g;
+    const linked = [];
+    out = out.replace(dl, (_m, pdf, docx) => {
+        const file = pdf || docx;
+        linked.push(file);
+        return `href="/guides/_files/${file}"`;
+    });
+    if (!linked.length) throw new Error(`${slug}: no download links to repoint`);
 
     const head = `<link rel="canonical" href="${canonical}">
 <meta name="author" content="${AUTHOR}">
@@ -104,7 +112,7 @@ function rewrite(html, slug, meta) {
     })}</script>
 </head>`;
     if (!out.includes('</head>')) throw new Error(`${slug}: no </head>`);
-    return out.replace('</head>', head);
+    return { html: out.replace('</head>', head), linked };
 }
 
 function buildGuides(distDir) {
@@ -113,11 +121,13 @@ function buildGuides(distDir) {
 
     const outDir = path.join(distDir, 'guides');
     fs.mkdirSync(path.join(outDir, '_assets'), { recursive: true });
+    fs.mkdirSync(path.join(outDir, '_files'), { recursive: true });
     fs.copyFileSync(path.join(SRC, 'assets', 'fonts.css'),
                     path.join(outDir, '_assets', 'fonts.css'));
 
     const files = fs.readdirSync(SRC).filter((f) => f.endsWith('.html')).sort();
     const items = [];
+    let bytes = 0;
 
     for (const file of files) {
         const slug = file.replace(/\.html$/, '');
@@ -140,9 +150,21 @@ function buildGuides(distDir) {
         const meta = extract(html, slug);
         meta.shortTitle = shortTitle(meta.fullTitle);
 
+        const { html: out, linked } = rewrite(html, slug, meta);
         const dir = path.join(outDir, slug);
         fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(path.join(dir, 'index.html'), rewrite(html, slug, meta));
+        fs.writeFileSync(path.join(dir, 'index.html'), out);
+
+        // A download button is worse than no download button if it 404s, so the
+        // file every page links has to be on disk before the build is allowed to
+        // finish. The engine's naming is regular, but it has drifted before.
+        for (const name of linked) {
+            const from = path.join(SRC, 'files', name);
+            if (!fs.existsSync(from)) throw new Error(
+                `${slug} links ${name}, but guides_src/files/${name} is missing`);
+            fs.copyFileSync(from, path.join(outDir, '_files', name));
+            bytes += fs.statSync(from).size;
+        }
 
         items.push({
             slug,
@@ -153,7 +175,9 @@ function buildGuides(distDir) {
         });
     }
 
-    console.log(`Guides: ${items.length} documents -> public/guides/<slug>/`);
+    const downloads = fs.readdirSync(path.join(outDir, '_files')).length;
+    console.log(`Guides: ${items.length} documents -> public/guides/<slug>/, `
+              + `${downloads} downloads (${(bytes / 1048576).toFixed(1)} MB)`);
     return { items, categories: cfg.categories };
 }
 

@@ -6,6 +6,11 @@
 - **৩০টা আয়াত সংকলন** — `ayat-<topic>.html`
 - **`assets/fonts.css`** — ৩.৩ MB, base64-এমবেডেড ৬টা ফন্ট (AlQuran IndoPak, Noto
   Naskh Arabic, Noto Sans/Serif Bengali, Hind Siliguri)। ৭০টা পেজ এটাই শেয়ার করে।
+- **`files/`** — ডাউনলোডের ফাইল, ১১০টা / ১২০ MB: ৭০টা `<slug>.pdf` (৪০ টপিক +
+  ৩০ সংকলন) ও ৪০টা `<slug>.docx` (শুধু টপিক — সংকলনের DOCX ইঞ্জিনই বানায় না)।
+  PDF আর DOCX একই ফোল্ডারে রাখা হয়েছে ইচ্ছাকৃতভাবে: `.vercelignore`-এ `docx/`
+  আছে, আর ওই প্যাটার্ন যেকোনো গভীরতায় ম্যাচ করে — আলাদা `docx/` ফোল্ডার বানালে
+  ফাইলগুলো চুপচাপ deploy থেকে বাদ পড়ত।
 
 `node build.js --target=web` চালালে `tools/guides.js` প্রতিটাকে
 `public/guides/<slug>/index.html`-এ বসায়, আর `tools/library.js` তার উপরে
@@ -41,6 +46,16 @@ Get-ChildItem -LiteralPath "$src\alroqya" -Filter *.html |
   ForEach-Object { Copy-Item $_.FullName "$dst\$($_.Name)" -Force }
 
 Copy-Item "$src\assets\fonts.css" "$dst\assets\fonts.css" -Force
+
+# ডাউনলোডের ফাইল — শুধু যেগুলোর পেজ আছে সেগুলোই।
+# (output\pdf\-এ আরও ২১টা PDF আছে যাদের কোনো পেজ নেই, আর ২৪ MB-র
+#  00-index.pdf = ৭৮১ পৃষ্ঠার মাস্টার বই। এগুলো deploy করা হয় না।)
+$out = Split-Path $src -Parent
+foreach ($s in (Get-ChildItem -LiteralPath $dst -Filter *.html).BaseName) {
+  $p = if ($s -like 'ayat-*') { "$out\pdf\alroqya\$s.pdf" } else { "$out\pdf\$s.pdf" }
+  Copy-Item $p "$dst\files\$s.pdf" -Force
+  if ($s -notlike 'ayat-*') { Copy-Item "$out\docx\$s.docx" "$dst\files\$s.docx" -Force }
+}
 ```
 
 তারপর `node build.js --target=web` → commit → push করলেই Vercel-এ লাইভ।
@@ -67,14 +82,17 @@ Copy-Item "$src\assets\fonts.css" "$dst\assets\fonts.css" -Force
 |---|---|
 | `assets/fonts.css` ও `../assets/fonts.css` → `/guides/_assets/fonts.css` | টপিক ও সংকলনের রিলেটিভ পাথ দুই রকম; ফন্ট একবারই নামে (immutable cache header দেওয়া আছে `vercel.json`-এ) |
 | `<a class="home" href="index.html">` → `/guides/` | সোর্সের sibling index এখানে নেই |
-| `<span class="dl">…</span>` (PDF/DOCX ডাউনলোড) বাদ | `output/pdf` (১২৭ MB) ও `output/docx` deploy হয় না, তাই বাটনগুলো ৪০৪ হতো |
+| `../pdf/<slug>.pdf`, `../docx/<slug>.docx`, `../../pdf/alroqya/<slug>.pdf` → `/guides/_files/<slug>.<ext>` | তিন রকম রিলেটিভ পাথ এক জায়গায়; ফাইলগুলো `files/` থেকে কপি হয় |
 | `</head>`-এর আগে canonical + OG/Twitter + JSON-LD (`Article` + `BreadcrumbList`) | সোর্স জানে না কোন URL-এ বসবে |
 
-প্রতিটা rewrite ম্যাচ না করলে বিল্ড থামে — চুপচাপ ডেড লিংক নিয়ে ডিপ্লয় হওয়ার
-চেয়ে বিল্ড ফেল করা ভালো।
+প্রতিটা rewrite ম্যাচ না করলে বিল্ড থামে, আর কোনো পেজ যে ফাইল লিংক করে সেটা
+`files/`-এ না থাকলেও বিল্ড থামে — চুপচাপ ডেড লিংক বা ৪০৪ ডাউনলোড বাটন নিয়ে
+ডিপ্লয় হওয়ার চেয়ে বিল্ড ফেল করা ভালো।
 
-> **PDF ডাউনলোড ফিরিয়ে আনতে চাইলে:** `output/pdf`-এর ৪০টা টপিক PDF `pdf/`-এ
-> কপি করে `tools/guides.js`-এর dl-strip নিয়মটা বদলে `/pdf/<slug>.pdf`-এ
-> রিরাইট করতে হবে। সাবধান — `pdf/` এখনই ১২৯ MB, আর `ashik-jinn.pdf`-এর মতো
-> কয়েকটা নাম ইতিমধ্যেই `pdf_list.json`-এ আছে (অন্য কনটেন্ট), তাই নাম-সংঘর্ষ
-> আগে মেলাতে হবে।
+> **`_files/` কেন, রুটের `pdf/` নয়:** সাইটের `pdf/` ফোল্ডারে আগে থেকেই ৮২টা
+> ভিন্ন PDF আছে (`pdf_list.json`), আর তার একটার নাম `ashik-jinn.pdf` — এখানের
+> একটা স্লাগের সাথে হুবহু মিলে যায় কিন্তু কনটেন্ট আলাদা। আলাদা ফোল্ডারে রাখায়
+> সংঘর্ষের প্রশ্নই আসে না।
+
+> **সাইজ:** `_files/` যোগ হওয়ায় `public/` ১৫৯ → ২৭৯ MB। `native/` অপরিবর্তিত
+> (৩.৮ MB) — APK-তে এসব যায় না।

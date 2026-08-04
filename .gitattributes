@@ -10,6 +10,7 @@
 *.jpg    binary
 *.webp   binary
 *.pdf    binary
+*.docx   binary
 *.m4a    binary
 *.apk    binary
 *.aab    binary
