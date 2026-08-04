@@ -25,6 +25,10 @@ pdf_archive/
 # not through git.
 book_pages/
 
+# tools/ now holds Python helpers (sync_guides.py, watermark_pdfs.py) that are
+# run from the repo root, so their bytecode lands here.
+__pycache__/
+
 # Signing material must never be committed.
 *.jks
 *.keystore

@@ -35,33 +35,34 @@ A:\claude code projects sabit\ruqyah pdf maker\
 HTML + PDF + DOCX + PNG কার্ড জেনারেট করে। এখানের HTML ওই আউটপুটের হুবহু কপি —
 এখানে এডিট করলে পরের সিঙ্কে মুছে যাবে।
 
-## নতুন বিল্ড সিঙ্ক করা
+## নতুন বিল্ড সিঙ্ক করা — তিনটে কমান্ড
+
+আগে engine-এ বিল্ড করুন (তিন পরিবার আলাদা কমান্ড):
 
 ```powershell
-$src = "A:\claude code projects sabit\ruqyah pdf maker\output\html"
-$dst = "A:\Ruqyah Audio App\guides_src"
-
-# ৪০টা টপিক (সোর্সের index.html বাদ — সাইটের ইনডেক্স আলাদা)
-Get-ChildItem -LiteralPath $src -Filter *.html |
-  Where-Object { $_.Name -ne 'index.html' } |
-  ForEach-Object { Copy-Item $_.FullName "$dst\$($_.Name)" -Force }
-
-# ৩০টা সংকলন, ফ্ল্যাট করে (নাম সব `ayat-` দিয়ে শুরু, তাই সংঘর্ষ হয় না)
-Get-ChildItem -LiteralPath "$src\alroqya" -Filter *.html |
-  Where-Object { $_.Name -ne 'index.html' } |
-  ForEach-Object { Copy-Item $_.FullName "$dst\$($_.Name)" -Force }
-
-Copy-Item "$src\assets\fonts.css" "$dst\assets\fonts.css" -Force
+cd "A:\claude code projects sabit\ruqyah pdf maker"
+python engine/validate.py            # আগে গেট — ALL CLEAN না হলে থামুন
+python engine/build.py --skip png
+python engine/build.py --collections
+python engine/build.py --articles
 ```
 
-তারপর PDF-গুলো ওয়াটারমার্ক করুন (এটাই `files/` ভরে):
+তারপর এই রিপোতে:
 
 ```powershell
-python tools\watermark_pdfs.py
+cd "A:\Ruqyah Audio App"
+python tools\sync_guides.py          # HTML + fonts.css আনে
+python tools\watermark_pdfs.py       # PDF ওয়াটারমার্ক করে files/-এ বসায়
+node build.js --target=web
 ```
 
-স্ক্রিপ্টটা শুধু যেসব স্লাগের HTML পেজ আছে তাদের PDF নেয় — `output\pdf\`-এ আরও
-২১টা PDF আছে যাদের কোনো পেজ নেই, আর ২৪ MB-র `00-index.pdf` = ৭৮১ পৃষ্ঠার
+`sync_guides.py` **ফাইলের লিস্ট hardcode করে না** — engine-এর নিজের কনটেন্ট
+মডিউলকে জিজ্ঞেস করে কী কী আছে, তাই ওখানে নতুন ডকুমেন্ট যোগ হলে এখানে বাদ পড়ার
+সুযোগ নেই। slug ডুপ্লিকেট হলে বা কোনো ডকুমেন্ট রেন্ডার না থাকলে থেমে যায়, আর
+engine থেকে মুছে যাওয়া ডকুমেন্ট এখান থেকেও সরিয়ে দেয়।
+
+`watermark_pdfs.py` শুধু যেসব স্লাগের HTML পেজ আছে তাদের PDF নেয় — `output\pdf\`-এ
+আরও কিছু PDF আছে যাদের কোনো পেজ নেই, আর ২৪ MB-র `00-index.pdf` = ৭৮১ পৃষ্ঠার
 মাস্টার বই; ওগুলো পাবলিশ হয় না। পুরনো `.docx` থাকলে মুছে দেয়।
 
 তারপর `node build.js --target=web` → commit → push করলেই Vercel-এ লাইভ।
