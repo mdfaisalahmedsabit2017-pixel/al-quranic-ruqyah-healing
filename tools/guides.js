@@ -9,11 +9,13 @@
 //     3.3 MB base64 font sheet is fetched once and cached across all 70 pages
 //   - the "← সব রুকইয়াহ গাইডলাইন" link points at /guides/ instead of a sibling
 //     index.html that does not exist here
-//   - the PDF/DOCX download links are repointed at /guides/_files/, and the files
-//     themselves are copied out of guides_src/files/. Topic pages link both
-//     formats, collection pages only a PDF, exactly as the engine emitted them.
-//     Only the 70 documents' own files ship: the engine's output/pdf/ also holds
-//     21 PDFs with no published page and a 24 MB 781-page master book.
+//   - the PDF download link is repointed at /guides/_files/, and the file itself
+//     is copied out of guides_src/files/ — where tools/watermark_pdfs.py has
+//     already stamped and locked it. Only the 70 documents' own PDFs ship: the
+//     engine's output/pdf/ also holds 21 PDFs with no published page and a 24 MB
+//     781-page master book.
+//   - the DOCX button is removed. A .docx cannot hold a watermark past one save,
+//     so it is not published at all.
 //   - canonical/OG/JSON-LD are injected, which the source has no way to know
 //
 // Why per-slug pages rather than appending to pdf_list.json: every one of the 82
@@ -66,16 +68,26 @@ function rewrite(html, slug, meta) {
     if (!home.test(out)) throw new Error(`${slug}: no <a class="home"> back-link to rewrite`);
     out = out.replace(home, '$1href="/guides/"');
 
-    // Topic pages point at ../pdf/<slug>.pdf and ../docx/<slug>.docx; collection
-    // pages at ../../pdf/alroqya/<slug>.pdf. All three become /guides/_files/.
-    const dl = /href="(?:\.\.\/)+pdf\/(?:alroqya\/)?([^"]+\.pdf)"|href="(?:\.\.\/)+docx\/([^"]+\.docx)"/g;
+    // The DOCX button goes, whole anchor and all. An editable source file cannot
+    // carry a watermark that survives one save, so those are not published — see
+    // tools/watermark_pdfs.py.
+    const docx = /\s*<a href="(?:\.\.\/)+docx\/[^"]+\.docx">[^<]*<\/a>/g;
+    out = out.replace(docx, '');
+
+    // Topic pages point at ../pdf/<slug>.pdf, collection pages at
+    // ../../pdf/alroqya/<slug>.pdf. Both become /guides/_files/<slug>.pdf.
+    const pdf = /href="(?:\.\.\/)+pdf\/(?:alroqya\/)?([^"]+\.pdf)"/g;
     const linked = [];
-    out = out.replace(dl, (_m, pdf, docx) => {
-        const file = pdf || docx;
+    out = out.replace(pdf, (_m, file) => {
         linked.push(file);
         return `href="/guides/_files/${file}"`;
     });
-    if (!linked.length) throw new Error(`${slug}: no download links to repoint`);
+    if (linked.length !== 1) throw new Error(
+        `${slug}: expected exactly 1 PDF link, found ${linked.length}`);
+    // Links only — some collection pages name the engine's original .docx source
+    // in their attribution prose ("মূল ফাইল: sabit special alroqya.docx"), which
+    // is a credit, not something a reader can download.
+    if (/href="[^"]*\.docx"/.test(out)) throw new Error(`${slug}: a .docx link survived`);
 
     const head = `<link rel="canonical" href="${canonical}">
 <meta name="author" content="${AUTHOR}">
