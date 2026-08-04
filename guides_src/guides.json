@@ -1,0 +1,84 @@
+{
+  "//": "Category order and slug->category map for guides_src/*.html.",
+  "//2": "Titles and descriptions are deliberately NOT repeated here — tools/guides.js",
+  "//3": "reads them from each document's own <title> and <meta name=\"description\">, so",
+  "//4": "there is exactly one place for them and they cannot drift out of sync.",
+  "//5": "Only the grouping lives here, because the source HTML carries no category.",
+  "//6": "Mirrors CATEGORY in 'ruqyah pdf maker/content/topics_*.py' (bn + order).",
+
+  "categories": [
+    {
+      "bn": "সিহর ও জাদু",
+      "blurb": "সিহর বা জাদুর প্রভাব — বিচ্ছেদ, বশীকরণ, মাথা ও রেহেমের জাদুসহ প্রতিটি ধরনের জন্য আলাদা রুকইয়াহ প্রোটোকল।"
+    },
+    {
+      "bn": "জিন সংক্রান্ত",
+      "blurb": "আশিক জিন, কারিন ও ওয়াসওয়াসা, খুরুজ — জিনের কষ্ট ও আছর সংক্রান্ত ধাপে ধাপে রুকইয়াহ।"
+    },
+    {
+      "bn": "বদনজর, হাসাদ ও রিজিক",
+      "blurb": "বদনজর ও হাসাদের অনিষ্ট, রিজিকে বাধা, আটকে থাকা কাজ ও ক্যারিয়ারের প্রতিবন্ধকতার রুকইয়াহ।"
+    },
+    {
+      "bn": "বিয়ে, পরিবার ও মানসিক",
+      "blurb": "বিয়ে বন্ধ হওয়া, দাম্পত্য কলহ, সন্তান লাভ, অ্যাংজাইটি ও ইবাদতে অলসতা সংক্রান্ত রুকইয়াহ।"
+    },
+    {
+      "bn": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+      "blurb": "শিফার রুকইয়াহ ও নিয়মিত হিফাজতের আমল — মাথাব্যথা, ঘুম, পেট, ঘর বন্ধ ও সার্বিক সুরক্ষাসহ।"
+    },
+    {
+      "bn": "আয়াত সংকলন",
+      "blurb": "বিষয়ভিত্তিক কুরআনের আয়াত সংকলন, বাংলা অর্থসহ — রুকইয়াহতে পড়ার জন্য সাজানো।"
+    }
+  ],
+
+  "slugs": {
+    "bichchheder-jadu": "সিহর ও জাদু",
+    "bideshe-kalo-jadu": "সিহর ও জাদু",
+    "boshikoron": "সিহর ও জাদু",
+    "jadu-renew-bondho": "সিহর ও জাদু",
+    "jadukor-prokash": "সিহর ও জাদু",
+    "mathar-jadu": "সিহর ও জাদু",
+    "rehem-jadu": "সিহর ও জাদু",
+
+    "ashik-jinn": "জিন সংক্রান্ত",
+    "gorbhoboti-hifazat": "জিন সংক্রান্ত",
+    "jinn-chalan": "জিন সংক্রান্ত",
+    "karin-waswasa": "জিন সংক্রান্ত",
+    "khuruj": "জিন সংক্রান্ত",
+    "oswabhabik-probritti": "জিন সংক্রান্ত",
+
+    "atke-thaka-kaj": "বদনজর, হাসাদ ও রিজিক",
+    "badnazar-hasad": "বদনজর, হাসাদ ও রিজিক",
+    "career-badha": "বদনজর, হাসাদ ও রিজিক",
+    "chakri": "বদনজর, হাসাদ ও রিজিক",
+    "jomijoma-mamla": "বদনজর, হাসাদ ও রিজিক",
+    "mathar-badnazar": "বদনজর, হাসাদ ও রিজিক",
+    "rizqe-badha": "বদনজর, হাসাদ ও রিজিক",
+
+    "autism-bishesh-shishu": "বিয়ে, পরিবার ও মানসিক",
+    "biye-bondho": "বিয়ে, পরিবার ও মানসিক",
+    "dampotto-mohabbot": "বিয়ে, পরিবার ও মানসিক",
+    "gorbhopat-rodh": "বিয়ে, পরিবার ও মানসিক",
+    "ibadate-olosota": "বিয়ে, পরিবার ও মানসিক",
+    "monojog-anxiety": "বিয়ে, পরিবার ও মানসিক",
+    "paribarik-kolah": "বিয়ে, পরিবার ও মানসিক",
+    "sontan-labh": "বিয়ে, পরিবার ও মানসিক",
+    "sontaner-obaddhota": "বিয়ে, পরিবার ও মানসিক",
+
+    "chul-pora-soundorjo": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "ghor-bondho": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "ghumer-somossa": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "gopon-osukh": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "mathabetha": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "ojon-period-pcos": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "peter-somossa": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "sadharon-shifa": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "sarbik-hifazat": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "shorir-komor-betha": "শারীরিক সুস্থতা ও আত্মরক্ষা",
+    "shotru-theke-hifazat": "শারীরিক সুস্থতা ও আত্মরক্ষা"
+  },
+
+  "prefixCategory": { "ayat-": "আয়াত সংকলন" }
+}

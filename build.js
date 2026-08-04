@@ -258,9 +258,13 @@ if (isNative) {
     // Blog: posts/*.md -> public/blog/<slug>/index.html (+ JSON the app reads)
     require('./tools/blog').buildBlog(distDir);
 
+    // The 70 Ruqyah documents: guides_src/*.html -> public/guides/<slug>/index.html.
+    // Must run before buildLibrary, which writes the index that links to them.
+    const guides = require('./tools/guides').buildGuides(distDir);
+
     // Crawlable catalogue pages for the audio library and PDF guides, which
     // otherwise exist only inside app.html's JavaScript where no crawler sees them.
-    require('./tools/library').buildLibrary(distDir);
+    require('./tools/library').buildLibrary(distDir, guides);
 
     const pdfSrc = path.join(__dirname, 'pdf');
     if (fs.existsSync(pdfSrc)) {

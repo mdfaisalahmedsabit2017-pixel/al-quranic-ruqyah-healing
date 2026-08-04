@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>আয়াতুর রিযক্ব — আয়াত সংকলন | রাকী ফয়সাল আহমেদ সাবিত</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="রিযিক-সংক্রান্ত আয়াতসমূহ — বাংলা অর্থসহ। আল কুরআন রুকইয়াহ হিলিং সেন্টার।">
+<link rel="stylesheet" href="../assets/fonts.css">
+<style>
+/* এমারেল্ড-গোল্ড প্রিমিয়াম ডিজাইন সিস্টেম — মাস্টার প্রম্পট সেকশন ৪ */
+
+:root {
+  --emerald-deep: #052e22;
+  --emerald-mid: #0b5d43;
+  --emerald-light: #12775a;
+  --gold: #b8912f;
+  --gold-light: #e6cf8a;
+  --gold-pale: #f4efdd;
+  --page: #faf7ef;
+  --card: #fffdf8;
+  --ink: #22332c;
+  --ink-soft: #4a5b53;
+  --arabic-ink: #06382b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-size: 11pt;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+  color: var(--emerald-deep);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.arabic {
+  font-family: 'AlQuran IndoPak', 'Noto Naskh Arabic', serif;
+  direction: rtl;
+  text-align: center;
+  font-size: 21.5pt;
+  line-height: 3.0;
+  color: var(--arabic-ink);
+  unicode-bidi: isolate;
+}
+
+/* ─────────────── কভার পেজ ─────────────── */
+
+.cover {
+  page: cover;
+  height: 297mm;
+  background: linear-gradient(160deg, var(--emerald-deep) 0%, var(--emerald-mid) 55%, var(--emerald-light) 100%);
+  color: var(--gold-pale);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 26mm 18mm 22mm;
+  position: relative;
+  break-after: page;
+}
+
+/* মাঝের ব্লকটা বাকি জায়গা নিয়ে নিজে সেন্টার হবে, লেখকের ব্লক নিচেই থাকবে */
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cover::before,
+.cover::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+}
+.cover::before { inset: 10mm; }
+.cover::after  { inset: 13mm; border-width: 0.6px; border-color: var(--gold-light); }
+
+.cover-bismillah {
+  font-family: 'AlQuran IndoPak', serif;
+  direction: rtl;
+  font-size: 30pt;
+  line-height: 2.2;
+  color: var(--gold-light);
+  margin-bottom: 6mm;
+}
+
+/* বাংলায় letter-spacing দিলে যুক্তাক্ষর ভেঙে যায় — তাই word-spacing ব্যবহার */
+.cover-kicker {
+  font-size: 10.5pt;
+  word-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 5mm;
+}
+
+.cover h1 {
+  font-size: 32pt;
+  color: #fffdf5;
+  margin: 0 0 4mm;
+  line-height: 1.35;
+}
+
+.cover-sub {
+  font-size: 12.5pt;
+  color: var(--gold-pale);
+  max-width: 130mm;
+  line-height: 1.8;
+  margin: 0 auto 10mm;
+  opacity: 0.92;
+}
+
+.ornament {
+  color: var(--gold);
+  letter-spacing: 0.7em;
+  font-size: 12pt;
+  margin: 6mm 0;
+}
+
+.cover-author { padding-top: 8mm; }
+.cover-author .name {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 15pt;
+  color: #fffdf5;
+  margin-bottom: 2mm;
+}
+.cover-author .center {
+  font-size: 10.5pt;
+  color: var(--gold-light);
+}
+.cover-author .en {
+  font-size: 8.5pt;
+  color: var(--gold);
+  letter-spacing: 0.16em;
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── সূচিপত্র ─────────────── */
+
+.toc { break-after: page; padding-top: 4mm; }
+
+.toc h2 {
+  font-size: 19pt;
+  text-align: center;
+  margin-bottom: 2mm;
+}
+
+.toc-rule {
+  width: 44mm; height: 2px;
+  background: var(--gold);
+  margin: 0 auto 9mm;
+}
+
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+
+.toc li {
+  counter-increment: toc;
+  display: flex;
+  align-items: baseline;
+  gap: 3mm;
+  padding: 2.2mm 0;
+  border-bottom: 0.5px dotted #d8cfb4;
+}
+
+.toc li::before {
+  content: counter(toc, decimal);
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--gold);
+  font-size: 9.5pt;
+  min-width: 7mm;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  flex: 1;
+  font-size: 10.5pt;
+}
+
+.toc .leader {
+  flex: 1;
+  border-bottom: 0.5px dotted transparent;
+}
+
+.toc .pg { color: var(--gold); font-size: 9.5pt; }
+
+/* ─────────────── সেকশন ব্যান্ড ─────────────── */
+
+.section-band {
+  background: linear-gradient(100deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-pale);
+  padding: 5mm 7mm;
+  margin: 9mm 0 6mm;
+  border-left: 3.5px solid var(--gold);
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+.section-band h2 { color: #fffdf5; font-size: 14.5pt; margin: 0; }
+.section-band .band-note {
+  font-size: 9.5pt;
+  color: var(--gold-light);
+  margin-top: 2mm;
+  line-height: 1.75;
+  opacity: 0.94;
+}
+
+/* ─────────────── আয়াত কার্ড ─────────────── */
+
+.card {
+  background: var(--card);
+  border: 0.5px solid #e5dcc4;
+  border-top: 3px solid var(--gold);
+  padding: 6mm 6mm 5mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+  position: relative;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  margin-bottom: 4mm;
+}
+
+.medallion {
+  width: 11mm; height: 11mm;
+  flex: 0 0 11mm;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 11pt;
+  border: 1px solid var(--gold);
+}
+
+.card-title {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 12pt;
+  color: var(--emerald-deep);
+  font-weight: 600;
+}
+
+.card .arabic {
+  padding: 3mm 2mm 1mm;
+  border-top: 0.5px solid #ece3cb;
+  border-bottom: 0.5px solid #ece3cb;
+  margin-bottom: 4mm;
+}
+
+.translation {
+  background: #fbf8ee;
+  border-left: 3px solid var(--gold);
+  padding: 3.5mm 4.5mm;
+  font-size: 10.5pt;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 4mm;
+}
+
+.instruction {
+  border: 1px dashed var(--emerald-light);
+  background: #f3f8f5;
+  padding: 3mm 4mm;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 600;
+  color: var(--emerald-deep);
+  line-height: 1.75;
+}
+.instruction .niyyah {
+  display: block;
+  font-weight: 400;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── দোয়া কার্ড ─────────────── */
+
+.dua-card {
+  background: #fdf9ec;
+  border: 0.5px solid #e8dcbb;
+  border-top: 3px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+
+.dua-card .arabic { font-size: 19pt; line-height: 2.8; margin-bottom: 3.5mm; }
+.dua-card .dua-bn {
+  font-size: 10.5pt;
+  line-height: 1.9;
+  padding: 3mm 4mm;
+  background: #fffdf6;
+  border-left: 3px solid var(--emerald-light);
+  margin-bottom: 3mm;
+}
+.dua-card .dua-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 4mm;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+}
+.dua-card .dua-count { color: var(--emerald-deep); font-weight: 600; }
+
+/* ─────────────── সাধারণ ব্লক ─────────────── */
+
+.intro-block {
+  background: #fffdf6;
+  border: 0.5px solid #e8ddc2;
+  border-left: 3.5px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 7mm;
+  font-size: 10.8pt;
+  line-height: 1.95;
+  text-align: justify;
+}
+
+.symptom-list { list-style: none; padding: 0; margin: 0; }
+.symptom-list li {
+  position: relative;
+  padding: 2.2mm 0 2.2mm 8mm;
+  border-bottom: 0.5px dotted #e0d6bb;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  break-inside: avoid;
+}
+.symptom-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 1.5mm;
+  color: var(--gold);
+  font-size: 9pt;
+}
+
+.note-box {
+  background: var(--gold-pale);
+  border: 0.5px solid #e2d5ae;
+  padding: 4.5mm 5.5mm;
+  font-size: 10pt;
+  line-height: 1.85;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+.note-box strong { color: var(--emerald-deep); }
+
+.step-list { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding: 2.8mm 0 2.8mm 11mm;
+  font-size: 10.5pt;
+  line-height: 1.85;
+  border-bottom: 0.5px dotted #e0d6bb;
+  break-inside: avoid;
+}
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 2.6mm;
+  width: 7mm; height: 7mm;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  color: var(--gold-light);
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.2pt;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+table.grid th {
+  background: var(--emerald-deep);
+  color: var(--gold-pale);
+  text-align: right;
+  padding: 3mm 4mm;
+  font-weight: 600;
+  width: 34%;
+  vertical-align: top;
+  font-size: 10pt;
+}
+table.grid td {
+  padding: 3mm 4mm;
+  border-bottom: 0.5px solid #e3d9bf;
+  background: var(--card);
+  line-height: 1.8;
+}
+table.grid tr:nth-child(even) td { background: #fdfbf4; }
+
+.disclaimer {
+  margin-top: 9mm;
+  padding: 5mm 6mm;
+  border: 1px dashed var(--gold);
+  background: #fffdf6;
+  text-align: center;
+  font-size: 10pt;
+  color: var(--emerald-deep);
+  line-height: 1.8;
+  break-inside: avoid;
+}
+
+.doc-footer {
+  margin-top: 7mm;
+  padding-top: 4mm;
+  border-top: 1px solid var(--gold);
+  text-align: center;
+  font-size: 9pt;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  break-inside: avoid;
+}
+.doc-footer .brand {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+}
+
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 17mm;
+}
+@page cover { margin: 0; }
+
+/* এই সংকলনে প্রতি-আয়াত পাঠসংখ্যা নেই, তাই .instruction ব্লক বাদ */
+.card .translation:last-child { margin-bottom: 0; }
+
+.source-note {
+  font-size: 9.5pt;
+  line-height: 1.8;
+  color: #4a5b53;
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 3mm;
+  margin-top: 4mm;
+}
+.cover-source {
+  font-size: 9pt;
+  color: var(--gold-light);
+  line-height: 1.8;
+  margin-top: 5mm;
+}
+.count-pill {
+  display: inline-block;
+  border: 1px solid var(--gold);
+  background: #fffdf6;
+  color: var(--emerald-deep);
+  font-size: 9.5pt;
+  padding: 1mm 4mm;
+  border-radius: 2mm;
+}
+
+body { background: #efeadd; padding: 0; }
+.page-wrap {
+  max-width: 210mm;
+  margin: 0 auto;
+  background: var(--page);
+  padding: 14mm 12mm 18mm;
+  box-shadow: 0 2px 30px rgba(5,46,34,0.13);
+}
+.cover { height: auto; min-height: 240mm; margin: 0 -12mm 12mm; }
+.print-only { display: none; }
+
+.web-nav {
+  background: var(--emerald-deep);
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 20;
+}
+.web-nav a { color: var(--gold-light); text-decoration: none; font-size: 14px; }
+.web-nav .home { color: #fffdf5; font-family: 'Noto Serif Bengali', serif; }
+.web-nav .dl a { border: 1px solid var(--gold); padding: 4px 12px; border-radius: 3px; }
+
+.card, .note-box, .intro-block { overflow-x: auto; }
+.arabic { font-size: 24px; line-height: 2.6; }
+
+@media (max-width: 640px) {
+  .page-wrap { padding: 10px 12px 30px; }
+  .cover { margin: 0 -12px 20px; padding: 40px 20px; min-height: auto; }
+  .cover h1 { font-size: 26px; }
+  .cover-bismillah { font-size: 24px; }
+  .arabic { font-size: 20px; line-height: 2.4; }
+  body { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="web-nav">
+  <a class="home" href="index.html">← সব আয়াত সংকলন</a>
+  <span class="dl"><a href="../../pdf/alroqya/ayat-ar-rizq.pdf">PDF ডাউনলোড</a></span>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ══════════════ কভার ══════════════ -->
+<section class="cover">
+  <div class="cover-main">
+    <div class="cover-bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-kicker">আয়াত সংকলন — বাংলা অর্থসহ</div>
+    <h1>আয়াতুর রিযক্ব</h1>
+    <p class="cover-sub">রিযিক-সংক্রান্ত আয়াতসমূহ</p>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-source">শাইখ খালিদ আল-হাবাশি — alroqya.com</div>
+  </div>
+  <div class="cover-author">
+    <div class="name">রাকী ফয়সাল আহমেদ সাবিত</div>
+    <div class="center">আল কুরআন রুকইয়াহ হিলিং সেন্টার</div>
+    <div class="en">Al Quranic Ruqyah Healing Center</div>
+  </div>
+</section>
+
+<!-- ══════════════ ভূমিকা ══════════════ -->
+<section class="section-band" id="intro">
+  <h2>ভূমিকা — কখন এই আয়াতগুলো পড়বেন</h2>
+  <div class="band-note">শাইখ খালিদ আল-হাবাশির মূল আরবি ভূমিকার বাংলা অনুবাদ।</div>
+</section>
+
+<div class="intro-block">যে ব্যক্তি বদনজর বা জাদুতে আক্রান্ত হয়ে রিযিক উপার্জনে বাধাগ্রস্ত, এবং যার উপর অবস্থা স্থবির করে দেওয়ার জাদু, ব্যবসায় মন্দা ও কাজে অনীহার জাদু করা হয়েছে — তার উপর এই আয়াতগুলো পড়া হয়।</div>
+
+<div class="note-box" style="margin-top:6mm;">
+  <strong>এই সংকলনে:</strong>
+  <span class="count-pill">৮৪ টি অংশ</span>
+  <span class="count-pill">১২১ টি আয়াত</span>
+  <div class="source-note" style="border:0;padding:0;margin-top:3.5mm;">
+    আয়াতগুলো মূল সংকলনের ক্রম অনুসারেই সাজানো হয়েছে, কোনো পরিবর্তন করা হয়নি।
+    আরবি পাঠ ইন্দো-পাক (নূরানী) রীতিতে দেওয়া হয়েছে। বাংলা অনুবাদ: তাইসীরুল কুরআন — তাওহীদ পাবলিকেশন।
+  </div>
+</div>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>জরুরি নোট:</strong> রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি — প্রয়োজনীয় ডাক্তারি
+  পরীক্ষা-নিরীক্ষা ও চিকিৎসার সমান্তরালে চলবে, বিকল্প হিসেবে নয়। কোনো লক্ষণ মিললেই
+  নিশ্চিতভাবে সিহর, বদনজর বা জিনের আসর ধরে নেওয়া ঠিক নয়।
+</div>
+
+<!-- ══════════════ আয়াতসমূহ ══════════════ -->
+<section class="section-band" id="ayat">
+  <h2>আয়াতুর রিযক্ব</h2>
+  <div class="band-note">মোট ১২১ টি আয়াত, ৮৪ টি অংশে।</div>
+</section>
+
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৫</div>
+  </div>
+  <div class="arabic">وَبَشِّرِ الَّذِينَ ءَامَنُوا وَعَمِلُوا الصّٰلِحٰتِ أَنَّ لَهُمْ جَنّٰتٍ تَجْرِى مِن تَحْتِهَا الْأَنْهٰرُ ۖ كُلَّمَا رُزِقُوا مِنْهَا مِن ثَمَرَةٍ رِّزْقًا ۙ قَالُوا هٰذَا الَّذِى رُزِقْنَا مِن قَبْلُ ۖ وَأُتُوا بِهِۦ مُتَشٰبِهًا ۖ وَلَهُمْ فِيهَا أَزْوٰجٌ مُّطَهَّرَةٌ ۖ وَهُمْ فِيهَا خٰلِدُونَ</div>
+  <div class="translation">যারা ঈমান আনে ও সৎকর্ম করে তাদেরকে সুসংবাদ দাও যে, তাদের জন্য আছে জান্নাত, যার নিম্নদেশে নদীসমূহ প্রবাহিত। তাদেরকে যখনই ফলমূল খেতে দেয়া হবে, তখনই তারা বলবে, আমাদেরকে পূর্বে জীবিকা হিসেবে যা দেয়া হতো, এতো তারই মতো। একই রকম ফল তাদেরকে দেয়া হবে এবং সেখানে রয়েছে তাদের জন্য পবিত্র সঙ্গিণী, তারা সেখানে চিরস্থায়ী হবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২</div>
+    <div class="card-title">সূরা আল-বাকারা : ১০৫</div>
+  </div>
+  <div class="arabic">مَّا يَوَدُّ الَّذِينَ كَفَرُوا مِنْ أَهْلِ الْكِتٰبِ وَلَا الْمُشْرِكِينَ أَن يُنَزَّلَ عَلَيْكُم مِّنْ خَيْرٍ مِّن رَّبِّكُمْ ۗ وَاللَّهُ يَخْتَصُّ بِرَحْمَتِهِۦ مَن يَشَاءُ ۚ وَاللَّهُ ذُو الْفَضْلِ الْعَظِيمِ</div>
+  <div class="translation">গ্রন্থধারীদের মধ্যে যারা অবিশ্বাসী তারা ও মুশরিকরা এটা চায় না যে, তোমাদের প্রতিপালকের পক্ষ হতে তোমাদের প্রতি কোন কল্যাণ অবতীর্ণ হোক অথচ আল্লাহ যাকে ইচ্ছে স্বীয় দয়ায় নির্দিষ্ট করে নেন এবং আল্লাহ মহা অনুগ্রহশীল।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩</div>
+    <div class="card-title">সূরা আল-বাকারা : ২১২</div>
+  </div>
+  <div class="arabic">زُيِّنَ لِلَّذِينَ كَفَرُوا الْحَيَوٰةُ الدُّنْيَا وَيَسْخَرُونَ مِنَ الَّذِينَ ءَامَنُوا ۘ وَالَّذِينَ اتَّقَوْا فَوْقَهُمْ يَوْمَ الْقِيٰمَةِ ۗ وَاللَّهُ يَرْزُقُ مَن يَشَاءُ بِغَيْرِ حِسَابٍ</div>
+  <div class="translation">কাফিরদের নিকট পার্থিব জীবন মোহনীয় করা হয়েছে এবং তারা মুমিনদেরকে বিদ্রূপ করে থাকে, বস্তুতঃ ক্বিয়ামাতের দিন মুত্তাকীগণ তাদের চেয়ে উন্নত অবস্থায় থাকবে, আল্লাহ যাকে ইচ্ছে অপরিমিত রিযক দিয়ে থাকেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৪৬-২৪৭</div>
+  </div>
+  <div class="arabic">أَلَمْ تَرَ إِلَى الْمَلَإِ مِن بَنِى إِسْرٰءِيلَ مِن بَعْدِ مُوسَىٰ إِذْ قَالُوا لِنَبِىٍّ لَّهُمُ ابْعَثْ لَنَا مَلِكًا نُّقٰتِلْ فِى سَبِيلِ اللَّهِ ۖ قَالَ هَلْ عَسَيْتُمْ إِن كُتِبَ عَلَيْكُمُ الْقِتَالُ أَلَّا تُقٰتِلُوا ۖ قَالُوا وَمَا لَنَا أَلَّا نُقٰتِلَ فِى سَبِيلِ اللَّهِ وَقَدْ أُخْرِجْنَا مِن دِيٰرِنَا وَأَبْنَائِنَا ۖ فَلَمَّا كُتِبَ عَلَيْهِمُ الْقِتَالُ تَوَلَّوْا إِلَّا قَلِيلًا مِّنْهُمْ ۗ وَاللَّهُ عَلِيمٌ بِالظّٰلِمِينَ وَقَالَ لَهُمْ نَبِيُّهُمْ إِنَّ اللَّهَ قَدْ بَعَثَ لَكُمْ طَالُوتَ مَلِكًا ۚ قَالُوا أَنَّىٰ يَكُونُ لَهُ الْمُلْكُ عَلَيْنَا وَنَحْنُ أَحَقُّ بِالْمُلْكِ مِنْهُ وَلَمْ يُؤْتَ سَعَةً مِّنَ الْمَالِ ۚ قَالَ إِنَّ اللَّهَ اصْطَفَىٰهُ عَلَيْكُمْ وَزَادَهُۥ بَسْطَةً فِى الْعِلْمِ وَالْجِسْمِ ۖ وَاللَّهُ يُؤْتِى مُلْكَهُۥ مَن يَشَاءُ ۚ وَاللَّهُ وٰسِعٌ عَلِيمٌ</div>
+  <div class="translation">তুমি কি মূসার পরবর্তী বানী ইসরাঈলের প্রধানদের প্রতি লক্ষ্য করনি? তারা তাদের নাবীকে বলেছিল, ‘আমাদের জন্য একজন বাদশাহ ঠিক করুন, যাতে আমরা আল্লাহর পথে জিহাদ করি’। নির্দেশ হল, ‘এমন সম্ভাবনা আছে কি যে, যদি তোমাদের প্রতি জিহাদের হুকুম দেয়া হয় তবে তোমরা জিহাদ করবে না’? তারা বলল, ‘আমরা কী ওজরে আল্লাহর পথে জিহাদ করব না, যখন আমরা আমাদের গৃহ ও সন্তানাদি হতে বহিস্কৃত হয়েছি’। অতঃপর যখন তাদের প্রতি জিহাদের হুকুম হল, তখন তাদের অল্প সংখ্যক লোক ছাড়া সকলেই ফিরে দাঁড়াল এবং আল্লাহ যালিমদেরকে খুব ভালভাবেই জানেন। তাদেরকে তাদের নাবী বলল, আল্লাহ যথার্থই তালুতকে তোমাদের বাদশাহ ঠিক করেছেন। তারা বলল, ‘আমাদের উপর কী প্রকারে তার রাজক্ষমতা মিলতে পারে যখন তার চেয়ে আমরাই রাজশক্তির অধিক যোগ্যপাত্র আর তাকে আর্থিক স্বচ্ছলতাও প্রদান করা হয়নি’! নাবী বলল, আল্লাহ তাকেই তোমাদের উপর পছন্দ করেছেন এবং তাকে জ্ঞানে ও দেহে সমৃদ্ধ করেছেন, আল্লাহ যাকে ইচ্ছে নিজের রাজ্য দান করেন, বস্তুতঃ আল্লাহ পর্যাপ্ত দাতা ও প্রজ্ঞাময়।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫</div>
+    <div class="card-title">সূরা আলে ইমরান : ১৪</div>
+  </div>
+  <div class="arabic">زُيِّنَ لِلنَّاسِ حُبُّ الشَّهَوٰتِ مِنَ النِّسَاءِ وَالْبَنِينَ وَالْقَنٰطِيرِ الْمُقَنطَرَةِ مِنَ الذَّهَبِ وَالْفِضَّةِ وَالْخَيْلِ الْمُسَوَّمَةِ وَالْأَنْعٰمِ وَالْحَرْثِ ۗ ذٰلِكَ مَتٰعُ الْحَيَوٰةِ الدُّنْيَا ۖ وَاللَّهُ عِندَهُۥ حُسْنُ الْمَـَٔابِ</div>
+  <div class="translation">মানুষের কাছে সুশোভিত করা হয়েছে নারী, সন্তান, স্ত্তপীকৃত স্বর্ণ ও রৌপ্যভান্ডার, চিহ্নযুক্ত অশ্বরাজি, গৃহপালিত পশু এবং শস্যক্ষেত্র, এসব পার্থিব জীবনের সম্পদ, আর আল্লাহ -তাঁরই নিকট রয়েছে উত্তম আশ্রয়স্থল।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬</div>
+    <div class="card-title">সূরা আলে ইমরান : ২৬</div>
+  </div>
+  <div class="arabic">قُلِ اللَّهُمَّ مٰلِكَ الْمُلْكِ تُؤْتِى الْمُلْكَ مَن تَشَاءُ وَتَنزِعُ الْمُلْكَ مِمَّن تَشَاءُ وَتُعِزُّ مَن تَشَاءُ وَتُذِلُّ مَن تَشَاءُ ۖ بِيَدِكَ الْخَيْرُ ۖ إِنَّكَ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ</div>
+  <div class="translation">বল, ‘হে আল্লাহ! তুমি সমুদয় রাজ্যের মালিক, যাকে ইচ্ছে রাজ্য দান কর আর যার থেকে ইচ্ছে রাজ্য কেড়ে নাও এবং যাকে ইচ্ছে সম্মানিত কর আর যাকে ইচ্ছে অপদস্থ কর, তোমারই হাতে সব রকম কল্যাণ, নিশ্চয়ই তুমি সকল বস্তুর উপর ক্ষমতাবান’।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭</div>
+    <div class="card-title">সূরা আলে ইমরান : ৩৭</div>
+  </div>
+  <div class="arabic">فَتَقَبَّلَهَا رَبُّهَا بِقَبُولٍ حَسَنٍ وَأَنبَتَهَا نَبَاتًا حَسَنًا وَكَفَّلَهَا زَكَرِيَّا ۖ كُلَّمَا دَخَلَ عَلَيْهَا زَكَرِيَّا الْمِحْرَابَ وَجَدَ عِندَهَا رِزْقًا ۖ قَالَ يٰمَرْيَمُ أَنَّىٰ لَكِ هٰذَا ۖ قَالَتْ هُوَ مِنْ عِندِ اللَّهِ ۖ إِنَّ اللَّهَ يَرْزُقُ مَن يَشَاءُ بِغَيْرِ حِسَابٍ</div>
+  <div class="translation">তখন তার প্রতিপালক তাকে সন্তুষ্টি সহকারে গ্রহণ করলেন এবং তাকে উত্তমরূপে লালন পালন করলেন এবং যাকারিয়াকে তার তত্ত্বাবধায়ক করলেন। যখনই যাকারিয়া মারইয়ামের কক্ষে প্রবেশ করত, তার কাছে খাদ্য সামগ্রী দেখতে পেত; জিজ্ঞেস করত- হে মারইয়াম! ‘এসব কোত্থেকে তোমার কাছে আসে’? মারইয়াম বলত, ‘ওসব আল্লাহর নিকট হতে (আসে)’। নিশ্চয়ই আল্লাহ যাকে ইচ্ছে বেহিসাব রিযক দান করেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮</div>
+    <div class="card-title">সূরা আন-নিসা : ২৯-৩০</div>
+  </div>
+  <div class="arabic">يٰأَيُّهَا الَّذِينَ ءَامَنُوا لَا تَأْكُلُوا أَمْوٰلَكُم بَيْنَكُم بِالْبٰطِلِ إِلَّا أَن تَكُونَ تِجٰرَةً عَن تَرَاضٍ مِّنكُمْ ۚ وَلَا تَقْتُلُوا أَنفُسَكُمْ ۚ إِنَّ اللَّهَ كَانَ بِكُمْ رَحِيمًا وَمَن يَفْعَلْ ذٰلِكَ عُدْوٰنًا وَظُلْمًا فَسَوْفَ نُصْلِيهِ نَارًا ۚ وَكَانَ ذٰلِكَ عَلَى اللَّهِ يَسِيرًا</div>
+  <div class="translation">হে ঈমানদারগণ! তোমরা অন্যায়ভাবে একে অন্যের সম্পদ গ্রাস করো না, তবে পারস্পরিক সম্মতিতে ব্যবসায় বৈধ এবং নিজেদের ধ্বংস ডেকে এনো না কিংবা তোমরা পরস্পরকে হত্যা করো না, নিশ্চয় আল্লাহ তোমাদের প্রতি কৃপাময়। যে ব্যক্তি সীমালঙ্ঘন ক’রে অন্যায়ভাবে এটা করবে, তাকে আমি অতিসত্বর অগ্নিতে দগ্ধ করব, এটা আল্লাহর পক্ষে সহজ।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৯</div>
+    <div class="card-title">সূরা আন-নিসা : ৩২</div>
+  </div>
+  <div class="arabic">وَلَا تَتَمَنَّوْا مَا فَضَّلَ اللَّهُ بِهِۦ بَعْضَكُمْ عَلَىٰ بَعْضٍ ۚ لِّلرِّجَالِ نَصِيبٌ مِّمَّا اكْتَسَبُوا ۖ وَلِلنِّسَاءِ نَصِيبٌ مِّمَّا اكْتَسَبْنَ ۚ وَسْـَٔلُوا اللَّهَ مِن فَضْلِهِۦ ۗ إِنَّ اللَّهَ كَانَ بِكُلِّ شَىْءٍ عَلِيمًا</div>
+  <div class="translation">তোমরা তা কামনা করো না যা দ্বারা আল্লাহ তোমাদের কাউকে কারো উপর মর্যাদা প্রদান করেছেন। পুরুষেরা তাদের কৃতকার্যের অংশ পাবে, নারীরাও তাদের কৃতকর্মের অংশ পাবে এবং তোমরা আল্লাহর নিকট তাঁর অনুগ্রহ কামনা কর, নিশ্চয়ই আল্লাহ সর্ববিষয়ে সর্বজ্ঞ।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১০</div>
+    <div class="card-title">সূরা আল-আন'আম : ১৫১</div>
+  </div>
+  <div class="arabic">۞ قُلْ تَعَالَوْا أَتْلُ مَا حَرَّمَ رَبُّكُمْ عَلَيْكُمْ ۖ أَلَّا تُشْرِكُوا بِهِۦ شَيْـًٔا ۖ وَبِالْوٰلِدَيْنِ إِحْسٰنًا ۖ وَلَا تَقْتُلُوا أَوْلٰدَكُم مِّنْ إِمْلٰقٍ ۖ نَّحْنُ نَرْزُقُكُمْ وَإِيَّاهُمْ ۖ وَلَا تَقْرَبُوا الْفَوٰحِشَ مَا ظَهَرَ مِنْهَا وَمَا بَطَنَ ۖ وَلَا تَقْتُلُوا النَّفْسَ الَّتِى حَرَّمَ اللَّهُ إِلَّا بِالْحَقِّ ۚ ذٰلِكُمْ وَصَّىٰكُم بِهِۦ لَعَلَّكُمْ تَعْقِلُونَ</div>
+  <div class="translation">বল, ‘এসো, তোমাদের প্রতিপালক তোমাদের জন্য যা নিষিদ্ধ করেছেন তা পড়ে শোনাই, তা এই যে, তাঁর সাথে কোন কিছুকে শরীক করো না, পিতা-মাতার সঙ্গে সদ্ব্যবহার কর, দরিদ্রতার ভয়ে তোমাদের সন্তানদের হত্যা করো না, আমিই তোমাদেরকে আর তাদেরকে জীবিকা দিয়ে থাকি, প্রকাশ্য বা গোপন কোন অশ্লীলতার কাছেও যেয়ো না, আল্লাহ যে প্রাণ হরণ করা হারাম করেছেন তা ন্যায় সঙ্গত কারণ ছাড়া হত্যা করো না। এ সম্পর্কে তিনি তোমাদেরকে নির্দেশ দিচ্ছেন যাতে তোমরা চিন্তা- ভাবনা করে কাজ কর।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১১</div>
+    <div class="card-title">সূরা আল-আন'আম : ১৪২</div>
+  </div>
+  <div class="arabic">وَمِنَ الْأَنْعٰمِ حَمُولَةً وَفَرْشًا ۚ كُلُوا مِمَّا رَزَقَكُمُ اللَّهُ وَلَا تَتَّبِعُوا خُطُوٰتِ الشَّيْطٰنِ ۚ إِنَّهُۥ لَكُمْ عَدُوٌّ مُّبِينٌ</div>
+  <div class="translation">গবাদি পশুর মধ্যে কতক আছে ভারবাহী আর কতক আছে গোশত ও আচ্ছাদনের সামগ্রী দানকারী, আল্লাহ তোমাদেরকে যে রিয্ক্ব দিয়েছেন তাত্থেকে ভক্ষণ কর আর শায়ত্বনের পদাঙ্ক অনুসরণ করো না, সে তোমাদের খোলাখুলি দুশমন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১২</div>
+    <div class="card-title">সূরা আল-আনফাল : ২৬</div>
+  </div>
+  <div class="arabic">وَاذْكُرُوا إِذْ أَنتُمْ قَلِيلٌ مُّسْتَضْعَفُونَ فِى الْأَرْضِ تَخَافُونَ أَن يَتَخَطَّفَكُمُ النَّاسُ فَـَٔاوَىٰكُمْ وَأَيَّدَكُم بِنَصْرِهِۦ وَرَزَقَكُم مِّنَ الطَّيِّبٰتِ لَعَلَّكُمْ تَشْكُرُونَ</div>
+  <div class="translation">স্মরণ কর সে সময়ের কথা যখন তোমরা ছিলে সংখ্যায় অল্প, দুনিয়াতে তোমাদেরকে দুর্বল হিসেবে গণ্য করা হত। তোমরা আশঙ্কা করতে যে, মানুষেরা তোমাদের কখন না হঠাৎ ধরে নিয়ে যায়। এমন অবস্থায় তিনি তোমাদেরকে আশ্রয় দিলেন, তাঁর সাহায্য দিয়ে তোমাদেরকে শক্তিশালী করলেন, উত্তম জীবিকা দান করলেন যাতে তোমরা (তাঁর নির্দেশ পালনের মাধ্যমে) কৃতজ্ঞতা প্রকাশ কর।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৩</div>
+    <div class="card-title">সূরা আত-তাওবা : ২৮</div>
+  </div>
+  <div class="arabic">يٰأَيُّهَا الَّذِينَ ءَامَنُوا إِنَّمَا الْمُشْرِكُونَ نَجَسٌ فَلَا يَقْرَبُوا الْمَسْجِدَ الْحَرَامَ بَعْدَ عَامِهِمْ هٰذَا ۚ وَإِنْ خِفْتُمْ عَيْلَةً فَسَوْفَ يُغْنِيكُمُ اللَّهُ مِن فَضْلِهِۦ إِن شَاءَ ۚ إِنَّ اللَّهَ عَلِيمٌ حَكِيمٌ</div>
+  <div class="translation">ওহে বিশ্বাসীগণ! মুশরিকরা হল অপবিত্র, কাজেই এ বছরের পর তারা যেন মাসজিদে হারামের নিকট না আসে। তোমরা যদি দরিদ্রতার ভয় কর, তবে আল্লাহ ইচ্ছে করলে অচিরেই তাঁর অনুগ্রহের মাধ্যমে তোমাদেরকে অভাব-মুক্ত করে দেবেন। নিশ্চয়ই আল্লাহ সর্বজ্ঞ, মহাবিজ্ঞানী।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৪</div>
+    <div class="card-title">সূরা আত-তাওবা : ৭৪</div>
+  </div>
+  <div class="arabic">يَحْلِفُونَ بِاللَّهِ مَا قَالُوا وَلَقَدْ قَالُوا كَلِمَةَ الْكُفْرِ وَكَفَرُوا بَعْدَ إِسْلٰمِهِمْ وَهَمُّوا بِمَا لَمْ يَنَالُوا ۚ وَمَا نَقَمُوا إِلَّا أَنْ أَغْنَىٰهُمُ اللَّهُ وَرَسُولُهُۥ مِن فَضْلِهِۦ ۚ فَإِن يَتُوبُوا يَكُ خَيْرًا لَّهُمْ ۖ وَإِن يَتَوَلَّوْا يُعَذِّبْهُمُ اللَّهُ عَذَابًا أَلِيمًا فِى الدُّنْيَا وَالْءَاخِرَةِ ۚ وَمَا لَهُمْ فِى الْأَرْضِ مِن وَلِىٍّ وَلَا نَصِيرٍ</div>
+  <div class="translation">তারা আল্লাহর নামে শপথ করে বলে যে তারা (অন্যায়) কিছু বলেনি, কিন্তু তারা তো কুফরী কথা বলেছে আর ইসলাম গ্রহণ করার পরও কুফরী করেছে। তারা ষড়যন্ত্র করেছিল কিন্তু তাতে সফল হয়নি, তাদের এ প্রতিশোধ স্পৃহার কারণ এছাড়া আর কিছু ছিল না যে আল্লাহ করুণাবশতঃ ও তাঁর রসূল তাদেরকে সম্পদশালী করে দিয়েছেন। এখন যদি তারা অনুশোচনাভরে এ পথ থেকে ফিরে আসে তবে তা তাদের জন্যই কল্যাণকর। আর যদি তারা মুখ ফিরিয়ে নেয় তবে আল্লাহ তাদেরকে দুনিয়া ও আখেরাতে ভয়াবহ শাস্তি দিবেন। পৃথিবীতে রক্ষক আর সাহায্যকারী হিসেবে কাউকে তারা পাবে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৫</div>
+    <div class="card-title">সূরা আন-নাহল : ১৪</div>
+  </div>
+  <div class="arabic">وَهُوَ الَّذِى سَخَّرَ الْبَحْرَ لِتَأْكُلُوا مِنْهُ لَحْمًا طَرِيًّا وَتَسْتَخْرِجُوا مِنْهُ حِلْيَةً تَلْبَسُونَهَا وَتَرَى الْفُلْكَ مَوَاخِرَ فِيهِ وَلِتَبْتَغُوا مِن فَضْلِهِۦ وَلَعَلَّكُمْ تَشْكُرُونَ</div>
+  <div class="translation">তিনিই সমুদ্রকে কল্যাণে নিয়োজিত রেখেছেন যাতে তোমরা তাত্থেকে তাজা গোশত খেতে পার, আর তাত্থেকে তোমরা রত্নরাজি সংগ্রহ করতে পার যা তোমরা অলংকার হিসেবে পরিধান কর। আর নৌযানগুলোকে তোমরা দেখতে পাও ঢেউয়ের বুক চিরে তাতে চলাচল করে, যাতে তোমরা তাঁর অনুগ্রহ তালাশ করতে পার আর শোকর আদায় করতে পার।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৬</div>
+    <div class="card-title">সূরা হুদ : ৮৮</div>
+  </div>
+  <div class="arabic">قَالَ يٰقَوْمِ أَرَءَيْتُمْ إِن كُنتُ عَلَىٰ بَيِّنَةٍ مِّن رَّبِّى وَرَزَقَنِى مِنْهُ رِزْقًا حَسَنًا ۚ وَمَا أُرِيدُ أَنْ أُخَالِفَكُمْ إِلَىٰ مَا أَنْهَىٰكُمْ عَنْهُ ۚ إِنْ أُرِيدُ إِلَّا الْإِصْلٰحَ مَا اسْتَطَعْتُ ۚ وَمَا تَوْفِيقِى إِلَّا بِاللَّهِ ۚ عَلَيْهِ تَوَكَّلْتُ وَإِلَيْهِ أُنِيبُ</div>
+  <div class="translation">সে বলল, ‘হে আমার জাতির লোকেরা! তোমরা কি ভেবে দেখেছ যদি আমি আমার প্রতিপালকের স্পষ্ট প্রমাণের উপর প্রতিষ্ঠিত হয়ে থাকি আর তিনি আমাকে তাঁর পক্ষ থেকে উত্তম রিযক দিয়ে থাকেন (তাহলে আমি কীভাবে তোমাদের অন্যায় কাজের সঙ্গী হতে পারি?), আমি তোমাদেরকে যে কাজ করতে নিষেধ করি সেটা তোমাদের প্রতি বিরুদ্ধাচরণ করার ইচ্ছায় নয়, আমি তো সাধ্যমত সংশোধন করতে চাই, আমার কাজের সাফল্য তো আল্লাহরই পক্ষ হতে, আমি তাঁর উপরই নির্ভর করি, আর তাঁর দিকেই মুখ করি।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৭</div>
+    <div class="card-title">সূরা ইউনুস : ৩১</div>
+  </div>
+  <div class="arabic">قُلْ مَن يَرْزُقُكُم مِّنَ السَّمَاءِ وَالْأَرْضِ أَمَّن يَمْلِكُ السَّمْعَ وَالْأَبْصٰرَ وَمَن يُخْرِجُ الْحَىَّ مِنَ الْمَيِّتِ وَيُخْرِجُ الْمَيِّتَ مِنَ الْحَىِّ وَمَن يُدَبِّرُ الْأَمْرَ ۚ فَسَيَقُولُونَ اللَّهُ ۚ فَقُلْ أَفَلَا تَتَّقُونَ</div>
+  <div class="translation">তাদের জিজ্ঞেস কর, ‘আকাশ আর যমীন হতে কে তাদের জীবিকার ব্যবস্থা করে? কিংবা শ্রবণশক্তি ও দর্শনশক্তি কার মালিকানাধীন? আর মৃত থেকে জীবিতকে কে বের করেন আর কে মৃতকে জীবিত থেকে বের করেন? যাবতীয় বিষয়ের শাসন ও নিয়ন্ত্রণ কার অধীনস্থ?’ তারা বলে উঠবে, ‘‘আল্লাহ’’। তাহলে তাদেরকে বল, ‘তবুও তোমরা তাক্বওয়াহ অবলম্বন করবে না?’</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৮</div>
+    <div class="card-title">সূরা ইউনুস : ৯৩</div>
+  </div>
+  <div class="arabic">وَلَقَدْ بَوَّأْنَا بَنِى إِسْرٰءِيلَ مُبَوَّأَ صِدْقٍ وَرَزَقْنٰهُم مِّنَ الطَّيِّبٰتِ فَمَا اخْتَلَفُوا حَتَّىٰ جَاءَهُمُ الْعِلْمُ ۚ إِنَّ رَبَّكَ يَقْضِى بَيْنَهُمْ يَوْمَ الْقِيٰمَةِ فِيمَا كَانُوا فِيهِ يَخْتَلِفُونَ</div>
+  <div class="translation">আমি বানী ইসরাঈলকে মর্যাদাপূর্ণ আবাসস্থলে প্রতিষ্ঠিত করেছিলাম আর তাদেরকে উত্তম রিযক দিয়েছিলাম। অতঃপর তাদের কাছে (আল্লাহর প্রেরিত) সঠিক জ্ঞান আসার পূর্ব পর্যন্ত তারা মতভেদ করেনি। তারা যে বিষয়ে মতভেদ করেছিল কিয়ামাত দিবসে তোমার প্রতিপালক অবশ্যই তা মীমাংসা করে দিবেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৯</div>
+    <div class="card-title">সূরা আর-রা'দ : ২৬</div>
+  </div>
+  <div class="arabic">اللَّهُ يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ وَيَقْدِرُ ۚ وَفَرِحُوا بِالْحَيَوٰةِ الدُّنْيَا وَمَا الْحَيَوٰةُ الدُّنْيَا فِى الْءَاخِرَةِ إِلَّا مَتٰعٌ</div>
+  <div class="translation">আল্লাহ রিযক সম্প্রসারিত করেন যার জন্য ইচ্ছে করেন, আর যার জন্য চান সীমিত পরিমাণে দেন। তারা পার্থিব জীবনে আনন্দে মেতে আছে অথচ আখেরাতের তুলনায় দুনিয়ার জীবন অতি নগণ্য বস্তু।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২০</div>
+    <div class="card-title">সূরা আন-নাহল : ৭১-৭২</div>
+  </div>
+  <div class="arabic">وَاللَّهُ فَضَّلَ بَعْضَكُمْ عَلَىٰ بَعْضٍ فِى الرِّزْقِ ۚ فَمَا الَّذِينَ فُضِّلُوا بِرَادِّى رِزْقِهِمْ عَلَىٰ مَا مَلَكَتْ أَيْمٰنُهُمْ فَهُمْ فِيهِ سَوَاءٌ ۚ أَفَبِنِعْمَةِ اللَّهِ يَجْحَدُونَ وَاللَّهُ جَعَلَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوٰجًا وَجَعَلَ لَكُم مِّنْ أَزْوٰجِكُم بَنِينَ وَحَفَدَةً وَرَزَقَكُم مِّنَ الطَّيِّبٰتِ ۚ أَفَبِالْبٰطِلِ يُؤْمِنُونَ وَبِنِعْمَتِ اللَّهِ هُمْ يَكْفُرُونَ</div>
+  <div class="translation">রিযকের ব্যাপারে আল্লাহ তোমাদের মধ্যে কাউকে কারো উপর প্রাধান্য দিয়েছেন। যাদেরকে প্রাধান্য দেয়া হয়েছে তারা তাদের রিযক থেকে তাদের অধীনস্থ চাকর- গোলামদেরকে এমনভাবে ফিরিয়ে দেয় না, যাতে এক্ষেত্রে তারা সমান হয়ে যায়। (অথচ তারা নানান কিছুকে আল্লাহর অংশীদার বানিয়ে ওগুলোকে আল্লাহর সমান করে ফেলছে) তাহলে কি তারা আল্লাহর অনুগ্রহ অস্বীকার করে? আল্লাহ তোমাদের স্বজাতির মধ্য হতেই তোমাদের জোড়া সৃষ্টি করেছেন আর তোমাদের জন্য তোমাদের জোড়া থেকে পুত্র-পৌত্রাদি বানিয়েছেন আর তোমাদেরকে উৎকৃষ্ট রিযক দিয়েছেন। তবুও কি তারা ভিত্তিহীন বাতিল জিনিসের উপর ঈমান পোষণ করবে আর আল্লাহর অনুগ্রহকে তারা অস্বীকার করবে?</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২১</div>
+    <div class="card-title">সূরা আন-নাহল : ৭৫</div>
+  </div>
+  <div class="arabic">۞ ضَرَبَ اللَّهُ مَثَلًا عَبْدًا مَّمْلُوكًا لَّا يَقْدِرُ عَلَىٰ شَىْءٍ وَمَن رَّزَقْنٰهُ مِنَّا رِزْقًا حَسَنًا فَهُوَ يُنفِقُ مِنْهُ سِرًّا وَجَهْرًا ۖ هَلْ يَسْتَوُۥنَ ۚ الْحَمْدُ لِلَّهِ ۚ بَلْ أَكْثَرُهُمْ لَا يَعْلَمُونَ</div>
+  <div class="translation">আল্লাহ দৃষ্টান্ত দিচ্ছেনঃ অন্যের মালিকানাভুক্ত এক দাস যে কোন কিছু করারই ক্ষমতা রাখে না। আর এক লোক যাকে আমি আমার পক্ষ হতে উত্তম জীবিকা দান করেছি আর তাত্থেকে সে গোপনে প্রকাশ্যে দান করে, (এ) দু’জন কি সমান? সমস্ত প্রশংসা আল্লাহরই জন্য, কিন্তু তাদের অধিকাংশই জানে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২২</div>
+    <div class="card-title">সূরা আন-নাহল : ১১৪</div>
+  </div>
+  <div class="arabic">فَكُلُوا مِمَّا رَزَقَكُمُ اللَّهُ حَلٰلًا طَيِّبًا وَاشْكُرُوا نِعْمَتَ اللَّهِ إِن كُنتُمْ إِيَّاهُ تَعْبُدُونَ</div>
+  <div class="translation">কাজেই আল্লাহ তোমাদেরকে যে সকল বৈধ পবিত্র রিযক দিয়েছেন তা তোমরা খাও আর আল্লাহর অনুগ্রহের শুকরিয়া আদায় কর যদি তোমরা প্রকৃতই তাঁর বন্দেগী করতে ইচ্ছুক হও।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৩</div>
+    <div class="card-title">সূরা আল-ইসরা : ২৯-৩০</div>
+  </div>
+  <div class="arabic">وَلَا تَجْعَلْ يَدَكَ مَغْلُولَةً إِلَىٰ عُنُقِكَ وَلَا تَبْسُطْهَا كُلَّ الْبَسْطِ فَتَقْعُدَ مَلُومًا مَّحْسُورًا إِنَّ رَبَّكَ يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ وَيَقْدِرُ ۚ إِنَّهُۥ كَانَ بِعِبَادِهِۦ خَبِيرًا بَصِيرًا</div>
+  <div class="translation">তোমার হাতকে তোমার গলার সাথে বেঁধে দিও না, আর তা একেবারে প্রসারিত করেও দিওনা, তা করলে তুমি তিরস্কৃত ও নিঃস্ব হয়ে বসে পড়বে। তোমার প্রতিপালক যার জন্য ইচ্ছে রিযক্ প্রশস্ত করেন, যার জন্য ইচ্ছে সীমিত করেন, তিনি তাঁর বান্দাদের সম্পর্কে ওয়াকিফহাল, প্রত্যক্ষদর্শী।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৪</div>
+    <div class="card-title">সূরা আল-ইসরা : ৭০</div>
+  </div>
+  <div class="arabic">۞ وَلَقَدْ كَرَّمْنَا بَنِى ءَادَمَ وَحَمَلْنٰهُمْ فِى الْبَرِّ وَالْبَحْرِ وَرَزَقْنٰهُم مِّنَ الطَّيِّبٰتِ وَفَضَّلْنٰهُمْ عَلَىٰ كَثِيرٍ مِّمَّنْ خَلَقْنَا تَفْضِيلًا</div>
+  <div class="translation">আমি আদাম সন্তানকে সম্মানিত করেছি, তাদের জন্য জলে স্থলে যানবাহনের ব্যবস্থা করেছি, তাদেরকে পবিত্র রিযক দিয়েছি আর আমি তাদেরকে আমার অধিকাংশ সৃষ্টির উপর মর্যাদায় শ্রেষ্ঠত্ব দান করেছি।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৫</div>
+    <div class="card-title">সূরা আল-কাহফ : ৪৬</div>
+  </div>
+  <div class="arabic">الْمَالُ وَالْبَنُونَ زِينَةُ الْحَيَوٰةِ الدُّنْيَا ۖ وَالْبٰقِيٰتُ الصّٰلِحٰتُ خَيْرٌ عِندَ رَبِّكَ ثَوَابًا وَخَيْرٌ أَمَلًا</div>
+  <div class="translation">ধন-সম্পদ আর সন্তানাদি পার্থিব জীবনের শোভা-সৌন্দর্য, আর তোমার প্রতিপালকের নিকট পুরস্কার লাভের জন্য স্থায়ী সৎকাজ হল উৎকৃষ্ট আর আকাঙ্ক্ষা পোষণের ভিত্তি হিসেবেও উত্তম।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৬</div>
+    <div class="card-title">সূরা ত্বহা : ১৩২</div>
+  </div>
+  <div class="arabic">وَأْمُرْ أَهْلَكَ بِالصَّلَوٰةِ وَاصْطَبِرْ عَلَيْهَا ۖ لَا نَسْـَٔلُكَ رِزْقًا ۖ نَّحْنُ نَرْزُقُكَ ۗ وَالْعٰقِبَةُ لِلتَّقْوَىٰ</div>
+  <div class="translation">আর তোমার পবিরার-পরিজনকে নামাযের নির্দেশ দাও আর তাতে অবিচল থাক। তোমার কাছে আমি রিযক চাই না, আমিই তোমাকে রিযক দিয়ে থাকি, উত্তম পরিণাম মুত্তাকীদের জন্য নির্দিষ্ট।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৭</div>
+    <div class="card-title">সূরা ত্বহা : ১৩৪</div>
+  </div>
+  <div class="arabic">وَلَوْ أَنَّا أَهْلَكْنٰهُم بِعَذَابٍ مِّن قَبْلِهِۦ لَقَالُوا رَبَّنَا لَوْلَا أَرْسَلْتَ إِلَيْنَا رَسُولًا فَنَتَّبِعَ ءَايٰتِكَ مِن قَبْلِ أَن نَّذِلَّ وَنَخْزَىٰ</div>
+  <div class="translation">এর (অর্থাৎ কোন নিদর্শন আসার) আগেই আমি যদি তাদেরকে ‘আযাব দিয়ে ধ্বংস করে দিতাম তাহলে তারা বলত, ‘হে আমাদের প্রতিপালক! তুমি আমাদের কাছে কেন একজন রসূল পাঠালে না? তাহলে আমরা অবশ্যই তোমার নিদর্শন মেনে চলতাম আমরা অপমানিত ও হেয় হবার আগেই।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৮</div>
+    <div class="card-title">সূরা আল-হাজ্জ : ৫৮</div>
+  </div>
+  <div class="arabic">وَالَّذِينَ هَاجَرُوا فِى سَبِيلِ اللَّهِ ثُمَّ قُتِلُوا أَوْ مَاتُوا لَيَرْزُقَنَّهُمُ اللَّهُ رِزْقًا حَسَنًا ۚ وَإِنَّ اللَّهَ لَهُوَ خَيْرُ الرّٰزِقِينَ</div>
+  <div class="translation">আর যারা আল্লাহর পথে হিজরাত করেছে, অতঃপর নিহত হয়েছে, কিংবা মারা গেছে, আল্লাহ তাদেরকে অবশ্য অবশ্যই উৎকৃষ্ট রিযক্ দান করবেন, আর আল্লাহ- তিনি তো সর্বোত্তম রিযকদাতা।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৯</div>
+    <div class="card-title">সূরা আন-নূর : ৩৭-৩৮</div>
+  </div>
+  <div class="arabic">رِجَالٌ لَّا تُلْهِيهِمْ تِجٰرَةٌ وَلَا بَيْعٌ عَن ذِكْرِ اللَّهِ وَإِقَامِ الصَّلَوٰةِ وَإِيتَاءِ الزَّكَوٰةِ ۙ يَخَافُونَ يَوْمًا تَتَقَلَّبُ فِيهِ الْقُلُوبُ وَالْأَبْصٰرُ لِيَجْزِيَهُمُ اللَّهُ أَحْسَنَ مَا عَمِلُوا وَيَزِيدَهُم مِّن فَضْلِهِۦ ۗ وَاللَّهُ يَرْزُقُ مَن يَشَاءُ بِغَيْرِ حِسَابٍ</div>
+  <div class="translation">ঐ সব লোকের দ্বারা ব্যবসায় ও ক্রয়-বিক্রয় যাদেরকে তাঁর স্মরণ হতে বিচ্যুত করতে পারে না, আর নামায প্রতিষ্ঠা ও যাকাত প্রদান থেকেও না। তাদের ভয় করে (কেবল) সেদিনের যেদিন অন্তর ও দৃষ্টিসমূহ উল্টে যাবে। (তারা এভাবে আল্লাহর ইবাদাত করে) যাতে আল্লাহ তাদেরকে পুরস্কৃত করেন তাদের উত্তম কার্যাবলী অনুসারে আর নিজ অনুগ্রহে আরো অধিক দেন, কারণ আল্লাহ যার জন্য ইচ্ছে করেন অপরিমিত রিযক্ দান করেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩০</div>
+    <div class="card-title">সূরা আল-কাসাস : ৫৭</div>
+  </div>
+  <div class="arabic">وَقَالُوا إِن نَّتَّبِعِ الْهُدَىٰ مَعَكَ نُتَخَطَّفْ مِنْ أَرْضِنَا ۚ أَوَلَمْ نُمَكِّن لَّهُمْ حَرَمًا ءَامِنًا يُجْبَىٰ إِلَيْهِ ثَمَرٰتُ كُلِّ شَىْءٍ رِّزْقًا مِّن لَّدُنَّا وَلٰكِنَّ أَكْثَرَهُمْ لَا يَعْلَمُونَ</div>
+  <div class="translation">তারা বলে- ‘আমরা যদি তোমার সাথে সৎপথের অনুসরণ করি তাহলে আমরা আমাদের দেশ থেকে উৎখাত হব।’ আমি কি তাদের জন্য এক নিরাপদ ‘হারাম’ প্রতিষ্ঠিত করিনি যেখানে সর্বপ্রকার ফলমূলের নজরানা আসে আমার পক্ষ থেকে রিযক স্বরূপ? কিন্তু তাদের অধিকাংশই তা জানে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩১</div>
+    <div class="card-title">সূরা আল-কাসাস : ৭৬-৭৭</div>
+  </div>
+  <div class="arabic">۞ إِنَّ قٰرُونَ كَانَ مِن قَوْمِ مُوسَىٰ فَبَغَىٰ عَلَيْهِمْ ۖ وَءَاتَيْنٰهُ مِنَ الْكُنُوزِ مَا إِنَّ مَفَاتِحَهُۥ لَتَنُوأُ بِالْعُصْبَةِ أُولِى الْقُوَّةِ إِذْ قَالَ لَهُۥ قَوْمُهُۥ لَا تَفْرَحْ ۖ إِنَّ اللَّهَ لَا يُحِبُّ الْفَرِحِينَ وَابْتَغِ فِيمَا ءَاتَىٰكَ اللَّهُ الدَّارَ الْءَاخِرَةَ ۖ وَلَا تَنسَ نَصِيبَكَ مِنَ الدُّنْيَا ۖ وَأَحْسِن كَمَا أَحْسَنَ اللَّهُ إِلَيْكَ ۖ وَلَا تَبْغِ الْفَسَادَ فِى الْأَرْضِ ۖ إِنَّ اللَّهَ لَا يُحِبُّ الْمُفْسِدِينَ</div>
+  <div class="translation">কারূন ছিল মূসার সম্প্রদায়ভুক্ত, কিন্তু সে তাদের প্রতি উদ্ধত আচরণ করেছিল। তাকে আমি এমন ধনভান্ডার দিয়েছিলাম যে, তার চাবিগুলো বহন করা মাত্র একদল বলবান লোকের পক্ষে কষ্টকর ছিল। স্মরণ কর যখন তার সম্প্রদায় তাকে বলেছিল (ধনের) গর্ব করো না, আল্লাহ গর্বিতদেরকে ভালবাসেন না। আল্লাহ তোমাকে যা দিয়েছেন তা দিয়ে তুমি আখিরাতে (স্থায়ী সুখভোগের) আবাস অনুসন্ধান কর, আর দুনিয়ায় তোমার অংশের কথা ভুলে যেও না, (মানুষের) কল্যাণ সাধন কর, যেমন আল্লাহ তোমার কল্যাণ করেছেন, দেশে বিপর্যয় সৃষ্টির কামনা কর না, নিশ্চয় আল্লাহ বিপর্যয় সৃষ্টিকারীদের ভালবাসেন না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩২</div>
+    <div class="card-title">সূরা আন-নামল : ৩৬</div>
+  </div>
+  <div class="arabic">فَلَمَّا جَاءَ سُلَيْمٰنَ قَالَ أَتُمِدُّونَنِ بِمَالٍ فَمَا ءَاتَىٰنِۦَ اللَّهُ خَيْرٌ مِّمَّا ءَاتَىٰكُم بَلْ أَنتُم بِهَدِيَّتِكُمْ تَفْرَحُونَ</div>
+  <div class="translation">অতঃপর দূতরা যখন সুলাইমানের কাছে আসল, সুলাইমান বলল- ‘তোমরা কি আমাকে সম্পদ দিয়ে সাহায্য করছ, কিন্তু আল্লাহ আমাকে যা দিয়েছেন তা তোমাদেরকে যা দিয়েছেন তার চেয়ে উত্তম, বরং তোমরাই তোমাদের উপঢৌকন নিয়ে আনন্দ কর।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩৩</div>
+    <div class="card-title">সূরা আন-নামল : ৪০</div>
+  </div>
+  <div class="arabic">قَالَ الَّذِى عِندَهُۥ عِلْمٌ مِّنَ الْكِتٰبِ أَنَا ءَاتِيكَ بِهِۦ قَبْلَ أَن يَرْتَدَّ إِلَيْكَ طَرْفُكَ ۚ فَلَمَّا رَءَاهُ مُسْتَقِرًّا عِندَهُۥ قَالَ هٰذَا مِن فَضْلِ رَبِّى لِيَبْلُوَنِى ءَأَشْكُرُ أَمْ أَكْفُرُ ۖ وَمَن شَكَرَ فَإِنَّمَا يَشْكُرُ لِنَفْسِهِۦ ۖ وَمَن كَفَرَ فَإِنَّ رَبِّى غَنِىٌّ كَرِيمٌ</div>
+  <div class="translation">যার কাছে কিতাবের (তাওরাতের) জ্ঞান ছিল সে বলল- ‘আপনার দৃষ্টি আপনার দিকে ফিরে আসার পূর্বেই আমি তা আপনার কাছে এনে দেব।’ সুলাইমান যখন তা তার সামনে রক্ষিত দেখতে পেল তখন সে বলল- ‘এটা আমার প্রতিপালকের অনুগ্রহ, আমাকে পরীক্ষা করার জন্য- আমি কৃতজ্ঞতা প্রকাশ করি, না অকৃতজ্ঞ হই। যে কৃতজ্ঞতা প্রকাশ করে সে নিজের কল্যাণেই কৃতজ্ঞতা প্রকাশ করে। আর যে অকৃতজ্ঞ হয় (সে জেনে রাখুক), নিশ্চয়ই আমার প্রতিপালক অভাবমুক্ত, মর্যাদায় সর্বশ্রেষ্ঠ।’</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩৪</div>
+    <div class="card-title">সূরা আন-নামল : ৪২-৪৩</div>
+  </div>
+  <div class="arabic">فَلَمَّا جَاءَتْ قِيلَ أَهٰكَذَا عَرْشُكِ ۖ قَالَتْ كَأَنَّهُۥ هُوَ ۚ وَأُوتِينَا الْعِلْمَ مِن قَبْلِهَا وَكُنَّا مُسْلِمِينَ وَصَدَّهَا مَا كَانَت تَّعْبُدُ مِن دُونِ اللَّهِ ۖ إِنَّهَا كَانَتْ مِن قَوْمٍ كٰفِرِينَ</div>
+  <div class="translation">যখন সে নারী আসল তখন তাকে বলা হল- ‘এটা কি তোমার সিংহাসন?’ সে বলল, ‘এটা যেন সেটাই, আমাদেরকে এর আগেই (আপনার সম্পর্কে) জ্ঞান দান করা হয়েছে আর আমরা আত্মসমর্পণ করেছি। আল্লাহর পরিবর্তে সে যার পূজা করত তাই তাকে সত্য পথে চলা থেকে বাধা দিয়ে রেখেছিল, সে নারী ছিল কাফির সম্প্রদায়ের অন্তর্ভুক্ত।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩৫</div>
+    <div class="card-title">সূরা আন-নামল : ৬৪</div>
+  </div>
+  <div class="arabic">أَمَّن يَبْدَؤُا الْخَلْقَ ثُمَّ يُعِيدُهُۥ وَمَن يَرْزُقُكُم مِّنَ السَّمَاءِ وَالْأَرْضِ ۗ أَءِلٰهٌ مَّعَ اللَّهِ ۚ قُلْ هَاتُوا بُرْهٰنَكُمْ إِن كُنتُمْ صٰدِقِينَ</div>
+  <div class="translation">নাকি তিনিই (শ্রেষ্ঠ) যিনি সৃষ্টির সূচনা করেন, অতঃপর তার পুনরাবৃত্তি করেন এবং যিনি তোমাদেরকে আসমান ও যমীন থেকে রিযক দান করেন? আল্লাহর সাথে অন্য কোন ইলাহ্ আছে কি? বল, তোমরা সত্যবাদী হলে তোমাদের প্রমাণপঞ্জি পেশ কর।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩৬</div>
+    <div class="card-title">সূরা আল-আনকাবূত : ১৭</div>
+  </div>
+  <div class="arabic">إِنَّمَا تَعْبُدُونَ مِن دُونِ اللَّهِ أَوْثٰنًا وَتَخْلُقُونَ إِفْكًا ۚ إِنَّ الَّذِينَ تَعْبُدُونَ مِن دُونِ اللَّهِ لَا يَمْلِكُونَ لَكُمْ رِزْقًا فَابْتَغُوا عِندَ اللَّهِ الرِّزْقَ وَاعْبُدُوهُ وَاشْكُرُوا لَهُۥ ۖ إِلَيْهِ تُرْجَعُونَ</div>
+  <div class="translation">তোমরা আল্লাহকে বাদ দিয়ে প্রতিমার পূজা করছ আর তোমরা মিথ্যে উদ্ভাবন করছ। আল্লাহকে বাদ দিয়ে তোমরা যে সবগুলোর পূজা করছ তারা তোমাদেরকে রিযক দানের কোন ক্ষমতা রাখে না, কাজেই তোমরা আল্লাহর নিকট রিযক তালাশ কর, আর তাঁরই ‘ইবাদাত কর, আর তাঁরই প্রতি কৃতজ্ঞতা প্রকাশ কর, তোমাদেরকে তাঁরই দিকে ফিরিয়ে নেয়া হবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩৭</div>
+    <div class="card-title">সূরা আল-আনকাবূত : ৬৩</div>
+  </div>
+  <div class="arabic">وَلَئِن سَأَلْتَهُم مَّن نَّزَّلَ مِنَ السَّمَاءِ مَاءً فَأَحْيَا بِهِ الْأَرْضَ مِن بَعْدِ مَوْتِهَا لَيَقُولُنَّ اللَّهُ ۚ قُلِ الْحَمْدُ لِلَّهِ ۚ بَلْ أَكْثَرُهُمْ لَا يَعْقِلُونَ</div>
+  <div class="translation">যদি তুমি তাদেরকে জিজ্ঞেস কর- আকাশ হতে কে পানি বর্ষণ ক’রে যমীনকে তার মৃত্যুর পর আবার সঞ্জীবিত করেন? তারা অবশ্য অবশ্যই বলবে- আল্লাহ। বল, সমস্ত প্রশংসা আল্লাহর জন্য। কিন্তু তাদের অধিকাংশই বুঝে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩৮</div>
+    <div class="card-title">সূরা আল-আনকাবূত : ৬০</div>
+  </div>
+  <div class="arabic">وَكَأَيِّن مِّن دَابَّةٍ لَّا تَحْمِلُ رِزْقَهَا اللَّهُ يَرْزُقُهَا وَإِيَّاكُمْ ۚ وَهُوَ السَّمِيعُ الْعَلِيمُ</div>
+  <div class="translation">এমন অনেক জীবজন্তু আছে যারা নিজেদের খাদ্য মজুদ রাখে না, আল্লাহই তাদেরকে রিযক দান করেন আর তোমাদেরকেও। তিনি সব কিছু শোনেন, সব কিছু জানেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩৯</div>
+    <div class="card-title">সূরা আর-রূম : ৩৭</div>
+  </div>
+  <div class="arabic">أَوَلَمْ يَرَوْا أَنَّ اللَّهَ يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ وَيَقْدِرُ ۚ إِنَّ فِى ذٰلِكَ لَءَايٰتٍ لِّقَوْمٍ يُؤْمِنُونَ</div>
+  <div class="translation">তারা কি লক্ষ্য করে না যে, আল্লাহ যার জন্যে ইচ্ছে করেন রিযক প্রশস্ত করেন আর (যার জন্য ইচ্ছে) সীমাবদ্ধ করেন? বিশ্বাসী লোকেদের জন্য অবশ্যই এতে বহু নিদর্শন আছে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪০</div>
+    <div class="card-title">সূরা সাবা : ২৪</div>
+  </div>
+  <div class="arabic">۞ قُلْ مَن يَرْزُقُكُم مِّنَ السَّمٰوٰتِ وَالْأَرْضِ ۖ قُلِ اللَّهُ ۖ وَإِنَّا أَوْ إِيَّاكُمْ لَعَلَىٰ هُدًى أَوْ فِى ضَلٰلٍ مُّبِينٍ</div>
+  <div class="translation">বল- আসমান ও যমীন হতে কে তোমাদেরকে রিযক দান করেন? বল- আল্লাহ। হয় আমরা, না হয় তোমরা অবশ্যই সৎপথে পরিচালিত অথবা স্পষ্ট গুমরাহিতে পতিত।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪১</div>
+    <div class="card-title">সূরা সাবা : ৩৬</div>
+  </div>
+  <div class="arabic">قُلْ إِنَّ رَبِّى يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ وَيَقْدِرُ وَلٰكِنَّ أَكْثَرَ النَّاسِ لَا يَعْلَمُونَ</div>
+  <div class="translation">বল- আমার প্রতিপালক যার জন্য চান রিযক প্রশস্ত করেন বা সীমিত করেন, কিন্তু (এর তাৎপর্য) অধিকাংশ লোকই জানে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪২</div>
+    <div class="card-title">সূরা সাবা : ৩৯</div>
+  </div>
+  <div class="arabic">قُلْ إِنَّ رَبِّى يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ مِنْ عِبَادِهِۦ وَيَقْدِرُ لَهُۥ ۚ وَمَا أَنفَقْتُم مِّن شَىْءٍ فَهُوَ يُخْلِفُهُۥ ۖ وَهُوَ خَيْرُ الرّٰزِقِينَ</div>
+  <div class="translation">বল- আমার প্রতিপালকই তাঁর বান্দাহদের মধ্যে যার জন্য ইচ্ছে রিযক প্রশস্ত করেন, আর যার জন্য ইচ্ছে সীমিত করেন। তোমরা যা কিছু (সৎ কাজে) ব্যয় কর, তিনি তার বিনিময় দেবেন। তিনিই সর্বশ্রেষ্ঠ রিযকদাতা।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪৩</div>
+    <div class="card-title">সূরা আল-আহযাব : ৩১</div>
+  </div>
+  <div class="arabic">۞ وَمَن يَقْنُتْ مِنكُنَّ لِلَّهِ وَرَسُولِهِۦ وَتَعْمَلْ صٰلِحًا نُّؤْتِهَا أَجْرَهَا مَرَّتَيْنِ وَأَعْتَدْنَا لَهَا رِزْقًا كَرِيمًا</div>
+  <div class="translation">তোমাদের মধ্যে যে কেউ আল্লাহ ও তাঁর রসূলের অনুগত হবে আর সৎ কাজ করবে, আমি তাকে দু’বার পুরস্কার দেব আর তার জন্য আমি সম্মানজনক রিযক প্রস্তুত রেখেছি।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪৪</div>
+    <div class="card-title">সূরা গাফির : ১০-১২</div>
+  </div>
+  <div class="arabic">إِنَّ الَّذِينَ كَفَرُوا يُنَادَوْنَ لَمَقْتُ اللَّهِ أَكْبَرُ مِن مَّقْتِكُمْ أَنفُسَكُمْ إِذْ تُدْعَوْنَ إِلَى الْإِيمٰنِ فَتَكْفُرُونَ قَالُوا رَبَّنَا أَمَتَّنَا اثْنَتَيْنِ وَأَحْيَيْتَنَا اثْنَتَيْنِ فَاعْتَرَفْنَا بِذُنُوبِنَا فَهَلْ إِلَىٰ خُرُوجٍ مِّن سَبِيلٍ ذٰلِكُم بِأَنَّهُۥ إِذَا دُعِىَ اللَّهُ وَحْدَهُۥ كَفَرْتُمْ ۖ وَإِن يُشْرَكْ بِهِۦ تُؤْمِنُوا ۚ فَالْحُكْمُ لِلَّهِ الْعَلِىِّ الْكَبِيرِ</div>
+  <div class="translation">যারা কুফুরী করেছিল তাদেরকে ডাক দিয়ে বলা হবে- তোমাদের নিজেদের প্রতি তোমাদের ক্ষোভের চেয়ে (তোমাদের প্রতি) আল্লাহর ক্ষোভ অধিক, (কেননা) তোমাদেরকে যখন ঈমানের দিকে আহবান করা হয়েছিল, তখন তোমরা অস্বীকার করেছিলে। তারা বলবে, হে আমাদের প্রতিপালক! তুমি দু’বার আমাদের মৃত্যু দিয়েছ (জন্মের আগের মৃত অবস্থা আর জীবন শেষের মৃত্যু) আর আমাদেরকে দু’বার জীবন দিয়েছ। আমরা আমাদের পাপ স্বীকার করছি, (এখান থেকে) বের হওয়ার কোন পথ আছে কি? (তখন তাদেরকে উত্তর দেয়া হবে) তোমাদের এ শাস্তির কারণ এই যে, যখন এক আল্লাহকে ডাকা হত, তখন তোমরা তা মেনে নিতে অস্বীকার করতে। আর যখন অন্যদেরকে তাঁর অংশীদার গণ্য করা হত, তখন তোমরা তাতে বিশ্বাস স্থাপন করতে। হুকুম দেয়ার মালিক আল্লাহ- যিনি সর্বোচ্চ, সর্বশ্রেষ্ঠ।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪৫</div>
+    <div class="card-title">সূরা গাফির : ৬৪</div>
+  </div>
+  <div class="arabic">اللَّهُ الَّذِى جَعَلَ لَكُمُ الْأَرْضَ قَرَارًا وَالسَّمَاءَ بِنَاءً وَصَوَّرَكُمْ فَأَحْسَنَ صُوَرَكُمْ وَرَزَقَكُم مِّنَ الطَّيِّبٰتِ ۚ ذٰلِكُمُ اللَّهُ رَبُّكُمْ ۖ فَتَبَارَكَ اللَّهُ رَبُّ الْعٰلَمِينَ</div>
+  <div class="translation">আল্লাহ যিনি তোমাদের জন্য যমীনকে করেছেন মেঝে, আর আকাশকে করেছেন ছাদ। তিনি তোমাদেরকে আকৃতি দিয়েছেন, অতঃপর তোমাদের আকৃতিকে সুন্দর করেছেন। তিনি পবিত্র বস্তু থেকে তোমাদেরকে রিযক দান করেন। এ হলেন আল্লাহ তোমাদের প্রতিপালক। কাজেই মহিমা গৌরব আল্লাহর যিনি বিশ্ব জগতের প্রতিপালক।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪৬</div>
+    <div class="card-title">সূরা ফাতির : ৩</div>
+  </div>
+  <div class="arabic">يٰأَيُّهَا النَّاسُ اذْكُرُوا نِعْمَتَ اللَّهِ عَلَيْكُمْ ۚ هَلْ مِنْ خٰلِقٍ غَيْرُ اللَّهِ يَرْزُقُكُم مِّنَ السَّمَاءِ وَالْأَرْضِ ۚ لَا إِلٰهَ إِلَّا هُوَ ۖ فَأَنَّىٰ تُؤْفَكُونَ</div>
+  <div class="translation">হে মানুষ! তোমরা তোমাদের প্রতি আল্লাহর অনুগ্রহের কথা স্মরণ কর। তিনি ছাড়া কোন সৃষ্টিকর্তা আছে কি যে তোমাদেরকে আকাশ ও যমীন থেকে রিযক দান করে? তিনি ছাড়া সত্যিকারের কোন ইলাহ নেই, তাহলে কীভাবে তোমরা বিপথগামী হচ্ছ?</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪৭</div>
+    <div class="card-title">সূরা আয-যুমার : ৫২</div>
+  </div>
+  <div class="arabic">أَوَلَمْ يَعْلَمُوا أَنَّ اللَّهَ يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ وَيَقْدِرُ ۚ إِنَّ فِى ذٰلِكَ لَءَايٰتٍ لِّقَوْمٍ يُؤْمِنُونَ</div>
+  <div class="translation">এরা কি জানে না যে, আল্লাহ যার জন্য ইচ্ছে রিযক প্রশস্ত করেন আর (যার জন্য ইচ্ছে) সংকুচিত করেন? মু’মিন লোকদের জন্য অবশ্যই এতে বহু নিদর্শন আছে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪৮</div>
+    <div class="card-title">সূরা আশ-শূরা : ১২</div>
+  </div>
+  <div class="arabic">لَهُۥ مَقَالِيدُ السَّمٰوٰتِ وَالْأَرْضِ ۖ يَبْسُطُ الرِّزْقَ لِمَن يَشَاءُ وَيَقْدِرُ ۚ إِنَّهُۥ بِكُلِّ شَىْءٍ عَلِيمٌ</div>
+  <div class="translation">আসমান ও যমীনের চাবিকাঠি তাঁরই হাতে নিবদ্ধ। যার জন্য ইচ্ছে তিনি রিযক প্রশস্ত করেন ও (যার জন্য ইচ্ছে) সীমিত করেন। সব বিষয়েই তিনি সবচেয়ে জ্ঞানী।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪৯</div>
+    <div class="card-title">সূরা আশ-শূরা : ১৯</div>
+  </div>
+  <div class="arabic">اللَّهُ لَطِيفٌ بِعِبَادِهِۦ يَرْزُقُ مَن يَشَاءُ ۖ وَهُوَ الْقَوِىُّ الْعَزِيزُ</div>
+  <div class="translation">আল্লাহ তাঁর বান্দাহদের প্রতি মেহেরবান, তিনি যাকে যা ইচ্ছে রিযক দেন। তিনি প্রবল, মহাপরাক্রমশালী।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫০</div>
+    <div class="card-title">সূরা আশ-শূরা : ২৪-২৫</div>
+  </div>
+  <div class="arabic">أَمْ يَقُولُونَ افْتَرَىٰ عَلَى اللَّهِ كَذِبًا ۖ فَإِن يَشَإِ اللَّهُ يَخْتِمْ عَلَىٰ قَلْبِكَ ۗ وَيَمْحُ اللَّهُ الْبٰطِلَ وَيُحِقُّ الْحَقَّ بِكَلِمٰتِهِۦ ۚ إِنَّهُۥ عَلِيمٌ بِذَاتِ الصُّدُورِ وَهُوَ الَّذِى يَقْبَلُ التَّوْبَةَ عَنْ عِبَادِهِۦ وَيَعْفُوا عَنِ السَّيِّـَٔاتِ وَيَعْلَمُ مَا تَفْعَلُونَ</div>
+  <div class="translation">তারা কি বলে যে, এ লোক আল্লাহর নামে মিথ্যা রচনা করেছে? আল্লাহ চাইলে তোমার হৃদয়ে মোহর মেরে দিতেন। বস্তুতঃ তিনি মিথ্যাকে মিটিয়ে দেন এবং নিজ বাক্য দ্বারা সত্যকে প্রতিষ্ঠিত করেন। তিনি (সকলের) অন্তরে নিহিত বিষয় সম্পর্কে খুবই অবগত। তিনি তাঁর বান্দাহদের তাওবাহ ক্ববূল করেন, পাপ ক্ষমা করেন আর তিনি জানেন তোমরা যা কর।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫১</div>
+    <div class="card-title">সূরা আশ-শূরা : ২৭</div>
+  </div>
+  <div class="arabic">۞ وَلَوْ بَسَطَ اللَّهُ الرِّزْقَ لِعِبَادِهِۦ لَبَغَوْا فِى الْأَرْضِ وَلٰكِن يُنَزِّلُ بِقَدَرٍ مَّا يَشَاءُ ۚ إِنَّهُۥ بِعِبَادِهِۦ خَبِيرٌ بَصِيرٌ</div>
+  <div class="translation">আল্লাহ যদি তাঁর সকল বান্দাহদের জন্য রিযক পর্যাপ্ত করে দিতেন, তাহলে তারা অবশ্যই যমীনে বিদ্রোহ সৃষ্টি করত; কিন্তু তিনি একটা নির্দিষ্ট পরিমাণে যতটুকু ইচ্ছে নাযিল করেন। তিনি তাঁর বান্দাহ্দের সম্পর্কে পূর্ণ ওয়াকিফহাল, তিনি তাদের প্রতি সর্বদা দৃষ্টি রাখেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫২</div>
+    <div class="card-title">সূরা আল-জাসিয়াহ : ১৬</div>
+  </div>
+  <div class="arabic">وَلَقَدْ ءَاتَيْنَا بَنِى إِسْرٰءِيلَ الْكِتٰبَ وَالْحُكْمَ وَالنُّبُوَّةَ وَرَزَقْنٰهُم مِّنَ الطَّيِّبٰتِ وَفَضَّلْنٰهُمْ عَلَى الْعٰلَمِينَ</div>
+  <div class="translation">আমি বানী ইসরাঈলকে কিতাব, রাজত্ব ও নুবুওয়াত দিয়েছিলাম আর তাদেরকে দিয়েছিলাম উত্তম রিযক, আর তাদেরকে বিশ্ববাসীর উপর শ্রেষ্ঠত্ব দিয়েছিলাম।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫৩</div>
+    <div class="card-title">সূরা আয-যারিয়াত : ২২-২৩</div>
+  </div>
+  <div class="arabic">وَفِى السَّمَاءِ رِزْقُكُمْ وَمَا تُوعَدُونَ فَوَرَبِّ السَّمَاءِ وَالْأَرْضِ إِنَّهُۥ لَحَقٌّ مِّثْلَ مَا أَنَّكُمْ تَنطِقُونَ</div>
+  <div class="translation">এবং আকাশে আছে তোমাদের রিযক আর আছে যার ও‘য়াদা তোমাদেরকে দেয়া হয়েছে। আকাশ ও যমীনের প্রতিপালকের শপথ! এ সব অবশ্যই সত্য, এমনই দৃঢ় সত্য যেমন তোমরা (যে কথাবার্তা) বলে থাক (সেই কথাবার্তা বলার ব্যাপারটা যেমন নিঃসন্দেহে সত্য)।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫৪</div>
+    <div class="card-title">সূরা আত-তালাক : ২-৩</div>
+  </div>
+  <div class="arabic">فَإِذَا بَلَغْنَ أَجَلَهُنَّ فَأَمْسِكُوهُنَّ بِمَعْرُوفٍ أَوْ فَارِقُوهُنَّ بِمَعْرُوفٍ وَأَشْهِدُوا ذَوَىْ عَدْلٍ مِّنكُمْ وَأَقِيمُوا الشَّهٰدَةَ لِلَّهِ ۚ ذٰلِكُمْ يُوعَظُ بِهِۦ مَن كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْءَاخِرِ ۚ وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُۥ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لَا يَحْتَسِبُ ۚ وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُۥ ۚ إِنَّ اللَّهَ بٰلِغُ أَمْرِهِۦ ۚ قَدْ جَعَلَ اللَّهُ لِكُلِّ شَىْءٍ قَدْرًا</div>
+  <div class="translation">অতঃপর যখন তাদের (‘ইদ্দাতের) সময়কাল এসে যায়, তখন তাদেরকে ভালভাবে (স্ত্রী হিসেবে) রেখে দাও, অথবা ভালভাবে তাদেরকে বিচ্ছিন্ন করে দাও। আর তোমাদের মধ্যেকার দু’জন ন্যায়পরায়ণ লোককে সাক্ষী রাখ। তোমরা আল্লাহর জন্য সঠিকভাবে সাক্ষ্য দাও। এর দ্বারা তোমাদেরকে উপদেশ দেয়া হচ্ছে যারা আল্লাহ ও আখিরাত দিবসের প্রতি ঈমান রাখে। যে কেউ আল্লাহকে ভয় করে, আল্লাহ তার জন্য (সমস্যা থেকে উদ্ধার পাওয়ার) কোন না কোন পথ বের করে দিবেন। আর তাকে রিযক দিবেন (এমন উৎস) থেকে যা সে ধারণাও করতে পারে না। যে কেউ আল্লাহর উপর ভরসা করে, তবে তার জন্য তিনিই যথেষ্ট। আল্লাহ নিজের কাজ সম্পূর্ণ করবেনই। আল্লাহ প্রতিটি জিনিসের জন্য করেছেন একটা সুনির্দিষ্ট মাত্রা।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫৫</div>
+    <div class="card-title">সূরা আত-তালাক : ১১</div>
+  </div>
+  <div class="arabic">رَّسُولًا يَتْلُوا عَلَيْكُمْ ءَايٰتِ اللَّهِ مُبَيِّنٰتٍ لِّيُخْرِجَ الَّذِينَ ءَامَنُوا وَعَمِلُوا الصّٰلِحٰتِ مِنَ الظُّلُمٰتِ إِلَى النُّورِ ۚ وَمَن يُؤْمِن بِاللَّهِ وَيَعْمَلْ صٰلِحًا يُدْخِلْهُ جَنّٰتٍ تَجْرِى مِن تَحْتِهَا الْأَنْهٰرُ خٰلِدِينَ فِيهَا أَبَدًا ۖ قَدْ أَحْسَنَ اللَّهُ لَهُۥ رِزْقًا</div>
+  <div class="translation">(তদুপরি তিনি পাঠিয়েছেন) একজন রসূল যে তোমাদের কাছে আল্লাহর স্পষ্ট আয়াত পাঠ করে, যারা ঈমান আনে আর সৎ কাজ করে তাদেরকে গাঢ় অন্ধকার থেকে আলোতে আনার জন্য। আর যে ব্যক্তি আল্লাহর প্রতি ঈমান আনবে আর সৎ কাজ করবে, তিনি তাকে দাখিল করবেন জান্নাতে যার নীচ দিয়ে বয়ে চলেছে নির্ঝরিণী। তাতে তারা চিরকাল সর্বকাল থাকবে। আল্লাহ তার জন্য অতি উত্তম রিযকের ব্যবস্থা করে রেখেছেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫৬</div>
+    <div class="card-title">সূরা আল-মুলক : ২১</div>
+  </div>
+  <div class="arabic">أَمَّنْ هٰذَا الَّذِى يَرْزُقُكُمْ إِنْ أَمْسَكَ رِزْقَهُۥ ۚ بَل لَّجُّوا فِى عُتُوٍّ وَنُفُورٍ</div>
+  <div class="translation">অথবা এমন কে আছে যে তোমাদেরকে রিযক দিবে যদি তিনি তাঁর রিযক বন্ধ করে দেন? আসলে তারা অহমিকা ও অনীহায় ডুবে আছে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫৭</div>
+    <div class="card-title">সূরা আল-মুলক : ১৫</div>
+  </div>
+  <div class="arabic">هُوَ الَّذِى جَعَلَ لَكُمُ الْأَرْضَ ذَلُولًا فَامْشُوا فِى مَنَاكِبِهَا وَكُلُوا مِن رِّزْقِهِۦ ۖ وَإِلَيْهِ النُّشُورُ</div>
+  <div class="translation">তিনি তোমাদের জন্য যমীনকে (তোমাদের ইচ্ছার) অধীন করে দিয়েছেন, কাজেই তোমরা তার বুকের উপর দিয়ে চলাচল কর, আর আল্লাহর দেয়া রিযক হতে আহার কর, পুনরায় জীবিত হয়ে তাঁর কাছেই যেতে হবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫৮</div>
+    <div class="card-title">সূরা আল-আনফাল : ৫৩</div>
+  </div>
+  <div class="arabic">ذٰلِكَ بِأَنَّ اللَّهَ لَمْ يَكُ مُغَيِّرًا نِّعْمَةً أَنْعَمَهَا عَلَىٰ قَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ ۙ وَأَنَّ اللَّهَ سَمِيعٌ عَلِيمٌ</div>
+  <div class="translation">এটা এজন্য যে, আল্লাহ কোন সম্প্রদায়ের নিকট দেয়া তাঁর অবদানকে পরিবর্তন করেন না যতক্ষণ না তারা নিজেরাই (তাদের কর্মনীতির মাধ্যমে) তা পরিবর্তন করে। নিশ্চয়ই আল্লাহ সর্বশ্রোতা, সর্বজ্ঞ।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫৯</div>
+    <div class="card-title">সূরা আন-নাহল : ৫৩</div>
+  </div>
+  <div class="arabic">وَمَا بِكُم مِّن نِّعْمَةٍ فَمِنَ اللَّهِ ۖ ثُمَّ إِذَا مَسَّكُمُ الضُّرُّ فَإِلَيْهِ تَجْـَٔرُونَ</div>
+  <div class="translation">যে নি‘মাতই তোমরা পেয়েছ তাতো আল্লাহর নিকট হতেই। আর যখন দুঃখ-কষ্ট তোমাদেরকে স্পর্শ করে, তখন তাঁর কাছেই তোমরা আকুল আবেদন জানাতে থাক।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬০</div>
+    <div class="card-title">সূরা আন-নাহল : ৭১</div>
+  </div>
+  <div class="arabic">وَاللَّهُ فَضَّلَ بَعْضَكُمْ عَلَىٰ بَعْضٍ فِى الرِّزْقِ ۚ فَمَا الَّذِينَ فُضِّلُوا بِرَادِّى رِزْقِهِمْ عَلَىٰ مَا مَلَكَتْ أَيْمٰنُهُمْ فَهُمْ فِيهِ سَوَاءٌ ۚ أَفَبِنِعْمَةِ اللَّهِ يَجْحَدُونَ</div>
+  <div class="translation">রিযকের ব্যাপারে আল্লাহ তোমাদের মধ্যে কাউকে কারো উপর প্রাধান্য দিয়েছেন। যাদেরকে প্রাধান্য দেয়া হয়েছে তারা তাদের রিযক থেকে তাদের অধীনস্থ চাকর- গোলামদেরকে এমনভাবে ফিরিয়ে দেয় না, যাতে এক্ষেত্রে তারা সমান হয়ে যায়। (অথচ তারা নানান কিছুকে আল্লাহর অংশীদার বানিয়ে ওগুলোকে আল্লাহর সমান করে ফেলছে) তাহলে কি তারা আল্লাহর অনুগ্রহ অস্বীকার করে?</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬১</div>
+    <div class="card-title">সূরা আন-নাহল : ১৮</div>
+  </div>
+  <div class="arabic">وَإِن تَعُدُّوا نِعْمَةَ اللَّهِ لَا تُحْصُوهَا ۗ إِنَّ اللَّهَ لَغَفُورٌ رَّحِيمٌ</div>
+  <div class="translation">তোমরা আল্লাহর নি‘মাতসমূহকে গণনা করলে তার সংখ্যা নির্ণয় করতে পারবে না; আল্লাহ অবশ্যই বড়ই ক্ষমাশীল, বড়ই দয়ালু।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬২</div>
+    <div class="card-title">সূরা আন-নাহল : ১১২</div>
+  </div>
+  <div class="arabic">وَضَرَبَ اللَّهُ مَثَلًا قَرْيَةً كَانَتْ ءَامِنَةً مُّطْمَئِنَّةً يَأْتِيهَا رِزْقُهَا رَغَدًا مِّن كُلِّ مَكَانٍ فَكَفَرَتْ بِأَنْعُمِ اللَّهِ فَأَذٰقَهَا اللَّهُ لِبَاسَ الْجُوعِ وَالْخَوْفِ بِمَا كَانُوا يَصْنَعُونَ</div>
+  <div class="translation">আল্লাহ এক জনবসতির দৃষ্টান্ত পেশ করছেন যা ছিল নিরাপদ, চিন্তা-ভাবনাহীন। সবখান থেকে সেখানে আসত জীবন ধারণের পর্যাপ্ত উপকরণ। অতঃপর সে জনপদ আল্লাহর নি‘মাতরাজির কুফুরী করল, অতঃপর আল্লাহ তাদের কৃতকর্মের কারণে ক্ষুধা ও ভয়-ভীতির মুসীবাত তাদেরকে আস্বাদন করালেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬৩</div>
+    <div class="card-title">সূরা আন-নাহল : ১২১</div>
+  </div>
+  <div class="arabic">شَاكِرًا لِّأَنْعُمِهِ ۚ اجْتَبَىٰهُ وَهَدَىٰهُ إِلَىٰ صِرٰطٍ مُّسْتَقِيمٍ</div>
+  <div class="translation">সে ছিল আল্লাহর নি‘মাতরাজির জন্য শোকরগুযার। আল্লাহ তাকে বেছে নিয়েছিলেন আর তাকে সরল সঠিক পথ দেখিয়েছিলেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬৪</div>
+    <div class="card-title">সূরা ইবরাহীম : ৩৪</div>
+  </div>
+  <div class="arabic">وَءَاتَىٰكُم مِّن كُلِّ مَا سَأَلْتُمُوهُ ۚ وَإِن تَعُدُّوا نِعْمَتَ اللَّهِ لَا تُحْصُوهَا ۗ إِنَّ الْإِنسٰنَ لَظَلُومٌ كَفَّارٌ</div>
+  <div class="translation">তিনি তোমাদেরকে সে সব কিছুই দিয়েছেন যা তোমরা চেয়েছ (তোমরা তোমাদের প্রয়োজনীয় সব কিছুই পেয়েছ) আর তোমরা আল্লাহর অনুগ্রহ গণনা করতে চাইলে কক্ষনো তার সংখ্যা নির্ধারণ করতে পারবে না। মানুষ অবশ্যই বড়ই যালিম, বড়ই অকৃতজ্ঞ।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬৫</div>
+    <div class="card-title">সূরা আন-নামল : ১৯</div>
+  </div>
+  <div class="arabic">فَتَبَسَّمَ ضَاحِكًا مِّن قَوْلِهَا وَقَالَ رَبِّ أَوْزِعْنِى أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِى أَنْعَمْتَ عَلَىَّ وَعَلَىٰ وٰلِدَىَّ وَأَنْ أَعْمَلَ صٰلِحًا تَرْضَىٰهُ وَأَدْخِلْنِى بِرَحْمَتِكَ فِى عِبَادِكَ الصّٰلِحِينَ</div>
+  <div class="translation">সুলাইমান তার কথায় খুশিতে মুচকি হাসল আর বলল- ‘হে আমার প্রতিপালক! তুমি আমার প্রতি ও আমার পিতামাতার প্রতি যে অনুগ্রহ দান করেছ তার জন্য কৃতজ্ঞতা প্রকাশের আমাকে শক্তি দান কর আর যাতে এমন সৎকাজ করতে পারি যাতে তুমি সন্তুষ্ট হও আর তোমার দয়ায় আমাকে তোমার সৎকর্মশীল বান্দাদের অন্তর্ভুক্ত কর।’</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬৬</div>
+    <div class="card-title">সূরা লুকমান : ২০</div>
+  </div>
+  <div class="arabic">أَلَمْ تَرَوْا أَنَّ اللَّهَ سَخَّرَ لَكُم مَّا فِى السَّمٰوٰتِ وَمَا فِى الْأَرْضِ وَأَسْبَغَ عَلَيْكُمْ نِعَمَهُۥ ظٰهِرَةً وَبَاطِنَةً ۗ وَمِنَ النَّاسِ مَن يُجٰدِلُ فِى اللَّهِ بِغَيْرِ عِلْمٍ وَلَا هُدًى وَلَا كِتٰبٍ مُّنِيرٍ</div>
+  <div class="translation">তোমরা কি লক্ষ্য কর না যে, যা কিছু আসমানসমূহে আর যমীনে আছে, আল্লাহ সমস্তই তোমাদের কল্যাণে নিয়োজিত করেছেন এবং তোমাদের প্রতি তাঁর প্রকাশ্য ও অপ্রকাশ্য নি‘য়ামাতসমূহ পরিপূর্ণ করে দিয়েছেন? কতক মানুষ জ্ঞান ছাড়াই আল্লাহ সম্বন্ধে বাক-বিতন্ডা করে, তাদের না আছে সঠিক পথের দিশা, আর না আছে কোন আলোপ্রদ কিতাব।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬৭</div>
+    <div class="card-title">সূরা আয-যুখরুফ : ৫৯</div>
+  </div>
+  <div class="arabic">إِنْ هُوَ إِلَّا عَبْدٌ أَنْعَمْنَا عَلَيْهِ وَجَعَلْنٰهُ مَثَلًا لِّبَنِى إِسْرٰءِيلَ</div>
+  <div class="translation">মারইয়াম-পুত্র তো শুধু একজন বান্দাহ যার প্রতি আমি অনুগ্রহ করেছিলাম আর বানী ইসরাঈলের জন্য আমি তাকে করেছিলাম (আমার কুদরাতের বিশেষ এক) নমুনা।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬৮</div>
+    <div class="card-title">সূরা আদ-দুখান : ২৫-২৭</div>
+  </div>
+  <div class="arabic">كَمْ تَرَكُوا مِن جَنّٰتٍ وَعُيُونٍ وَزُرُوعٍ وَمَقَامٍ كَرِيمٍ وَنَعْمَةٍ كَانُوا فِيهَا فٰكِهِينَ</div>
+  <div class="translation">তারা ছেড়ে গিয়েছিল কত উদ্যান আর ঝর্ণা, শস্য ক্ষেত, আর অভিজাত স্থান, আর বিলাস সামগ্রী- যা নিয়ে তারা আনন্দ করত।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬৯</div>
+    <div class="card-title">সূরা আল-কামার : ৩৫</div>
+  </div>
+  <div class="arabic">نِّعْمَةً مِّنْ عِندِنَا ۚ كَذٰلِكَ نَجْزِى مَن شَكَرَ</div>
+  <div class="translation">আমার পক্ষ হতে অনুগ্রহস্বরূপ; এভাবেই আমি তাকে প্রতিফল দেই যে কৃতজ্ঞ হয়।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭০</div>
+    <div class="card-title">সূরা আল-ফাজর : ১৫</div>
+  </div>
+  <div class="arabic">فَأَمَّا الْإِنسٰنُ إِذَا مَا ابْتَلَىٰهُ رَبُّهُۥ فَأَكْرَمَهُۥ وَنَعَّمَهُۥ فَيَقُولُ رَبِّى أَكْرَمَنِ</div>
+  <div class="translation">মানুষ এমন যে, তার প্রতিপালক যখন তাকে পরীক্ষা করেন সম্মান ও অনুগ্রহ দান ক’রে, তখন সে বলে, ‘আমার রব আমাকে সম্মানিত করেছেন।’</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭১</div>
+    <div class="card-title">সূরা আদ-দুহা : ১-১১</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ وَالضُّحَىٰ وَالَّيْلِ إِذَا سَجَىٰ مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ وَلَلْءَاخِرَةُ خَيْرٌ لَّكَ مِنَ الْأُولَىٰ وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰ أَلَمْ يَجِدْكَ يَتِيمًا فَـَٔاوَىٰ وَوَجَدَكَ ضَالًّا فَهَدَىٰ وَوَجَدَكَ عَائِلًا فَأَغْنَىٰ فَأَمَّا الْيَتِيمَ فَلَا تَقْهَرْ وَأَمَّا السَّائِلَ فَلَا تَنْهَرْ وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ</div>
+  <div class="translation">সকালের উজ্জ্বল আলোর শপথ, রাতের শপথ যখন তা হয় শান্ত-নিঝুম, তোমার প্রতিপালক তোমাকে কক্ষনো পরিত্যাগ করেননি, আর তিনি অসন্তুষ্টও নন। অবশ্যই পরবর্তী সময় পূর্ববর্তী সময়ের চেয়ে তোমার জন্য হবে অধিক উৎকৃষ্ট। শীঘ্রই তোমার প্রতিপালক তোমাকে (এত নি‘মাত) দিবেন যার ফলে তুমি সন্তুষ্ট হয়ে যাবে। তিনি কি তোমাকে ইয়াতীম অবস্থায় পান নাই? অতঃপর তিনি আশ্রয় দিয়েছেন। তিনি তোমাকে পেয়েছিলেন পথের দিশা-হীন, অতঃপর দেখালেন সঠিক পথ। তিনি তোমাকে পেলেন নিঃস্ব, অতঃপর করলেন অভাবমুক্ত। কাজেই তুমি ইয়াতীমের প্রতি কঠোরতা করবে না। এবং ভিক্ষুককে ধমক দিবে না। আর তুমি তোমার রব-এর নি‘মাতকে (তোমার কথা, কাজকর্ম ও আচরণের মাধ্যমে) প্রকাশ করতে থাক।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭২</div>
+    <div class="card-title">সূরা আর-রহমান : ১৯-২২</div>
+  </div>
+  <div class="arabic">مَرَجَ الْبَحْرَيْنِ يَلْتَقِيَانِ بَيْنَهُمَا بَرْزَخٌ لَّا يَبْغِيَانِ فَبِأَىِّ ءَالَاءِ رَبِّكُمَا تُكَذِّبَانِ يَخْرُجُ مِنْهُمَا اللُّؤْلُؤُ وَالْمَرْجَانُ</div>
+  <div class="translation">দু’টি সমুদ্রকে তিনিই প্রবাহিত করেন যারা পরস্পর মিলিত হয়, (কিন্তু তা সত্ত্বেও) উভয়ের মাঝে আছে এক আড়াল যা তারা অতিক্রম করতে পারে না। অতএব (হে জ্বিন ও মানুষ!) তোমরা তোমাদের প্রতিপালকের কোন্ কোন্ নি‘মাতকে অস্বীকার করবে? এ সব দরিয়া হতে বের হয় মুক্তা ও প্রবাল,</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭৩</div>
+    <div class="card-title">সূরা আল-মুদ্দাসসির : ১২</div>
+  </div>
+  <div class="arabic">وَجَعَلْتُ لَهُۥ مَالًا مَّمْدُودًا</div>
+  <div class="translation">আর তাকে (ওয়ালীদ বিন মুগীরাহকে) দিয়েছি অঢেল ধন-সম্পদ,</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭৪</div>
+    <div class="card-title">সূরা আল-কলম : ১৪</div>
+  </div>
+  <div class="arabic">أَن كَانَ ذَا مَالٍ وَبَنِينَ</div>
+  <div class="translation">কারণ সে সম্পদ আর (অনেক) সন্তানাদির অধিকারী।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭৫</div>
+    <div class="card-title">সূরা আল-লাহাব : ২</div>
+  </div>
+  <div class="arabic">مَا أَغْنَىٰ عَنْهُ مَالُهُۥ وَمَا كَسَبَ</div>
+  <div class="translation">তার ধন-সম্পদ আর সে যা অর্জন করেছে তা তার কোন কাজে আসল না,</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭৬</div>
+    <div class="card-title">সূরা ইউসুফ : ৫৬</div>
+  </div>
+  <div class="arabic">وَكَذٰلِكَ مَكَّنَّا لِيُوسُفَ فِى الْأَرْضِ يَتَبَوَّأُ مِنْهَا حَيْثُ يَشَاءُ ۚ نُصِيبُ بِرَحْمَتِنَا مَن نَّشَاءُ ۖ وَلَا نُضِيعُ أَجْرَ الْمُحْسِنِينَ</div>
+  <div class="translation">এভাবে আমি ইউসুফকে সে দেশে প্রতিষ্ঠিত করলাম। দেশের যেখানে ইচ্ছে সে নিজের স্থান করে নিতে পারত, আমি যাকে চাই আমার রহমাত দিয়ে ধন্য করি, আমি সৎকর্মশীলদের কর্মফল কক্ষনো বিনষ্ট করি না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭৭</div>
+    <div class="card-title">সূরা আল-কাহফ : ৩২-৪০</div>
+  </div>
+  <div class="arabic">۞ وَاضْرِبْ لَهُم مَّثَلًا رَّجُلَيْنِ جَعَلْنَا لِأَحَدِهِمَا جَنَّتَيْنِ مِنْ أَعْنٰبٍ وَحَفَفْنٰهُمَا بِنَخْلٍ وَجَعَلْنَا بَيْنَهُمَا زَرْعًا كِلْتَا الْجَنَّتَيْنِ ءَاتَتْ أُكُلَهَا وَلَمْ تَظْلِم مِّنْهُ شَيْـًٔا ۚ وَفَجَّرْنَا خِلٰلَهُمَا نَهَرًا وَكَانَ لَهُۥ ثَمَرٌ فَقَالَ لِصٰحِبِهِۦ وَهُوَ يُحَاوِرُهُۥ أَنَا أَكْثَرُ مِنكَ مَالًا وَأَعَزُّ نَفَرًا وَدَخَلَ جَنَّتَهُۥ وَهُوَ ظَالِمٌ لِّنَفْسِهِۦ قَالَ مَا أَظُنُّ أَن تَبِيدَ هٰذِهِۦ أَبَدًا وَمَا أَظُنُّ السَّاعَةَ قَائِمَةً وَلَئِن رُّدِدتُّ إِلَىٰ رَبِّى لَأَجِدَنَّ خَيْرًا مِّنْهَا مُنقَلَبًا قَالَ لَهُۥ صَاحِبُهُۥ وَهُوَ يُحَاوِرُهُۥ أَكَفَرْتَ بِالَّذِى خَلَقَكَ مِن تُرَابٍ ثُمَّ مِن نُّطْفَةٍ ثُمَّ سَوَّىٰكَ رَجُلًا لّٰكِنَّا هُوَ اللَّهُ رَبِّى وَلَا أُشْرِكُ بِرَبِّى أَحَدًا وَلَوْلَا إِذْ دَخَلْتَ جَنَّتَكَ قُلْتَ مَا شَاءَ اللَّهُ لَا قُوَّةَ إِلَّا بِاللَّهِ ۚ إِن تَرَنِ أَنَا أَقَلَّ مِنكَ مَالًا وَوَلَدًا فَعَسَىٰ رَبِّى أَن يُؤْتِيَنِ خَيْرًا مِّن جَنَّتِكَ وَيُرْسِلَ عَلَيْهَا حُسْبَانًا مِّنَ السَّمَاءِ فَتُصْبِحَ صَعِيدًا زَلَقًا</div>
+  <div class="translation">তুমি তাদের কাছে দু’ব্যক্তির দৃষ্টান্ত বর্ণনা কর যাদের একজনকে আমি দিয়েছিলাম দু’টি আঙ্গুরের বাগান, আর ওগুলোকে খেজুর গাছ দিয়ে ঘিরে দিয়েছিলাম আর ও দু’টির মাঝে দিয়েছিলাম শষ্যক্ষেত। দু’টো বাগানই ফল দিত, এতে এতটুকু ত্রুটি করত না। এ দু’য়ের মাঝে আমি ঝর্ণাধারা প্রবাহিত করেছিলাম। লোকটির উৎপাদন ছিল প্রচুর। একদিন কথাবার্তা বলার সময় সে তার প্রতিবেশীকে বলল, ‘আমি সম্পদে তোমা হতে শ্রেষ্ঠ, আর জনবলে তোমা হতে শক্তিশালী।’ নিজের প্রতি যুলম করে সে তার বাগানে প্রবেশ করল। সে বলল, ‘আমি ধারণা করি না যে, এটা কোনদিন ধ্বংস হয়ে যাবে। আমি মনে করি না যে কিয়ামাত হবে। আর যদি আমাকে আমার প্রতিপালকের কাছে ফিরিয়ে নেয়া হয়ই, তাহলে অবশ্য অবশ্যই আমি পরিবর্তে আরো উৎকৃষ্ট স্থান পাব। কথার প্রসঙ্গ টেনে তার সাথী বলল, ‘তুমি কি তাঁকে অস্বীকার করছ যিনি তোমাকে মাটি থেকে সৃষ্টি করেছেন, অতঃপর শুক্র-কীট হতে, অতঃপর তোমাকে পূর্ণাঙ্গ দেহসম্পন্ন মানুষ বানিয়ে দিয়েছেন? (আর আমার ব্যাপারে কথা হল) সেই আল্লাহই আমার প্রতিপালক, আমি কাউকে আমার প্রতিপালকের শরীক করব না। তুমি যখন তোমার বাগানে প্রবেশ করলে তখন কেন বললে না, ‘আল্লাহ যা ইচ্ছে করেছেন (তা-ই হয়েছে), আল্লাহ ছাড়া কারো কোন শক্তি নেই। যদিও তুমি আমাকে ধনে-জনে তোমার চেয়ে কম দেখ, সম্ভবতঃ আমার প্রতিপালক আমাকে তোমার বাগান অপেক্ষাও উত্তম কিছু দান করবেন আর তোমার বাগানের উপর আসমান হতে কোন বিপদ পাঠিয়ে দিবেন, ফলে তা শূন্য ময়দানে পরিণত হবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭৮</div>
+    <div class="card-title">সূরা আল-হুমাযাহ : ২</div>
+  </div>
+  <div class="arabic">الَّذِى جَمَعَ مَالًا وَعَدَّدَهُۥ</div>
+  <div class="translation">যে ধন-সম্পদ জমা করে আর বার বার গণনা করে,</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭৯</div>
+    <div class="card-title">সূরা ইউসুফ : ১৯-২১</div>
+  </div>
+  <div class="arabic">وَجَاءَتْ سَيَّارَةٌ فَأَرْسَلُوا وَارِدَهُمْ فَأَدْلَىٰ دَلْوَهُۥ ۖ قَالَ يٰبُشْرَىٰ هٰذَا غُلٰمٌ ۚ وَأَسَرُّوهُ بِضٰعَةً ۚ وَاللَّهُ عَلِيمٌ بِمَا يَعْمَلُونَ وَشَرَوْهُ بِثَمَنٍ بَخْسٍ دَرٰهِمَ مَعْدُودَةٍ وَكَانُوا فِيهِ مِنَ الزّٰهِدِينَ وَقَالَ الَّذِى اشْتَرَىٰهُ مِن مِّصْرَ لِامْرَأَتِهِۦ أَكْرِمِى مَثْوَىٰهُ عَسَىٰ أَن يَنفَعَنَا أَوْ نَتَّخِذَهُۥ وَلَدًا ۚ وَكَذٰلِكَ مَكَّنَّا لِيُوسُفَ فِى الْأَرْضِ وَلِنُعَلِّمَهُۥ مِن تَأْوِيلِ الْأَحَادِيثِ ۚ وَاللَّهُ غَالِبٌ عَلَىٰ أَمْرِهِۦ وَلٰكِنَّ أَكْثَرَ النَّاسِ لَا يَعْلَمُونَ</div>
+  <div class="translation">সেখানে একটা কাফেলা আসলো। তারা তাদের পানি সংগ্রহকারীকে পাঠালো। সে তার পানির বালতি নামিয়ে দিল। সে বলল, ‘কী খুশির খবর! এ যে দেখছি এক বালক!’ তারা তাকে পণ্য দ্রব্য জ্ঞানে লুকিয়ে দিল, আর তারা যা করছিল সে সম্পর্কে আল্লাহ খুবই অবহিত। তারা তাকে স্বল্প মূল্যে- মাত্র কয়টি দিরহামের বিনিময়ে বিক্রি করে দিল, তারা ছিল তাকে তুচ্ছ জ্ঞানকারী! মিসরের যে লোক তাকে ক্রয় করেছিল, সে তার স্ত্রীকে বলল, ‘তার থাকার সুব্যবস্থা কর, সম্ভবতঃ সে আমাদের উপকারে আসবে কিংবা তাকে আমরা পুত্র হিসেবেও গ্রহণ করে নিতে পারি।’ এভাবে আমি ইউসুফকে সে দেশে প্রতিষ্ঠিত করলাম তাকে স্বপ্ন ব্যাখ্যার কিছু জ্ঞান শিক্ষা দেয়ার জন্য। আল্লাহ তাঁর কাজের ব্যাপারে পূর্ণ কর্তৃত্বশীল। কিন্তু অধিকাংশ লোকই (তা) জানে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮০</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৮২</div>
+  </div>
+  <div class="arabic">يٰأَيُّهَا الَّذِينَ ءَامَنُوا إِذَا تَدَايَنتُم بِدَيْنٍ إِلَىٰ أَجَلٍ مُّسَمًّى فَاكْتُبُوهُ ۚ وَلْيَكْتُب بَّيْنَكُمْ كَاتِبٌ بِالْعَدْلِ ۚ وَلَا يَأْبَ كَاتِبٌ أَن يَكْتُبَ كَمَا عَلَّمَهُ اللَّهُ ۚ فَلْيَكْتُبْ وَلْيُمْلِلِ الَّذِى عَلَيْهِ الْحَقُّ وَلْيَتَّقِ اللَّهَ رَبَّهُۥ وَلَا يَبْخَسْ مِنْهُ شَيْـًٔا ۚ فَإِن كَانَ الَّذِى عَلَيْهِ الْحَقُّ سَفِيهًا أَوْ ضَعِيفًا أَوْ لَا يَسْتَطِيعُ أَن يُمِلَّ هُوَ فَلْيُمْلِلْ وَلِيُّهُۥ بِالْعَدْلِ ۚ وَاسْتَشْهِدُوا شَهِيدَيْنِ مِن رِّجَالِكُمْ ۖ فَإِن لَّمْ يَكُونَا رَجُلَيْنِ فَرَجُلٌ وَامْرَأَتَانِ مِمَّن تَرْضَوْنَ مِنَ الشُّهَدَاءِ أَن تَضِلَّ إِحْدَىٰهُمَا فَتُذَكِّرَ إِحْدَىٰهُمَا الْأُخْرَىٰ ۚ وَلَا يَأْبَ الشُّهَدَاءُ إِذَا مَا دُعُوا ۚ وَلَا تَسْـَٔمُوا أَن تَكْتُبُوهُ صَغِيرًا أَوْ كَبِيرًا إِلَىٰ أَجَلِهِۦ ۚ ذٰلِكُمْ أَقْسَطُ عِندَ اللَّهِ وَأَقْوَمُ لِلشَّهٰدَةِ وَأَدْنَىٰ أَلَّا تَرْتَابُوا ۖ إِلَّا أَن تَكُونَ تِجٰرَةً حَاضِرَةً تُدِيرُونَهَا بَيْنَكُمْ فَلَيْسَ عَلَيْكُمْ جُنَاحٌ أَلَّا تَكْتُبُوهَا ۗ وَأَشْهِدُوا إِذَا تَبَايَعْتُمْ ۚ وَلَا يُضَارَّ كَاتِبٌ وَلَا شَهِيدٌ ۚ وَإِن تَفْعَلُوا فَإِنَّهُۥ فُسُوقٌ بِكُمْ ۗ وَاتَّقُوا اللَّهَ ۖ وَيُعَلِّمُكُمُ اللَّهُ ۗ وَاللَّهُ بِكُلِّ شَىْءٍ عَلِيمٌ</div>
+  <div class="translation">হে বিশ্বাসীগণ! যখন তোমরা নির্দিষ্ট সময়ের জন্য ধারে কারবার করবে, তখন তা লিখে রাখবে, তোমাদের মধ্যে যেন কোন একজন লেখক ন্যায্যভাবে লিখে দেয়, লেখক যেন লিখতে অস্বীকার না করে, যেরূপ আল্লাহ তাকে শিক্ষা দিয়েছেন, কাজেই সে যেন লিখে এবং কর্জ-গ্রহীতা যেন লেখার বিষয়বস্তু বলে দেয় এবং তার প্রতিপালক আল্লাহর ভয় রাখে এবং প্রাপ্য হতে যেন কোনও প্রকারের কাটছাঁট না করে। যদি কর্জ-গ্রহীতা স্বল্প-বুদ্ধি অথবা দুর্বল কিংবা লেখার বিষয়বস্তু বলতে অক্ষম হয়, তবে তার অভিভাবক যেন লেখার বিষয়বস্তু ন্যায্যভাবে বলে দেয় এবং তোমাদের আপন পুরুষ লোকের মধ্য হতে দু’জন সাক্ষী রাখ, যদি দু’জন পুরুষ না পাওয়া যায়, তাহলে একজন পুরুষ ও দু’জন স্ত্রী লোক, যাদের সাক্ষ্য সম্পর্কে তোমরা রাজী আছ, এটা এজন্য যে, যদি একজন ভুলে যায় তবে অন্যজন স্মরণ করিয়ে দেবে এবং যখন সাক্ষীগণকে ডাকা হবে, তখন যেন (সাক্ষ্য দিতে) অস্বীকার না করে। ছোট হোক বা বড় হোক তোমরা নির্দিষ্ট মেয়াদসহ লিখে রাখাকে তাচ্ছিল্যভরে উপেক্ষা করো না, এ লিখে রাখা আল্লাহর নিকট ইনসাফ বজায় রাখার জন্য দৃঢ়তর, সঠিক প্রমাণের জন্য সহজতর এবং তোমরা যাতে কোনও সন্দেহে পতিত না হও এর নিকটবর্তী। কিন্তু যদি কোন সওদা তোমরা পরস্পর নগদ নগদ সম্পাদন কর, তবে না লিখলেও তোমাদের কোন দোষ নেই। আর তোমরা যখন পরস্পর কেনাবেচা কর তখন সাক্ষী রেখ। কোনও লেখক ও সাক্ষীকে যেন কষ্ট দেয়া না হয় এবং যদি এরূপ কর, তাহলে তোমাদের গুনাহ হবে। কাজেই আল্লাহকে ভয় কর এবং আল্লাহ তোমাদেরকে শিক্ষা দিচ্ছেন এবং আল্লাহ সর্ববিষয়ে সুপরিজ্ঞাত।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮১</div>
+    <div class="card-title">সূরা আন-নিসা : ২৯</div>
+  </div>
+  <div class="arabic">يٰأَيُّهَا الَّذِينَ ءَامَنُوا لَا تَأْكُلُوا أَمْوٰلَكُم بَيْنَكُم بِالْبٰطِلِ إِلَّا أَن تَكُونَ تِجٰرَةً عَن تَرَاضٍ مِّنكُمْ ۚ وَلَا تَقْتُلُوا أَنفُسَكُمْ ۚ إِنَّ اللَّهَ كَانَ بِكُمْ رَحِيمًا</div>
+  <div class="translation">হে ঈমানদারগণ! তোমরা অন্যায়ভাবে একে অন্যের সম্পদ গ্রাস করো না, তবে পারস্পরিক সম্মতিতে ব্যবসায় বৈধ এবং নিজেদের ধ্বংস ডেকে এনো না কিংবা তোমরা পরস্পরকে হত্যা করো না, নিশ্চয় আল্লাহ তোমাদের প্রতি কৃপাময়।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮২</div>
+    <div class="card-title">সূরা আত-তাওবা : ২৪</div>
+  </div>
+  <div class="arabic">قُلْ إِن كَانَ ءَابَاؤُكُمْ وَأَبْنَاؤُكُمْ وَإِخْوٰنُكُمْ وَأَزْوٰجُكُمْ وَعَشِيرَتُكُمْ وَأَمْوٰلٌ اقْتَرَفْتُمُوهَا وَتِجٰرَةٌ تَخْشَوْنَ كَسَادَهَا وَمَسٰكِنُ تَرْضَوْنَهَا أَحَبَّ إِلَيْكُم مِّنَ اللَّهِ وَرَسُولِهِۦ وَجِهَادٍ فِى سَبِيلِهِۦ فَتَرَبَّصُوا حَتَّىٰ يَأْتِىَ اللَّهُ بِأَمْرِهِۦ ۗ وَاللَّهُ لَا يَهْدِى الْقَوْمَ الْفٰسِقِينَ</div>
+  <div class="translation">বল, ‘যদি তোমাদের পিতারা, আর তোমাদের সন্তানেরা, আর তোমাদের ভাইয়েরা, আর তোমাদের স্ত্রীরা, আর তোমাদের গোষ্ঠীর লোকেরা আর ধন-সম্পদ যা তোমরা অর্জন করেছ, আর ব্যবসা তোমরা যার মন্দার ভয় কর, আর বাসস্থান যা তোমরা ভালবাস (এসব) যদি তোমাদের নিকট প্রিয়তর হয় আল্লাহ, তাঁর রসূল ও তাঁর পথে জিহাদ করা হতে, তাহলে অপেক্ষা কর যতক্ষণ না আল্লাহ তাঁর চূড়ান্ত ফয়সালা তোমাদের কাছে নিয়ে আসেন।’ আর আল্লাহ অবাধ্য আচরণকারীদেরকে সঠিক পথ প্রদর্শন করেন না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮৩</div>
+    <div class="card-title">সূরা ফাতির : ২৯</div>
+  </div>
+  <div class="arabic">إِنَّ الَّذِينَ يَتْلُونَ كِتٰبَ اللَّهِ وَأَقَامُوا الصَّلَوٰةَ وَأَنفَقُوا مِمَّا رَزَقْنٰهُمْ سِرًّا وَعَلَانِيَةً يَرْجُونَ تِجٰرَةً لَّن تَبُورَ</div>
+  <div class="translation">যারা আল্লাহর কিতাব তিলাওয়াত করে, নামায প্রতিষ্ঠা করে আর আল্লাহ তাদেরকে যে রিযক দিয়েছেন তাথেকে গোপনে ও প্রকাশ্যে ব্যয় করে, তারা এমন এক ব্যবসায়ের আশা করে যাতে কক্ষনো লোকসান হবে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮৪</div>
+    <div class="card-title">সূরা আল-জুমু'আ : ১১</div>
+  </div>
+  <div class="arabic">وَإِذَا رَأَوْا تِجٰرَةً أَوْ لَهْوًا انفَضُّوا إِلَيْهَا وَتَرَكُوكَ قَائِمًا ۚ قُلْ مَا عِندَ اللَّهِ خَيْرٌ مِّنَ اللَّهْوِ وَمِنَ التِّجٰرَةِ ۚ وَاللَّهُ خَيْرُ الرّٰزِقِينَ</div>
+  <div class="translation">তারা যখন ব্যবসায় অথবা ক্রীড়া কৌতুক দেখে তখন তারা সেদিকে ছুটে যায় আর তোমাকে রেখে যায় দাঁড়ানো অবস্থায়। বল- ‘আল্লাহর কাছে যা আছে তা ক্রীড়া-কৌতুক ও ব্যবসার চেয়ে উত্তম।’ আর আল্লাহ সর্বাপেক্ষা উত্তম রিযকদাতা।</div>
+</div>
+
+<div class="note-box" style="margin-top:7mm;">
+  <strong>সূত্র ও স্বীকৃতি:</strong>
+  <div class="source-note" style="border:0;padding:0;margin-top:2.5mm;">
+    মূল আরবি সংকলন: শাইখ খালিদ আল-হাবাশি (alroqya.com)। বাংলা অনুবাদ, বিন্যাস ও উপস্থাপনা: রাকী ফয়সাল আহমেদ সাবিত।<br>
+    মূল ফাইল: <em>rizq_print.pdf</em>। বাংলা অনুবাদ: তাইসীরুল কুরআন — তাওহীদ পাবলিকেশন।
+    আরবি পাঠ কুরআনের যাচাইকৃত ডেটাসেট থেকে সূরা ও আয়াত নম্বর অনুযায়ী নেওয়া হয়েছে।
+  </div>
+</div>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>সেবা ও হাদিয়া:</strong>
+  <ul style="margin:2.5mm 0 0 0;padding-right:5mm;">
+    <li>মাসিক রুকইয়াহ — ১২টি সেশন + ডায়াগনোসিস। হাদিয়া <strong>৬৪০ টাকা</strong>।</li>
+    <li>সেলফ রুকইয়াহ গাইডলাইন — শুধু নিজের জন্য আলাদা গাইডলাইন। হাদিয়া <strong>৩০০ টাকা</strong>।</li>
+  </ul>
+  <div style="margin-top:2.5mm;">
+    নিজের সমস্যা কী — বদনজর, হাসাদ, সিহর নাকি অন্য কিছু — বুঝতে না পারলে
+    মেসেজে লিখুন <strong>Diagnosis</strong>। নিতে চাইলে মেসেজ করুন।
+  </div>
+</div>
+
+<div class="disclaimer">রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি, প্রয়োজনীয় চিকিৎসার বিকল্প নয়।</div>
+
+<div class="doc-footer">
+  <div class="brand">রাকী ফয়সাল আহমেদ সাবিত ✦ Raqi Faisal Ahmed Sabit</div>
+  <div>আল কুরআন রুকইয়াহ হিলিং সেন্টার — Al Quranic Ruqyah Healing Center</div>
+  <div>Page: Raqi Faisal Ahmed Sabit  |  Telegram: Raqi Faisal Ahmed Sabit (Official)</div>
+</div>
+
+</div>
+</body>
+</html>

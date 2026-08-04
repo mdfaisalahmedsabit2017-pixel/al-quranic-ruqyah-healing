@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>আয়াতুল ইহইয়া — আয়াত সংকলন | রাকী ফয়সাল আহমেদ সাবিত</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="জীবন দান ও পুনরুজ্জীবন-সংক্রান্ত আয়াতসমূহ — বাংলা অর্থসহ। আল কুরআন রুকইয়াহ হিলিং সেন্টার।">
+<link rel="stylesheet" href="../assets/fonts.css">
+<style>
+/* এমারেল্ড-গোল্ড প্রিমিয়াম ডিজাইন সিস্টেম — মাস্টার প্রম্পট সেকশন ৪ */
+
+:root {
+  --emerald-deep: #052e22;
+  --emerald-mid: #0b5d43;
+  --emerald-light: #12775a;
+  --gold: #b8912f;
+  --gold-light: #e6cf8a;
+  --gold-pale: #f4efdd;
+  --page: #faf7ef;
+  --card: #fffdf8;
+  --ink: #22332c;
+  --ink-soft: #4a5b53;
+  --arabic-ink: #06382b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-size: 11pt;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+  color: var(--emerald-deep);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.arabic {
+  font-family: 'AlQuran IndoPak', 'Noto Naskh Arabic', serif;
+  direction: rtl;
+  text-align: center;
+  font-size: 21.5pt;
+  line-height: 3.0;
+  color: var(--arabic-ink);
+  unicode-bidi: isolate;
+}
+
+/* ─────────────── কভার পেজ ─────────────── */
+
+.cover {
+  page: cover;
+  height: 297mm;
+  background: linear-gradient(160deg, var(--emerald-deep) 0%, var(--emerald-mid) 55%, var(--emerald-light) 100%);
+  color: var(--gold-pale);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 26mm 18mm 22mm;
+  position: relative;
+  break-after: page;
+}
+
+/* মাঝের ব্লকটা বাকি জায়গা নিয়ে নিজে সেন্টার হবে, লেখকের ব্লক নিচেই থাকবে */
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cover::before,
+.cover::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+}
+.cover::before { inset: 10mm; }
+.cover::after  { inset: 13mm; border-width: 0.6px; border-color: var(--gold-light); }
+
+.cover-bismillah {
+  font-family: 'AlQuran IndoPak', serif;
+  direction: rtl;
+  font-size: 30pt;
+  line-height: 2.2;
+  color: var(--gold-light);
+  margin-bottom: 6mm;
+}
+
+/* বাংলায় letter-spacing দিলে যুক্তাক্ষর ভেঙে যায় — তাই word-spacing ব্যবহার */
+.cover-kicker {
+  font-size: 10.5pt;
+  word-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 5mm;
+}
+
+.cover h1 {
+  font-size: 32pt;
+  color: #fffdf5;
+  margin: 0 0 4mm;
+  line-height: 1.35;
+}
+
+.cover-sub {
+  font-size: 12.5pt;
+  color: var(--gold-pale);
+  max-width: 130mm;
+  line-height: 1.8;
+  margin: 0 auto 10mm;
+  opacity: 0.92;
+}
+
+.ornament {
+  color: var(--gold);
+  letter-spacing: 0.7em;
+  font-size: 12pt;
+  margin: 6mm 0;
+}
+
+.cover-author { padding-top: 8mm; }
+.cover-author .name {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 15pt;
+  color: #fffdf5;
+  margin-bottom: 2mm;
+}
+.cover-author .center {
+  font-size: 10.5pt;
+  color: var(--gold-light);
+}
+.cover-author .en {
+  font-size: 8.5pt;
+  color: var(--gold);
+  letter-spacing: 0.16em;
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── সূচিপত্র ─────────────── */
+
+.toc { break-after: page; padding-top: 4mm; }
+
+.toc h2 {
+  font-size: 19pt;
+  text-align: center;
+  margin-bottom: 2mm;
+}
+
+.toc-rule {
+  width: 44mm; height: 2px;
+  background: var(--gold);
+  margin: 0 auto 9mm;
+}
+
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+
+.toc li {
+  counter-increment: toc;
+  display: flex;
+  align-items: baseline;
+  gap: 3mm;
+  padding: 2.2mm 0;
+  border-bottom: 0.5px dotted #d8cfb4;
+}
+
+.toc li::before {
+  content: counter(toc, decimal);
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--gold);
+  font-size: 9.5pt;
+  min-width: 7mm;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  flex: 1;
+  font-size: 10.5pt;
+}
+
+.toc .leader {
+  flex: 1;
+  border-bottom: 0.5px dotted transparent;
+}
+
+.toc .pg { color: var(--gold); font-size: 9.5pt; }
+
+/* ─────────────── সেকশন ব্যান্ড ─────────────── */
+
+.section-band {
+  background: linear-gradient(100deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-pale);
+  padding: 5mm 7mm;
+  margin: 9mm 0 6mm;
+  border-left: 3.5px solid var(--gold);
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+.section-band h2 { color: #fffdf5; font-size: 14.5pt; margin: 0; }
+.section-band .band-note {
+  font-size: 9.5pt;
+  color: var(--gold-light);
+  margin-top: 2mm;
+  line-height: 1.75;
+  opacity: 0.94;
+}
+
+/* ─────────────── আয়াত কার্ড ─────────────── */
+
+.card {
+  background: var(--card);
+  border: 0.5px solid #e5dcc4;
+  border-top: 3px solid var(--gold);
+  padding: 6mm 6mm 5mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+  position: relative;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  margin-bottom: 4mm;
+}
+
+.medallion {
+  width: 11mm; height: 11mm;
+  flex: 0 0 11mm;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 11pt;
+  border: 1px solid var(--gold);
+}
+
+.card-title {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 12pt;
+  color: var(--emerald-deep);
+  font-weight: 600;
+}
+
+.card .arabic {
+  padding: 3mm 2mm 1mm;
+  border-top: 0.5px solid #ece3cb;
+  border-bottom: 0.5px solid #ece3cb;
+  margin-bottom: 4mm;
+}
+
+.translation {
+  background: #fbf8ee;
+  border-left: 3px solid var(--gold);
+  padding: 3.5mm 4.5mm;
+  font-size: 10.5pt;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 4mm;
+}
+
+.instruction {
+  border: 1px dashed var(--emerald-light);
+  background: #f3f8f5;
+  padding: 3mm 4mm;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 600;
+  color: var(--emerald-deep);
+  line-height: 1.75;
+}
+.instruction .niyyah {
+  display: block;
+  font-weight: 400;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── দোয়া কার্ড ─────────────── */
+
+.dua-card {
+  background: #fdf9ec;
+  border: 0.5px solid #e8dcbb;
+  border-top: 3px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+
+.dua-card .arabic { font-size: 19pt; line-height: 2.8; margin-bottom: 3.5mm; }
+.dua-card .dua-bn {
+  font-size: 10.5pt;
+  line-height: 1.9;
+  padding: 3mm 4mm;
+  background: #fffdf6;
+  border-left: 3px solid var(--emerald-light);
+  margin-bottom: 3mm;
+}
+.dua-card .dua-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 4mm;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+}
+.dua-card .dua-count { color: var(--emerald-deep); font-weight: 600; }
+
+/* ─────────────── সাধারণ ব্লক ─────────────── */
+
+.intro-block {
+  background: #fffdf6;
+  border: 0.5px solid #e8ddc2;
+  border-left: 3.5px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 7mm;
+  font-size: 10.8pt;
+  line-height: 1.95;
+  text-align: justify;
+}
+
+.symptom-list { list-style: none; padding: 0; margin: 0; }
+.symptom-list li {
+  position: relative;
+  padding: 2.2mm 0 2.2mm 8mm;
+  border-bottom: 0.5px dotted #e0d6bb;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  break-inside: avoid;
+}
+.symptom-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 1.5mm;
+  color: var(--gold);
+  font-size: 9pt;
+}
+
+.note-box {
+  background: var(--gold-pale);
+  border: 0.5px solid #e2d5ae;
+  padding: 4.5mm 5.5mm;
+  font-size: 10pt;
+  line-height: 1.85;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+.note-box strong { color: var(--emerald-deep); }
+
+.step-list { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding: 2.8mm 0 2.8mm 11mm;
+  font-size: 10.5pt;
+  line-height: 1.85;
+  border-bottom: 0.5px dotted #e0d6bb;
+  break-inside: avoid;
+}
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 2.6mm;
+  width: 7mm; height: 7mm;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  color: var(--gold-light);
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.2pt;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+table.grid th {
+  background: var(--emerald-deep);
+  color: var(--gold-pale);
+  text-align: right;
+  padding: 3mm 4mm;
+  font-weight: 600;
+  width: 34%;
+  vertical-align: top;
+  font-size: 10pt;
+}
+table.grid td {
+  padding: 3mm 4mm;
+  border-bottom: 0.5px solid #e3d9bf;
+  background: var(--card);
+  line-height: 1.8;
+}
+table.grid tr:nth-child(even) td { background: #fdfbf4; }
+
+.disclaimer {
+  margin-top: 9mm;
+  padding: 5mm 6mm;
+  border: 1px dashed var(--gold);
+  background: #fffdf6;
+  text-align: center;
+  font-size: 10pt;
+  color: var(--emerald-deep);
+  line-height: 1.8;
+  break-inside: avoid;
+}
+
+.doc-footer {
+  margin-top: 7mm;
+  padding-top: 4mm;
+  border-top: 1px solid var(--gold);
+  text-align: center;
+  font-size: 9pt;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  break-inside: avoid;
+}
+.doc-footer .brand {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+}
+
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 17mm;
+}
+@page cover { margin: 0; }
+
+/* এই সংকলনে প্রতি-আয়াত পাঠসংখ্যা নেই, তাই .instruction ব্লক বাদ */
+.card .translation:last-child { margin-bottom: 0; }
+
+.source-note {
+  font-size: 9.5pt;
+  line-height: 1.8;
+  color: #4a5b53;
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 3mm;
+  margin-top: 4mm;
+}
+.cover-source {
+  font-size: 9pt;
+  color: var(--gold-light);
+  line-height: 1.8;
+  margin-top: 5mm;
+}
+.count-pill {
+  display: inline-block;
+  border: 1px solid var(--gold);
+  background: #fffdf6;
+  color: var(--emerald-deep);
+  font-size: 9.5pt;
+  padding: 1mm 4mm;
+  border-radius: 2mm;
+}
+
+body { background: #efeadd; padding: 0; }
+.page-wrap {
+  max-width: 210mm;
+  margin: 0 auto;
+  background: var(--page);
+  padding: 14mm 12mm 18mm;
+  box-shadow: 0 2px 30px rgba(5,46,34,0.13);
+}
+.cover { height: auto; min-height: 240mm; margin: 0 -12mm 12mm; }
+.print-only { display: none; }
+
+.web-nav {
+  background: var(--emerald-deep);
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 20;
+}
+.web-nav a { color: var(--gold-light); text-decoration: none; font-size: 14px; }
+.web-nav .home { color: #fffdf5; font-family: 'Noto Serif Bengali', serif; }
+.web-nav .dl a { border: 1px solid var(--gold); padding: 4px 12px; border-radius: 3px; }
+
+.card, .note-box, .intro-block { overflow-x: auto; }
+.arabic { font-size: 24px; line-height: 2.6; }
+
+@media (max-width: 640px) {
+  .page-wrap { padding: 10px 12px 30px; }
+  .cover { margin: 0 -12px 20px; padding: 40px 20px; min-height: auto; }
+  .cover h1 { font-size: 26px; }
+  .cover-bismillah { font-size: 24px; }
+  .arabic { font-size: 20px; line-height: 2.4; }
+  body { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="web-nav">
+  <a class="home" href="index.html">← সব আয়াত সংকলন</a>
+  <span class="dl"><a href="../../pdf/alroqya/ayat-al-ihya.pdf">PDF ডাউনলোড</a></span>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ══════════════ কভার ══════════════ -->
+<section class="cover">
+  <div class="cover-main">
+    <div class="cover-bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-kicker">আয়াত সংকলন — বাংলা অর্থসহ</div>
+    <h1>আয়াতুল ইহইয়া</h1>
+    <p class="cover-sub">জীবন দান ও পুনরুজ্জীবন-সংক্রান্ত আয়াতসমূহ</p>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-source">শাইখ খালিদ আল-হাবাশি — alroqya.com</div>
+  </div>
+  <div class="cover-author">
+    <div class="name">রাকী ফয়সাল আহমেদ সাবিত</div>
+    <div class="center">আল কুরআন রুকইয়াহ হিলিং সেন্টার</div>
+    <div class="en">Al Quranic Ruqyah Healing Center</div>
+  </div>
+</section>
+
+<!-- ══════════════ ভূমিকা ══════════════ -->
+<section class="section-band" id="intro">
+  <h2>ভূমিকা — কখন এই আয়াতগুলো পড়বেন</h2>
+  <div class="band-note">শাইখ খালিদ আল-হাবাশির মূল আরবি ভূমিকার বাংলা অনুবাদ।</div>
+</section>
+
+<div class="intro-block">আশাহীন রোগাক্রান্ত অবস্থায় — যেমন কোমা, ব্রেন ডেথ, ক্যান্সার — এই আয়াতগুলোর প্রভাব রয়েছে। হত্যার জাদুতেও (সিহরুল কাতল) এগুলো কার্যকর। কিছু ক্ষেত্রে অবাধ্য জিনের আছরে রোগী নিশ্চল হয়ে যায়, আশপাশের কিছুই বুঝতে পারে না। পাগলামি, মানসিক প্রতিবন্ধকতা, অঙ্গ শুকিয়ে যাওয়া, চুল পড়ে যাওয়া — মোটকথা যা কিছু 'মৃতবৎ' অর্থের অন্তর্ভুক্ত, সবখানেই।</div>
+
+<div class="note-box" style="margin-top:6mm;">
+  <strong>এই সংকলনে:</strong>
+  <span class="count-pill">২৮ টি অংশ</span>
+  <span class="count-pill">৩২ টি আয়াত</span>
+  <div class="source-note" style="border:0;padding:0;margin-top:3.5mm;">
+    আয়াতগুলো মূল সংকলনের ক্রম অনুসারেই সাজানো হয়েছে, কোনো পরিবর্তন করা হয়নি।
+    আরবি পাঠ ইন্দো-পাক (নূরানী) রীতিতে দেওয়া হয়েছে। বাংলা অনুবাদ: তাইসীরুল কুরআন — তাওহীদ পাবলিকেশন।
+  </div>
+</div>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>জরুরি নোট:</strong> রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি — প্রয়োজনীয় ডাক্তারি
+  পরীক্ষা-নিরীক্ষা ও চিকিৎসার সমান্তরালে চলবে, বিকল্প হিসেবে নয়। কোনো লক্ষণ মিললেই
+  নিশ্চিতভাবে সিহর, বদনজর বা জিনের আসর ধরে নেওয়া ঠিক নয়।
+</div>
+
+<!-- ══════════════ আয়াতসমূহ ══════════════ -->
+<section class="section-band" id="ayat">
+  <h2>আয়াতুল ইহইয়া</h2>
+  <div class="band-note">মোট ৩২ টি আয়াত, ২৮ টি অংশে।</div>
+</section>
+
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৮</div>
+  </div>
+  <div class="arabic">كَيْفَ تَكْفُرُونَ بِاللَّهِ وَكُنتُمْ أَمْوٰتًا فَأَحْيٰكُمْ ۖ ثُمَّ يُمِيتُكُمْ ثُمَّ يُحْيِيكُمْ ثُمَّ إِلَيْهِ تُرْجَعُونَ</div>
+  <div class="translation">তোমরা আল্লাহকে কীভাবে অস্বীকার করছ? অথচ তোমরা ছিলে মৃত, অতঃপর তিনি তোমাদেরকে জীবন্ত করেছেন, আবার তোমাদের মৃত্যু ঘটাবেন, তারপর আবার জীবিত করবেন, তারপর তাঁর দিকেই তোমরা ফিরে যাবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২</div>
+    <div class="card-title">সূরা আল-বাকারা : ৭৩</div>
+  </div>
+  <div class="arabic">فَقُلْنَا اضْرِبُوهُ بِبَعْضِهَا ۚ كَذٰلِكَ يُحْىِ اللَّهُ الْمَوْتَىٰ وَيُرِيكُمْ ءَايٰتِهِۦ لَعَلَّكُمْ تَعْقِلُونَ</div>
+  <div class="translation">আমি বললাম, ‘তার (অর্থাৎ যবহকৃত গরুর) কোন অংশ দ্বারা একে আঘাত কর’। এভাবে আল্লাহ মৃতকে জীবন দান করেন, আর তোমাদেরকে তাঁর নিদর্শন দেখিয়ে থাকেন যাতে তোমরা জ্ঞানলাভ করতে পার।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩</div>
+    <div class="card-title">সূরা আল-বাকারা : ১৫৪</div>
+  </div>
+  <div class="arabic">وَلَا تَقُولُوا لِمَن يُقْتَلُ فِى سَبِيلِ اللَّهِ أَمْوٰتٌ ۚ بَلْ أَحْيَاءٌ وَلٰكِن لَّا تَشْعُرُونَ</div>
+  <div class="translation">আর আল্লাহর পথে নিহতদেরকে মৃত বলো না, বরং তারা জীবিত, কিন্তু তোমরা বুঝ না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৪৩</div>
+  </div>
+  <div class="arabic">۞ أَلَمْ تَرَ إِلَى الَّذِينَ خَرَجُوا مِن دِيٰرِهِمْ وَهُمْ أُلُوفٌ حَذَرَ الْمَوْتِ فَقَالَ لَهُمُ اللَّهُ مُوتُوا ثُمَّ أَحْيٰهُمْ ۚ إِنَّ اللَّهَ لَذُو فَضْلٍ عَلَى النَّاسِ وَلٰكِنَّ أَكْثَرَ النَّاسِ لَا يَشْكُرُونَ</div>
+  <div class="translation">তুমি কি সেই লোকদের প্রতি লক্ষ্য করনি, যারা মৃত্যুকে এড়াবার জন্য নিজেদের ঘর থেকে হাজারে হাজারে বের হয়ে গিয়েছিল, তখন আল্লাহ তাদেরকে বললেন, ‘তোমাদের মৃত্যু হোক’। তৎপর তাদেরকে জীবিত করে উঠালেন। নিশ্চয়ই আল্লাহ লোকেদের প্রতি দয়াশীল কিন্তু অধিকাংশ লোক শোকর করে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৫৯</div>
+  </div>
+  <div class="arabic">أَوْ كَالَّذِى مَرَّ عَلَىٰ قَرْيَةٍ وَهِىَ خَاوِيَةٌ عَلَىٰ عُرُوشِهَا قَالَ أَنَّىٰ يُحْىِۦ هٰذِهِ اللَّهُ بَعْدَ مَوْتِهَا ۖ فَأَمَاتَهُ اللَّهُ مِائَةَ عَامٍ ثُمَّ بَعَثَهُۥ ۖ قَالَ كَمْ لَبِثْتَ ۖ قَالَ لَبِثْتُ يَوْمًا أَوْ بَعْضَ يَوْمٍ ۖ قَالَ بَل لَّبِثْتَ مِائَةَ عَامٍ فَانظُرْ إِلَىٰ طَعَامِكَ وَشَرَابِكَ لَمْ يَتَسَنَّهْ ۖ وَانظُرْ إِلَىٰ حِمَارِكَ وَلِنَجْعَلَكَ ءَايَةً لِّلنَّاسِ ۖ وَانظُرْ إِلَى الْعِظَامِ كَيْفَ نُنشِزُهَا ثُمَّ نَكْسُوهَا لَحْمًا ۚ فَلَمَّا تَبَيَّنَ لَهُۥ قَالَ أَعْلَمُ أَنَّ اللَّهَ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ</div>
+  <div class="translation">কিংবা এমন ব্যক্তির ঘটনা সম্পর্কে (তুমি কি চিন্তা করনি) যে এক নগর দিয়ে এমন অবস্থায় যাচ্ছিল যে তা উজাড় অবস্থায় ছিল। সে বলল, ‘আল্লাহ এ নগরীকে এর মৃত্যুর পরে কীভাবে জীবিত করবেন’? তখন আল্লাহ তাকে একশ’ বছর মৃত রাখলেন। তারপর তাকে জীবিত করে তুললেন ও জিজ্ঞেস করলেন, ‘তুমি এ অবস্থায় কতকাল ছিলে’? সে বলল, ‘একদিন ছিলাম কিংবা একদিন হতেও কম’। আল্লাহ বললেন, ‘বরং তুমি একশ’ বছর ছিলে, এক্ষণে তুমি তোমার খাদ্যের ও পানীয়ের দিকে লক্ষ্য কর, এটা পচে যায়নি। আর গাধাটার দিকে তাকিয়ে দেখ, আর এতে উদ্দেশ্য এই যে, আমি তোমাকে মানুষের জন্য উদাহরণ করব। আবার তুমি হাড়গুলোর দিকে লক্ষ্য কর, আমি কীভাবে ওগুলো জোড়া লাগিয়ে দেই, তারপর গোশত দ্বারা ঢেকে দেই। এরপর যখন তার কাছে স্পষ্ট হয়ে গেল, তখন সে বলল, ‘এখন আমি পূর্ণ বিশ্বাস করছি যে, আল্লাহ্ই সর্ববিষয়ে সর্বশক্তিমান’।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৬০</div>
+  </div>
+  <div class="arabic">وَإِذْ قَالَ إِبْرٰهِۦمُ رَبِّ أَرِنِى كَيْفَ تُحْىِ الْمَوْتَىٰ ۖ قَالَ أَوَلَمْ تُؤْمِن ۖ قَالَ بَلَىٰ وَلٰكِن لِّيَطْمَئِنَّ قَلْبِى ۖ قَالَ فَخُذْ أَرْبَعَةً مِّنَ الطَّيْرِ فَصُرْهُنَّ إِلَيْكَ ثُمَّ اجْعَلْ عَلَىٰ كُلِّ جَبَلٍ مِّنْهُنَّ جُزْءًا ثُمَّ ادْعُهُنَّ يَأْتِينَكَ سَعْيًا ۚ وَاعْلَمْ أَنَّ اللَّهَ عَزِيزٌ حَكِيمٌ</div>
+  <div class="translation">যখন ইবরাহীম বলেছিল, ‘হে আমার প্রতিপালক! তুমি মৃতকে কীরূপে জীবিত করবে আমাকে দেখাও’। আল্লাহ বললেন, ‘তুমি কি বিশ্বাস কর না’? সে আরয করল, ‘নিশ্চয়ই, তবে যাতে আমার অন্তঃকরণ স্বস্তি লাভ করে (এজন্য তা দেখতে চাই)’। আল্লাহ বললেন, তাহলে চারটি পাখী নাও এবং তাদেরকে বশীভূত কর। তারপর ওদের এক এক টুকরো প্রত্যেক পাহাড়ের উপর রেখে দাও, অতঃপর সেগুলোকে ডাক দাও, তোমার নিকট দৌড়ে আসবে। জেনে রেখ যে, নিশ্চয় আল্লাহ মহাপরাক্রমশালী, প্রজ্ঞাময়।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭</div>
+    <div class="card-title">সূরা আল-আন'আম : ১২২</div>
+  </div>
+  <div class="arabic">أَوَمَن كَانَ مَيْتًا فَأَحْيَيْنٰهُ وَجَعَلْنَا لَهُۥ نُورًا يَمْشِى بِهِۦ فِى النَّاسِ كَمَن مَّثَلُهُۥ فِى الظُّلُمٰتِ لَيْسَ بِخَارِجٍ مِّنْهَا ۚ كَذٰلِكَ زُيِّنَ لِلْكٰفِرِينَ مَا كَانُوا يَعْمَلُونَ</div>
+  <div class="translation">যে ব্যক্তি মৃত ছিল, তাকে আমি জীবিত করলাম, তার জন্য আলোর ব্যবস্থা করলাম যার সাহায্যে সে মানুষের মাঝে চলাফেরা করে, সে কি তার মত যে অন্ধকারে নিমজ্জিত, যাত্থেকে সে কক্ষনো বেরিয়ে আসতে পারবে না। এটা এজন্য যে, কাফিররা যা করছে তা তাদের জন্য চাকচিক্যময় করে দেয়া হয়েছে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮</div>
+    <div class="card-title">সূরা আল-হিজর : ২৩</div>
+  </div>
+  <div class="arabic">وَإِنَّا لَنَحْنُ نُحْىِۦ وَنُمِيتُ وَنَحْنُ الْوٰرِثُونَ</div>
+  <div class="translation">আমিই জীবন দেই আর মৃত্যু ঘটাই আর আমিই চূড়ান্ত উত্তরাধিকারী।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৯</div>
+    <div class="card-title">সূরা আন-নাহল : ৯৭</div>
+  </div>
+  <div class="arabic">مَنْ عَمِلَ صٰلِحًا مِّن ذَكَرٍ أَوْ أُنثَىٰ وَهُوَ مُؤْمِنٌ فَلَنُحْيِيَنَّهُۥ حَيَوٰةً طَيِّبَةً ۖ وَلَنَجْزِيَنَّهُمْ أَجْرَهُم بِأَحْسَنِ مَا كَانُوا يَعْمَلُونَ</div>
+  <div class="translation">পুরুষ আর নারীদের মধ্যে যে কেউ সৎকাজ করবে আর সে মু’মিনও, তাকে আমি অবশ্য অবশ্যই উত্তম জীবন দান করব আর তাদেরকে অবশ্য অবশ্যই তারা যা করে তার চেয়ে উত্তম প্রতিফল দান করব।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১০</div>
+    <div class="card-title">সূরা মারইয়াম : ১৫</div>
+  </div>
+  <div class="arabic">وَسَلٰمٌ عَلَيْهِ يَوْمَ وُلِدَ وَيَوْمَ يَمُوتُ وَيَوْمَ يُبْعَثُ حَيًّا</div>
+  <div class="translation">তার উপর শান্তি যেদিন সে জন্মেছে, যেদিন তার মৃত্যু হবে আর যেদিন সে জীবন্ত হয়ে উত্থিত হবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১১</div>
+    <div class="card-title">সূরা আল-আম্বিয়া : ৩০</div>
+  </div>
+  <div class="arabic">أَوَلَمْ يَرَ الَّذِينَ كَفَرُوا أَنَّ السَّمٰوٰتِ وَالْأَرْضَ كَانَتَا رَتْقًا فَفَتَقْنٰهُمَا ۖ وَجَعَلْنَا مِنَ الْمَاءِ كُلَّ شَىْءٍ حَىٍّ ۖ أَفَلَا يُؤْمِنُونَ</div>
+  <div class="translation">অবিশ্বাসীরা কি দেখে না যে, আকাশ আর যমীন এক সঙ্গে সংযুক্ত ছিল, অতঃপর আমি উভয়কে আলাদা করে দিলাম, আর প্রাণসম্পন্ন সব কিছু পানি থেকে সৃষ্টি করলাম। তবুও কি তারা ঈমান আনবে না?</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১২</div>
+    <div class="card-title">সূরা আল-হাজ্জ : ৬</div>
+  </div>
+  <div class="arabic">ذٰلِكَ بِأَنَّ اللَّهَ هُوَ الْحَقُّ وَأَنَّهُۥ يُحْىِ الْمَوْتَىٰ وَأَنَّهُۥ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ</div>
+  <div class="translation">এ রকম হয় এজন্য যে, আল্লাহ হলেন সত্য সঠিক, আর তিনিই মৃতকে জীবিত করেন, আর তিনি সকল বিষয়ে ক্ষমতাবান।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৩</div>
+    <div class="card-title">সূরা আল-হাজ্জ : ৬৬</div>
+  </div>
+  <div class="arabic">وَهُوَ الَّذِى أَحْيَاكُمْ ثُمَّ يُمِيتُكُمْ ثُمَّ يُحْيِيكُمْ ۗ إِنَّ الْإِنسٰنَ لَكَفُورٌ</div>
+  <div class="translation">তিনিই তোমাদেরকে জীবন দিয়েছেন, অতঃপর তিনিই তোমাদের মৃত্যু ঘটাবেন, অতঃপর আবার তোমাদেরকে জীবন দিবেন। মানুষ সত্যিই বড়ই অকৃতজ্ঞ।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৪</div>
+    <div class="card-title">সূরা আশ-শু'আরা : ৮১</div>
+  </div>
+  <div class="arabic">وَالَّذِى يُمِيتُنِى ثُمَّ يُحْيِينِ</div>
+  <div class="translation">যিনি আমার মৃত্যু ঘটাবেন, পুনরায় আমাকে জীবিত করবেন।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৫</div>
+    <div class="card-title">সূরা আর-রূম : ১৯</div>
+  </div>
+  <div class="arabic">يُخْرِجُ الْحَىَّ مِنَ الْمَيِّتِ وَيُخْرِجُ الْمَيِّتَ مِنَ الْحَىِّ وَيُحْىِ الْأَرْضَ بَعْدَ مَوْتِهَا ۚ وَكَذٰلِكَ تُخْرَجُونَ</div>
+  <div class="translation">তিনিই জীবন্তকে বের করেন মৃত থেকে আর মৃতকে বের করেন জীবন্ত থেকে। যমীনকে তিনিই পুনরায় জীবিত করেন তার মৃত্যুর পর, এভাবেই তোমাদেরকে বের করা হবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৬</div>
+    <div class="card-title">সূরা আর-রূম : ৪০</div>
+  </div>
+  <div class="arabic">اللَّهُ الَّذِى خَلَقَكُمْ ثُمَّ رَزَقَكُمْ ثُمَّ يُمِيتُكُمْ ثُمَّ يُحْيِيكُمْ ۖ هَلْ مِن شُرَكَائِكُم مَّن يَفْعَلُ مِن ذٰلِكُم مِّن شَىْءٍ ۚ سُبْحٰنَهُۥ وَتَعٰلَىٰ عَمَّا يُشْرِكُونَ</div>
+  <div class="translation">আল্লাহ্ই তোমাদেরকে সৃষ্টি করেছেন, অতঃপর তোমাদেরকে রিযক দিয়েছেন, অতঃপর তিনি তোমাদের মৃত্যু ঘটাবেন, অতঃপর তোমাদেরকে জীবিত করবেন। তোমরা যাদেরকে (আল্লাহর) অংশীদার মান্য কর তাদের মধ্যে কেউ আছে কি এ সবের কোন কিছু করতে পারে? তারা যাদেরকে অংশীদার গণ্য করে আল্লাহ তাদের থেকে পবিত্র, বহু ঊর্ধ্বে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৭</div>
+    <div class="card-title">সূরা আর-রূম : ৫০</div>
+  </div>
+  <div class="arabic">فَانظُرْ إِلَىٰ ءَاثٰرِ رَحْمَتِ اللَّهِ كَيْفَ يُحْىِ الْأَرْضَ بَعْدَ مَوْتِهَا ۚ إِنَّ ذٰلِكَ لَمُحْىِ الْمَوْتَىٰ ۖ وَهُوَ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ</div>
+  <div class="translation">অতএব আল্লাহর রহমাতের ফল দেখে নাও, কীভাবে তিনি ভূমিকে তার মৃত্যুর পর জীবিত করেন। এভাবেই নিশ্চয় তিনি মৃতকে জীবিত করবেন, কেননা সব কিছুর উপর তিনি সর্বশক্তিমান।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৮</div>
+    <div class="card-title">সূরা ইয়াসীন : ১২</div>
+  </div>
+  <div class="arabic">إِنَّا نَحْنُ نُحْىِ الْمَوْتَىٰ وَنَكْتُبُ مَا قَدَّمُوا وَءَاثٰرَهُمْ ۚ وَكُلَّ شَىْءٍ أَحْصَيْنٰهُ فِى إِمَامٍ مُّبِينٍ</div>
+  <div class="translation">আমিই মৃতকে জীবিত করি, আর লিখে রাখি যা তারা আগে পাঠিয়ে দেয় আর যা পেছনে ছেড়ে যায়। সব কিছুই আমি স্পষ্ট কিতাবে সংরক্ষিত করে রেখেছি।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৯</div>
+    <div class="card-title">সূরা ইয়াসীন : ২৯-৩০</div>
+  </div>
+  <div class="arabic">إِن كَانَتْ إِلَّا صَيْحَةً وٰحِدَةً فَإِذَا هُمْ خٰمِدُونَ يٰحَسْرَةً عَلَى الْعِبَادِ ۚ مَا يَأْتِيهِم مِّن رَّسُولٍ إِلَّا كَانُوا بِهِۦ يَسْتَهْزِءُونَ</div>
+  <div class="translation">ওটা ছিল মাত্র একটা প্রচন্ড শব্দ, ফলে তারা সহসাই নিস্তব্ধ হয়ে গেল। বান্দাহদের জন্য পরিতাপ! তাদের কাছে এমন কোন রসূলই আসেনি যাকে তারা ঠাট্টা-বিদ্রূপ করেনি।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২০</div>
+    <div class="card-title">সূরা ইয়াসীন : ৭৮-৭৯</div>
+  </div>
+  <div class="arabic">وَضَرَبَ لَنَا مَثَلًا وَنَسِىَ خَلْقَهُۥ ۖ قَالَ مَن يُحْىِ الْعِظٰمَ وَهِىَ رَمِيمٌ قُلْ يُحْيِيهَا الَّذِى أَنشَأَهَا أَوَّلَ مَرَّةٍ ۖ وَهُوَ بِكُلِّ خَلْقٍ عَلِيمٌ</div>
+  <div class="translation">সে (আমার সৃষ্টির সাথে) আমার তুলনা করে, অথচ সে তার নিজের সৃষ্টির ব্যপারটি ভুলে যায় (যে তাকে আমিই সৃষ্টি করেছি)। সে বলে, ‘হাড়গুলোকে কে আবার জীবন্ত করবে যখন তা পচে গলে যাবে?’’ বল, ‘‘তাকে তিনিই জীবন্ত করবেন যিনি ওগুলোকে প্রথমবার সৃষ্টি করেছেন, আর তিনি প্রতিটি সৃষ্টি সম্পর্কে সবচেয়ে বেশি অবগত।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২১</div>
+    <div class="card-title">সূরা গাফির : ৬৮</div>
+  </div>
+  <div class="arabic">هُوَ الَّذِى يُحْىِۦ وَيُمِيتُ ۖ فَإِذَا قَضَىٰ أَمْرًا فَإِنَّمَا يَقُولُ لَهُۥ كُن فَيَكُونُ</div>
+  <div class="translation">তিনিই জীবন দেন ও মৃত্যু ঘটান। যখন কোন কিছু করার সিদ্ধান্ত করেন, তার জন্য তিনি বলেন- হও, তখন তা হয়ে যায়।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২২</div>
+    <div class="card-title">সূরা ফুসসিলাত : ৩৯</div>
+  </div>
+  <div class="arabic">وَمِنْ ءَايٰتِهِۦ أَنَّكَ تَرَى الْأَرْضَ خٰشِعَةً فَإِذَا أَنزَلْنَا عَلَيْهَا الْمَاءَ اهْتَزَّتْ وَرَبَتْ ۚ إِنَّ الَّذِى أَحْيَاهَا لَمُحْىِ الْمَوْتَىٰ ۚ إِنَّهُۥ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ</div>
+  <div class="translation">তাঁর নিদর্শনগুলোর মধ্যে হল এই যে, তুমি যমীনকে দেখ শুষ্ক অনুর্বর পড়ে আছে। অতঃপর আমি যখন তার উপর বৃষ্টি বর্ষণ করি তখন তা সতেজ হয় ও বেড়ে যায়। যিনি এ মৃত যমীনকে জীবিত করেন, তিনি অবশ্যই মৃতদেরকে জীবিত করবেন। তিনি সকল বিষয়ের উপর ক্ষমতাবান।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৩</div>
+    <div class="card-title">সূরা আশ-শূরা : ৯</div>
+  </div>
+  <div class="arabic">أَمِ اتَّخَذُوا مِن دُونِهِۦ أَوْلِيَاءَ ۖ فَاللَّهُ هُوَ الْوَلِىُّ وَهُوَ يُحْىِ الْمَوْتَىٰ وَهُوَ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ</div>
+  <div class="translation">কী! তারা কি আল্লাহর পরিবর্তে অন্যদেরকে অভিভাবক গ্রহণ করে নিয়েছে? আল্লাহই তো একমাত্র অভিভাবক, তিনিই মৃতকে জীবিত করেন আর তিনি সব কিছুর উপর ক্ষমতাবান।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৪</div>
+    <div class="card-title">সূরা আল-জাসিয়াহ : ২৬</div>
+  </div>
+  <div class="arabic">قُلِ اللَّهُ يُحْيِيكُمْ ثُمَّ يُمِيتُكُمْ ثُمَّ يَجْمَعُكُمْ إِلَىٰ يَوْمِ الْقِيٰمَةِ لَا رَيْبَ فِيهِ وَلٰكِنَّ أَكْثَرَ النَّاسِ لَا يَعْلَمُونَ</div>
+  <div class="translation">বল- আল্লাহই তোমাদেরকে জীবন দান করেন অতঃপর তোমাদের মৃত্যু ঘটান। অতঃপর তিনি তোমাদেরকে ক্বিয়ামতের দিন একত্রিত করবেন যাতে কোন সন্দেহ নেই। কিন্তু অধিকাংশ মানুষ তা জানে না।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৫</div>
+    <div class="card-title">সূরা আল-আহকাফ : ৩১-৩২</div>
+  </div>
+  <div class="arabic">يٰقَوْمَنَا أَجِيبُوا دَاعِىَ اللَّهِ وَءَامِنُوا بِهِۦ يَغْفِرْ لَكُم مِّن ذُنُوبِكُمْ وَيُجِرْكُم مِّنْ عَذَابٍ أَلِيمٍ وَمَن لَّا يُجِبْ دَاعِىَ اللَّهِ فَلَيْسَ بِمُعْجِزٍ فِى الْأَرْضِ وَلَيْسَ لَهُۥ مِن دُونِهِۦ أَوْلِيَاءُ ۚ أُولٰئِكَ فِى ضَلٰلٍ مُّبِينٍ</div>
+  <div class="translation">হে আমাদের সম্প্রদায়! আল্লাহর দিকে আহবানকারীর প্রতি সাড়া দাও এবং তার প্রতি ঈমান আন, আল্লাহ তোমাদের গুনাহ মাফ করে দেবেন আর তোমাদেরকে যন্ত্রণাদায়ক ‘আযাব থেকে রক্ষা করবেন। আর যে আল্লাহর দিকে আহবানকারীর প্রতি সাড়া দিবে না, দুনিয়াতে সে আল্লাহকে ব্যর্থ করতে পারবে না, আর আল্লাহকে বাদ দিয়ে নেই তার কোন সাহায্যকারী, পৃষ্ঠপোষক। তারা আছে সুস্পষ্ট গুমরাহীতে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৬</div>
+    <div class="card-title">সূরা ক্বফ : ৪৩</div>
+  </div>
+  <div class="arabic">إِنَّا نَحْنُ نُحْىِۦ وَنُمِيتُ وَإِلَيْنَا الْمَصِيرُ</div>
+  <div class="translation">আমিই জীবন দেই, আমিই মুত্যু দেই, আর আমার কাছেই (সব্বাইকে) ফিরে আসতে হবে।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৭</div>
+    <div class="card-title">সূরা আন-নাজম : ৪৪</div>
+  </div>
+  <div class="arabic">وَأَنَّهُۥ هُوَ أَمَاتَ وَأَحْيَا</div>
+  <div class="translation">আর এই যে, তিনিই মারেন, তিনিই বাঁচান।</div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২৮</div>
+    <div class="card-title">সূরা আল-ইনসান : ৩-৪</div>
+  </div>
+  <div class="arabic">إِنَّا هَدَيْنٰهُ السَّبِيلَ إِمَّا شَاكِرًا وَإِمَّا كَفُورًا إِنَّا أَعْتَدْنَا لِلْكٰفِرِينَ سَلٰسِلَا وَأَغْلٰلًا وَسَعِيرًا</div>
+  <div class="translation">আমি তাকে পথ দেখিয়ে দিয়েছি, হয় সে কৃতজ্ঞ হবে, না হয় সে অকৃতজ্ঞ হবে। আমি (অকৃতজ্ঞ) কাফিরদের জন্য প্রস্তুত করে রেখেছি শেকল, বেড়ি আর জ্বলন্ত আগুন।</div>
+</div>
+
+<div class="note-box" style="margin-top:7mm;">
+  <strong>সূত্র ও স্বীকৃতি:</strong>
+  <div class="source-note" style="border:0;padding:0;margin-top:2.5mm;">
+    মূল আরবি সংকলন: শাইখ খালিদ আল-হাবাশি (alroqya.com)। বাংলা অনুবাদ, বিন্যাস ও উপস্থাপনা: রাকী ফয়সাল আহমেদ সাবিত।<br>
+    মূল ফাইল: <em>ehyaa_print.pdf</em>। বাংলা অনুবাদ: তাইসীরুল কুরআন — তাওহীদ পাবলিকেশন।
+    আরবি পাঠ কুরআনের যাচাইকৃত ডেটাসেট থেকে সূরা ও আয়াত নম্বর অনুযায়ী নেওয়া হয়েছে।
+  </div>
+</div>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>সেবা ও হাদিয়া:</strong>
+  <ul style="margin:2.5mm 0 0 0;padding-right:5mm;">
+    <li>মাসিক রুকইয়াহ — ১২টি সেশন + ডায়াগনোসিস। হাদিয়া <strong>৬৪০ টাকা</strong>।</li>
+    <li>সেলফ রুকইয়াহ গাইডলাইন — শুধু নিজের জন্য আলাদা গাইডলাইন। হাদিয়া <strong>৩০০ টাকা</strong>।</li>
+  </ul>
+  <div style="margin-top:2.5mm;">
+    নিজের সমস্যা কী — বদনজর, হাসাদ, সিহর নাকি অন্য কিছু — বুঝতে না পারলে
+    মেসেজে লিখুন <strong>Diagnosis</strong>। নিতে চাইলে মেসেজ করুন।
+  </div>
+</div>
+
+<div class="disclaimer">রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি, প্রয়োজনীয় চিকিৎসার বিকল্প নয়।</div>
+
+<div class="doc-footer">
+  <div class="brand">রাকী ফয়সাল আহমেদ সাবিত ✦ Raqi Faisal Ahmed Sabit</div>
+  <div>আল কুরআন রুকইয়াহ হিলিং সেন্টার — Al Quranic Ruqyah Healing Center</div>
+  <div>Page: Raqi Faisal Ahmed Sabit  |  Telegram: Raqi Faisal Ahmed Sabit (Official)</div>
+</div>
+
+</div>
+</body>
+</html>

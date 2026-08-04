@@ -164,22 +164,38 @@ function audioIndexPage(byCat, total) {
 </main>`);
 }
 
-function guidesPage(pdfs) {
+function guidesPage(pdfs, guides) {
     const canonical = `${SITE}/guides/`;
-    const desc = `${toBn(pdfs.length)}টি বিনামূল্যের রুকইয়াহ গাইড ও সেলফ রুকইয়াহ PDF — জাদু, বদনজর, জ্বিন ও দৈনন্দিন আমল।`;
+    const total = pdfs.length + guides.items.length;
+    const desc = `${toBn(total)}টি বিনামূল্যের রুকইয়াহ গাইড, প্রোটোকল ও আয়াত সংকলন — জাদু, বদনজর, জ্বিন ও দৈনন্দিন আমল।`;
+
+    // The guides_src documents come first: they are full text pages with their own
+    // URL, so they are what a visitor (and a crawler) should reach first. The PDFs
+    // follow, and each of those can only open inside the app.
+    const gsecs = guides.categories
+        .map((c) => ({ ...c, items: guides.items.filter((i) => i.category === c.bn) }))
+        .filter((s) => s.items.length);
+
     const byCat = {};
     for (const p of pdfs) (byCat[p.category || 'অন্যান্য'] ||= []).push(p);
+
     return page({
-        title: 'রুকইয়াহ গাইড ও PDF', desc, canonical,
+        title: 'রুকইয়াহ গাইড ও প্রোটোকল', desc, canonical,
         ld: { '@context': 'https://schema.org', '@type': 'CollectionPage',
-              name: 'রুকইয়াহ গাইড ও PDF', description: desc, url: canonical, inLanguage: 'bn' },
+              name: 'রুকইয়াহ গাইড ও প্রোটোকল', description: desc, url: canonical, inLanguage: 'bn' },
     }, `<header class="blog-hd"><div class="wrap">
-    <h1>রুকইয়াহ গাইড ও PDF</h1>
-    <p>সেলফ রুকইয়াহ, দৈনন্দিন আমল ও বিষয়ভিত্তিক গাইড — মোট ${toBn(pdfs.length)}টি, সবই বিনামূল্যে পড়া যায়।</p>
+    <h1>রুকইয়াহ গাইড ও প্রোটোকল</h1>
+    <p>সেলফ রুকইয়াহ, দৈনন্দিন আমল, বিষয়ভিত্তিক প্রোটোকল ও আয়াত সংকলন — মোট ${toBn(total)}টি, সবই বিনামূল্যে পড়া যায়।</p>
   </div></header>
 <main class="wrap blog-main">
+  ${gsecs.map((s) => `<section class="lib-sec">
+    <h2 class="row-hd">${esc(s.bn)} <span class="lib-count">${toBn(s.items.length)}টি</span></h2>
+    <p class="lib-blurb">${esc(s.blurb)}</p>
+    <ol class="ep-list">${s.items.map((g) => `<li><a href="${g.url}">
+      <span class="ep-b"><span class="ep-t">${esc(g.title_bn)}</span></span></a></li>`).join('')}</ol>
+  </section>`).join('')}
   ${Object.entries(byCat).map(([c, ps]) => `<section class="lib-sec">
-    <h2 class="row-hd">${esc(c)} <span class="lib-count">${toBn(ps.length)}টি</span></h2>
+    <h2 class="row-hd">${esc(c)} — PDF <span class="lib-count">${toBn(ps.length)}টি</span></h2>
     <ol class="ep-list">${ps.map((p) => `<li><a href="/app.html#pdf">
       <span class="ep-b"><span class="ep-t">${esc(p.title_bn)}</span></span></a></li>`).join('')}</ol>
   </section>`).join('')}
@@ -198,7 +214,7 @@ const EXTRA_CSS = `
 .lib-code{flex-shrink:0;min-width:3em;font-weight:800;color:var(--green);font-size:.78rem;padding-top:3px}
 `;
 
-function buildLibrary(distDir) {
+function buildLibrary(distDir, guides) {
     const audio = JSON.parse(fs.readFileSync(path.join(ROOT, 'audio.json'), 'utf8'));
     const pdfs = JSON.parse(fs.readFileSync(path.join(ROOT, 'pdf_list.json'), 'utf8'));
 
@@ -219,9 +235,12 @@ function buildLibrary(distDir) {
         urls.push(`${SITE}/audio/${SLUGS[cat] || cat}/`);
     }
 
+    // buildGuides has already written public/guides/<slug>/, so this only adds the
+    // index above them — and every one of those pages needs a sitemap row.
     const guidesDir = path.join(distDir, 'guides');
     fs.mkdirSync(guidesDir, { recursive: true });
-    fs.writeFileSync(path.join(guidesDir, 'index.html'), guidesPage(pdfs));
+    fs.writeFileSync(path.join(guidesDir, 'index.html'), guidesPage(pdfs, guides));
+    for (const g of guides.items) urls.push(`${SITE}${g.url}`);
 
     // append the library-only rules to the shared stylesheet
     const css = path.join(distDir, 'blog', 'blog.css');
@@ -239,7 +258,8 @@ function buildLibrary(distDir) {
     }
 
     console.log(`Library: ${audio.length} audio in ${Object.keys(sorted).length} categories, `
-              + `${pdfs.length} guides -> public/audio/, public/guides/`);
+              + `${guides.items.length} documents + ${pdfs.length} PDF guides `
+              + `-> public/audio/, public/guides/`);
     return urls;
 }
 
