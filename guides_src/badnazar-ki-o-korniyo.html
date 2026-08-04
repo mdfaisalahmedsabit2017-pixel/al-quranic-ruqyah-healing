@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>বদনজর: কুরআন-সুন্নাহ কী বলে, আর আমরা কোথায় বাড়াবাড়ি করি | রাকী ফয়সাল আহমেদ সাবিত</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="নজর লাগা সত্য — কিন্তু সব বিপদের নাম নজর নয় — আল কুরআন রুকইয়াহ হিলিং সেন্টার।">
+<link rel="stylesheet" href="../assets/fonts.css">
+<style>
+/* এমারেল্ড-গোল্ড প্রিমিয়াম ডিজাইন সিস্টেম — মাস্টার প্রম্পট সেকশন ৪ */
+
+:root {
+  --emerald-deep: #052e22;
+  --emerald-mid: #0b5d43;
+  --emerald-light: #12775a;
+  --gold: #b8912f;
+  --gold-light: #e6cf8a;
+  --gold-pale: #f4efdd;
+  --page: #faf7ef;
+  --card: #fffdf8;
+  --ink: #22332c;
+  --ink-soft: #4a5b53;
+  --arabic-ink: #06382b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-size: 11pt;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+  color: var(--emerald-deep);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.arabic {
+  font-family: 'AlQuran IndoPak', 'Noto Naskh Arabic', serif;
+  direction: rtl;
+  text-align: center;
+  font-size: 21.5pt;
+  line-height: 3.0;
+  color: var(--arabic-ink);
+  unicode-bidi: isolate;
+}
+
+/* ─────────────── কভার পেজ ─────────────── */
+
+.cover {
+  page: cover;
+  height: 297mm;
+  background: linear-gradient(160deg, var(--emerald-deep) 0%, var(--emerald-mid) 55%, var(--emerald-light) 100%);
+  color: var(--gold-pale);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 26mm 18mm 22mm;
+  position: relative;
+  break-after: page;
+}
+
+/* মাঝের ব্লকটা বাকি জায়গা নিয়ে নিজে সেন্টার হবে, লেখকের ব্লক নিচেই থাকবে */
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cover::before,
+.cover::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+}
+.cover::before { inset: 10mm; }
+.cover::after  { inset: 13mm; border-width: 0.6px; border-color: var(--gold-light); }
+
+.cover-bismillah {
+  font-family: 'AlQuran IndoPak', serif;
+  direction: rtl;
+  font-size: 30pt;
+  line-height: 2.2;
+  color: var(--gold-light);
+  margin-bottom: 6mm;
+}
+
+/* বাংলায় letter-spacing দিলে যুক্তাক্ষর ভেঙে যায় — তাই word-spacing ব্যবহার */
+.cover-kicker {
+  font-size: 10.5pt;
+  word-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 5mm;
+}
+
+.cover h1 {
+  font-size: 32pt;
+  color: #fffdf5;
+  margin: 0 0 4mm;
+  line-height: 1.35;
+}
+
+.cover-sub {
+  font-size: 12.5pt;
+  color: var(--gold-pale);
+  max-width: 130mm;
+  line-height: 1.8;
+  margin: 0 auto 10mm;
+  opacity: 0.92;
+}
+
+.ornament {
+  color: var(--gold);
+  letter-spacing: 0.7em;
+  font-size: 12pt;
+  margin: 6mm 0;
+}
+
+.cover-author { padding-top: 8mm; }
+.cover-author .name {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 15pt;
+  color: #fffdf5;
+  margin-bottom: 2mm;
+}
+.cover-author .center {
+  font-size: 10.5pt;
+  color: var(--gold-light);
+}
+.cover-author .en {
+  font-size: 8.5pt;
+  color: var(--gold);
+  letter-spacing: 0.16em;
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── সূচিপত্র ─────────────── */
+
+.toc { break-after: page; padding-top: 4mm; }
+
+.toc h2 {
+  font-size: 19pt;
+  text-align: center;
+  margin-bottom: 2mm;
+}
+
+.toc-rule {
+  width: 44mm; height: 2px;
+  background: var(--gold);
+  margin: 0 auto 9mm;
+}
+
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+
+.toc li {
+  counter-increment: toc;
+  display: flex;
+  align-items: baseline;
+  gap: 3mm;
+  padding: 2.2mm 0;
+  border-bottom: 0.5px dotted #d8cfb4;
+}
+
+.toc li::before {
+  content: counter(toc, decimal);
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--gold);
+  font-size: 9.5pt;
+  min-width: 7mm;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  flex: 1;
+  font-size: 10.5pt;
+}
+
+.toc .leader {
+  flex: 1;
+  border-bottom: 0.5px dotted transparent;
+}
+
+.toc .pg { color: var(--gold); font-size: 9.5pt; }
+
+/* ─────────────── সেকশন ব্যান্ড ─────────────── */
+
+.section-band {
+  background: linear-gradient(100deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-pale);
+  padding: 5mm 7mm;
+  margin: 9mm 0 6mm;
+  border-left: 3.5px solid var(--gold);
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+.section-band h2 { color: #fffdf5; font-size: 14.5pt; margin: 0; }
+.section-band .band-note {
+  font-size: 9.5pt;
+  color: var(--gold-light);
+  margin-top: 2mm;
+  line-height: 1.75;
+  opacity: 0.94;
+}
+
+/* ─────────────── আয়াত কার্ড ─────────────── */
+
+.card {
+  background: var(--card);
+  border: 0.5px solid #e5dcc4;
+  border-top: 3px solid var(--gold);
+  padding: 6mm 6mm 5mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+  position: relative;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  margin-bottom: 4mm;
+}
+
+.medallion {
+  width: 11mm; height: 11mm;
+  flex: 0 0 11mm;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 11pt;
+  border: 1px solid var(--gold);
+}
+
+.card-title {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 12pt;
+  color: var(--emerald-deep);
+  font-weight: 600;
+}
+
+.card .arabic {
+  padding: 3mm 2mm 1mm;
+  border-top: 0.5px solid #ece3cb;
+  border-bottom: 0.5px solid #ece3cb;
+  margin-bottom: 4mm;
+}
+
+.translation {
+  background: #fbf8ee;
+  border-left: 3px solid var(--gold);
+  padding: 3.5mm 4.5mm;
+  font-size: 10.5pt;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 4mm;
+}
+
+.instruction {
+  border: 1px dashed var(--emerald-light);
+  background: #f3f8f5;
+  padding: 3mm 4mm;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 600;
+  color: var(--emerald-deep);
+  line-height: 1.75;
+}
+.instruction .niyyah {
+  display: block;
+  font-weight: 400;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── দোয়া কার্ড ─────────────── */
+
+.dua-card {
+  background: #fdf9ec;
+  border: 0.5px solid #e8dcbb;
+  border-top: 3px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+
+.dua-card .arabic { font-size: 19pt; line-height: 2.8; margin-bottom: 3.5mm; }
+.dua-card .dua-bn {
+  font-size: 10.5pt;
+  line-height: 1.9;
+  padding: 3mm 4mm;
+  background: #fffdf6;
+  border-left: 3px solid var(--emerald-light);
+  margin-bottom: 3mm;
+}
+.dua-card .dua-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 4mm;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+}
+.dua-card .dua-count { color: var(--emerald-deep); font-weight: 600; }
+
+/* ─────────────── সাধারণ ব্লক ─────────────── */
+
+.intro-block {
+  background: #fffdf6;
+  border: 0.5px solid #e8ddc2;
+  border-left: 3.5px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 7mm;
+  font-size: 10.8pt;
+  line-height: 1.95;
+  text-align: justify;
+}
+
+.symptom-list { list-style: none; padding: 0; margin: 0; }
+.symptom-list li {
+  position: relative;
+  padding: 2.2mm 0 2.2mm 8mm;
+  border-bottom: 0.5px dotted #e0d6bb;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  break-inside: avoid;
+}
+.symptom-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 1.5mm;
+  color: var(--gold);
+  font-size: 9pt;
+}
+
+.note-box {
+  background: var(--gold-pale);
+  border: 0.5px solid #e2d5ae;
+  padding: 4.5mm 5.5mm;
+  font-size: 10pt;
+  line-height: 1.85;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+.note-box strong { color: var(--emerald-deep); }
+
+.step-list { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding: 2.8mm 0 2.8mm 11mm;
+  font-size: 10.5pt;
+  line-height: 1.85;
+  border-bottom: 0.5px dotted #e0d6bb;
+  break-inside: avoid;
+}
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 2.6mm;
+  width: 7mm; height: 7mm;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  color: var(--gold-light);
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.2pt;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+table.grid th {
+  background: var(--emerald-deep);
+  color: var(--gold-pale);
+  text-align: right;
+  padding: 3mm 4mm;
+  font-weight: 600;
+  width: 34%;
+  vertical-align: top;
+  font-size: 10pt;
+}
+table.grid td {
+  padding: 3mm 4mm;
+  border-bottom: 0.5px solid #e3d9bf;
+  background: var(--card);
+  line-height: 1.8;
+}
+table.grid tr:nth-child(even) td { background: #fdfbf4; }
+
+.disclaimer {
+  margin-top: 9mm;
+  padding: 5mm 6mm;
+  border: 1px dashed var(--gold);
+  background: #fffdf6;
+  text-align: center;
+  font-size: 10pt;
+  color: var(--emerald-deep);
+  line-height: 1.8;
+  break-inside: avoid;
+}
+
+.doc-footer {
+  margin-top: 7mm;
+  padding-top: 4mm;
+  border-top: 1px solid var(--gold);
+  text-align: center;
+  font-size: 9pt;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  break-inside: avoid;
+}
+.doc-footer .brand {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+}
+
+
+@page {
+  size: A4;
+  margin: 20mm 18mm 17mm;
+}
+@page cover { margin: 0; }
+
+.lede {
+  font-size: 12.5pt;
+  line-height: 2.0;
+  color: var(--emerald-deep);
+  border-right: 3px solid var(--gold);
+  padding-right: 5mm;
+  margin: 0 0 7mm;
+}
+/* Direct children only. A plain `.article h2` also catches the heading inside
+   .section-band, and since this block loads after base.css it would win the
+   cascade and paint that heading dark emerald on a dark emerald band. */
+.article > h2 {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 14pt;
+  margin: 8mm 0 3mm;
+  break-after: avoid;
+}
+.article p { margin: 0 0 3.5mm; line-height: 2.05; text-align: justify; }
+
+.ayah-block {
+  border: 0.5px solid #e2d9c0;
+  background: #fffdf6;
+  border-radius: 2mm;
+  padding: 4mm 5mm;
+  margin: 5mm 0 6mm;
+  break-inside: avoid;
+}
+.ayah-block .label {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+  margin-bottom: 2mm;
+}
+.ayah-block .arabic { margin-bottom: 2.5mm; }
+.ayah-block .translation { margin: 0; }
+.ayah-block .why {
+  font-size: 9.5pt;
+  color: #4a5b53;
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+  margin-top: 3mm;
+}
+.caution-list { margin: 0; padding-right: 5mm; }
+.caution-list li { margin-bottom: 2.5mm; }
+.closing {
+  font-size: 12pt;
+  line-height: 2.0;
+  color: var(--emerald-deep);
+  border-top: 1px solid var(--gold);
+  padding-top: 4mm;
+  margin-top: 7mm;
+}
+.meta {
+  font-size: 9.5pt;
+  color: #4a5b53;
+  margin-bottom: 6mm;
+}
+
+body { background: #efeadd; padding: 0; }
+.page-wrap {
+  max-width: 190mm;
+  margin: 0 auto;
+  background: var(--page);
+  padding: 14mm 12mm 18mm;
+  box-shadow: 0 2px 30px rgba(5,46,34,0.13);
+}
+.cover { height: auto; min-height: 200mm; margin: 0 -12mm 12mm; }
+.print-only { display: none; }
+
+.web-nav {
+  background: var(--emerald-deep);
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 20;
+}
+.web-nav a { color: var(--gold-light); text-decoration: none; font-size: 14px; }
+.web-nav .home { color: #fffdf5; font-family: 'Noto Serif Bengali', serif; }
+.web-nav .dl a { border: 1px solid var(--gold); padding: 4px 12px; border-radius: 3px; }
+
+.ayah-block, .note-box { overflow-x: auto; }
+.arabic { font-size: 23px; line-height: 2.5; }
+
+@media (max-width: 640px) {
+  .page-wrap { padding: 10px 14px 30px; }
+  .cover { margin: 0 -14px 20px; padding: 40px 20px; min-height: auto; }
+  .cover h1 { font-size: 24px; }
+  .cover-bismillah { font-size: 24px; }
+  .arabic { font-size: 20px; line-height: 2.4; }
+  body { font-size: 16px; }
+  .article p { line-height: 1.95; }
+}
+</style>
+</head>
+<body>
+
+<nav class="web-nav">
+  <a class="home" href="index.html">← সব প্রবন্ধ</a>
+  <span class="dl"><a href="../../pdf/articles/badnazar-ki-o-korniyo.pdf">PDF ডাউনলোড</a></span>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ══════════════ কভার ══════════════ -->
+<section class="cover">
+  <div class="cover-main">
+    <div class="cover-bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-kicker">প্রবন্ধ</div>
+    <h1>বদনজর: কুরআন-সুন্নাহ কী বলে, আর আমরা কোথায় বাড়াবাড়ি করি</h1>
+    <p class="cover-sub">নজর লাগা সত্য — কিন্তু সব বিপদের নাম নজর নয়</p>
+    <div class="ornament">✦ ✦ ✦</div>
+  </div>
+  <div class="cover-author">
+    <div class="name">রাকী ফয়সাল আহমেদ সাবিত</div>
+    <div class="center">আল কুরআন রুকইয়াহ হিলিং সেন্টার</div>
+    <div class="en">Al Quranic Ruqyah Healing Center</div>
+  </div>
+</section>
+
+<div class="article">
+
+<div class="meta">পড়তে সময় লাগবে আনুমানিক ৭ মিনিট</div>
+
+<div class="lede">বদনজর নিয়ে আমাদের সমাজে দুটো বাড়াবাড়ি পাশাপাশি চলে। একদল একে পুরোপুরি অস্বীকার করে কুসংস্কার বলে উড়িয়ে দেয়। আরেক দল জ্বর-মাথাব্যথা থেকে শুরু করে ব্যবসার লোকসান পর্যন্ত সবকিছুতে নজর খোঁজে। দুটোই ভুল, এবং দ্বিতীয়টি বেশি ক্ষতি করে।</div>
+
+<h2>প্রথমে দলিল</h2>
+<p>নজর লাগা সত্য — এ ব্যাপারে কুরআন ও সহীহ হাদীস দুই জায়গাতেই স্পষ্ট কথা আছে। সূরা ফালাকে আল্লাহ নিজেই হিংসুকের অনিষ্ট থেকে আশ্রয় চাইতে শিখিয়েছেন।</p>
+<div class="ayah-block">
+  <div class="label">সূরা আল-ফালাক : ৫</div>
+  <div class="arabic">وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ</div>
+  <div class="translation">এবং হিংসুকের অনিষ্ট থেকে যখন সে হিংসা করে।</div>
+<div class="why">সূরা ফালাকের শেষ আয়াত — হিংসার অনিষ্ট থেকে আশ্রয়।</div></div>
+<h2>হিংসা আর নজর — এক জিনিস নয়</h2>
+<p>হাসাদ হলো অন্তরের অবস্থা: কারও নিয়ামত দেখে তা নষ্ট হওয়ার কামনা করা। নজর হলো তার প্রকাশ — দৃষ্টির মাধ্যমে সেই ক্ষতি পৌঁছে যাওয়া। একজন মানুষ হিংসা না করেও নজর লাগাতে পারে, নিছক মুগ্ধ হয়ে; আবার হিংসা পুষে রেখেও কিছু না বলে চুপ থাকতে পারে।</p>
+<p>এ কারণেই সুন্নাহর প্রতিকারও দুই রকম। নিজের অন্তরকে হিংসা থেকে পরিষ্কার রাখা এক জিনিস, আর অন্যের নজর থেকে হিফাজত চাওয়া আরেক জিনিস। বেশিরভাগ মানুষ কেবল দ্বিতীয়টা নিয়ে ব্যস্ত থাকেন।</p>
+<div class="ayah-block">
+  <div class="label">সূরা আল-বাকারা : ১০৯</div>
+  <div class="arabic">وَدَّ كَثِيرٌ مِّنْ أَهْلِ الْكِتٰبِ لَوْ يَرُدُّونَكُم مِّن بَعْدِ إِيمٰنِكُمْ كُفَّارًا حَسَدًا مِّنْ عِندِ أَنفُسِهِم مِّن بَعْدِ مَا تَبَيَّنَ لَهُمُ الْحَقُّ ۖ فَاعْفُوا وَاصْفَحُوا حَتَّىٰ يَأْتِىَ اللَّهُ بِأَمْرِهِۦ ۗ إِنَّ اللَّهَ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ</div>
+  <div class="translation">আহলে কিতাবদের অনেকেই প্রতিহিংসাবশতঃ চায় যে, মুসলমান হওয়ার পর তোমাদেরকে কোন রকমে কাফের বানিয়ে দেয়। তাদের কাছে সত্য প্রকাশিত হওয়ার পর (তারা এটা চায়)। যাক তোমরা আল্লাহর নির্দেশ আসা পর্যন্ত তাদের ক্ষমা কর এবং উপেক্ষা কর। নিশ্চয় আল্লাহ সব কিছুর উপর ক্ষমতাবান।</div>
+<div class="why">আহলে কিতাবের হিংসার কথা — অন্তরের হিংসা কীভাবে কাজ করে তার সরাসরি বর্ণনা।</div></div>
+<h2>লক্ষণ দেখে নিশ্চিত হওয়া যায় না</h2>
+<p>হঠাৎ ক্লান্তি, ঘন ঘন হাই ওঠা, শরীর ভার লাগা, নতুন কিছু পাওয়ার পরপরই বিপদ — এগুলো নজরের সম্ভাব্য লক্ষণ হিসেবে বলা হয়। কিন্তু ‘সম্ভাব্য’ শব্দটা জরুরি। এই প্রতিটি লক্ষণের সাধারণ শারীরিক কারণও থাকতে পারে — রক্তস্বল্পতা, থাইরয়েড, ঘুমের অভাব, বিষণ্নতা।</p>
+<p>একজন রাকীর কাছে যত রোগী আসেন, তাঁদের একটা বড় অংশের সমস্যা আসলে চিকিৎসাযোগ্য শারীরিক বা মানসিক সমস্যা। রুকইয়াহ শুরু করার আগে ডাক্তারি পরীক্ষা বাদ দেওয়া উচিত নয় — বরং দুটো পাশাপাশি চলবে।</p>
+<h2>সুন্নাহর প্রতিকার</h2>
+<p>রাসূল সাল্লাল্লাহু আলাইহি ওয়াসাল্লাম নজরের জন্য রুকইয়াহ করতে বলেছেন, এবং নিজেও করেছেন। সবচেয়ে বড় প্রতিরোধ অবশ্য প্রতিকারের আগেই — সুন্দর কিছু দেখলে বরকতের দোয়া করা।</p>
+<p>‘মাশাআল্লাহ, তাবারাকাল্লাহ’ বলা কোনো আনুষ্ঠানিকতা নয়। এটি স্বীকৃতি যে নিয়ামত আল্লাহর দেওয়া, আর সেই স্বীকৃতিই হিংসার দরজা বন্ধ করে দেয়।</p>
+<p>নিজের নিয়ামত প্রকাশের ব্যাপারেও সংযম রাখা সুন্নাহর সাথে সঙ্গতিপূর্ণ। সন্তানের ছবি, নতুন ঘর, ব্যবসার অগ্রগতি — সবকিছু সবার সামনে না আনাটা অবিশ্বাস নয়, সতর্কতা।</p>
+<div class="ayah-block">
+  <div class="label">সূরা আল-কলম : ৫১</div>
+  <div class="arabic">وَإِن يَكَادُ الَّذِينَ كَفَرُوا لَيُزْلِقُونَكَ بِأَبْصٰرِهِمْ لَمَّا سَمِعُوا الذِّكْرَ وَيَقُولُونَ إِنَّهُۥ لَمَجْنُونٌ</div>
+  <div class="translation">কাফেররা যখন কোরআন শুনে, তখন তারা তাদের দৃষ্টি দ্বারা যেন আপনাকে আছাড় দিয়ে ফেলে দিবে এবং তারা বলেঃ সে তো একজন পাগল।</div>
+<div class="why">কাফিরদের দৃষ্টি দিয়ে রাসূল ﷺ-কে আঘাত করার চেষ্টার আয়াত — নজরের দলিল হিসেবে যা বহুল উদ্ধৃত।</div></div>
+<h2>যেখানে মানুষ সবচেয়ে বড় ভুলটা করে</h2>
+<p>নজর সন্দেহ হলে অনেকে নির্দিষ্ট কাউকে দোষারোপ শুরু করেন — প্রতিবেশী, আত্মীয়, সহকর্মী। এটি ভয়ানক ভুল। কে নজর দিয়েছে তা গায়েবের বিষয়, আর গায়েব কেবল আল্লাহ জানেন। সন্দেহের বশে কাউকে অভিযুক্ত করা অপবাদ, আর অপবাদ নিজেই একটি বড় গুনাহ।</p>
+<p>দ্বিতীয় ভুল হলো ‘কে করেছে বলে দিন’ এমন কারও কাছে যাওয়া। যিনি গায়েবের খবর দেওয়ার দাবি করেন, তাঁর কাছে যাওয়াই নিষিদ্ধ — তাঁর কথা বিশ্বাস করা তো আরও গুরুতর। রুকইয়াহ মানে আল্লাহর কালাম দিয়ে চিকিৎসা, গোয়েন্দাগিরি নয়।</p>
+
+<!-- ══════════════ সাবধানতা ══════════════ -->
+<section class="section-band" id="cautions">
+  <h2>যেসব ভুল এড়িয়ে চলবেন</h2>
+</section>
+
+<ul class="caution-list">
+<li>লক্ষণ মিলে গেলেই নিশ্চিতভাবে নজর ধরে নেবেন না — ডাক্তারি পরীক্ষা চালিয়ে যান।</li><li>কে নজর দিয়েছে তা জানার চেষ্টা করবেন না; কাউকে দোষারোপ করবেন না।</li><li>যিনি গায়েবের খবর দেওয়ার দাবি করেন, তাঁর কাছে যাবেন না — তাবিজ, সুতা বা কবচ নেবেন না।</li><li>রুকইয়াহ দীর্ঘমেয়াদি আমল; দুই-চার দিনে ফল না পেলে ছেড়ে দেবেন না।</li></ul>
+
+<div class="closing">নজর সত্য, কিন্তু নজরই সব নয়। কুরআনের আয়াত পড়ুন, বরকতের দোয়া করুন, নিজের অন্তরকেও হিংসা থেকে পরিষ্কার রাখুন — আর বাকিটা আল্লাহর ওপর ছেড়ে দিন। তিনিই হিফাজতকারী।</div>
+
+</div>
+
+<div class="note-box" style="margin-top:7mm;">
+  <strong>পুরো আয়াত সংকলনটি কোথায়:</strong>
+  এই বিষয়ের সম্পূর্ণ আয়াতসেট — ৩৫ টি অংশ, প্রতিটির
+  পাঠসংখ্যাসহ — আলাদা প্রোটোকল ডকুমেন্টে আছে:
+  <strong>বদনজর ও হিংসার আয়াত</strong>।
+  <div style="margin-top:2.5mm;">
+    <a href="../ayat-badnazar-hasad-series.html">ওয়েবে পড়ুন</a> ·
+    <a href="../../pdf/ayat-badnazar-hasad-series.pdf">PDF ডাউনলোড</a>
+  </div>
+</div>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>সেবা ও হাদিয়া:</strong>
+  <ul style="margin:2.5mm 0 0 0;padding-right:5mm;">
+    <li>মাসিক রুকইয়াহ — ১২টি সেশন + ডায়াগনোসিস। হাদিয়া <strong>৬৪০ টাকা</strong>।</li>
+    <li>সেলফ রুকইয়াহ গাইডলাইন — শুধু নিজের জন্য আলাদা গাইডলাইন। হাদিয়া <strong>৩০০ টাকা</strong>।</li>
+  </ul>
+  <div style="margin-top:2.5mm;">
+    নিজের সমস্যা কী — বদনজর, হাসাদ, সিহর নাকি অন্য কিছু — বুঝতে না পারলে
+    মেসেজে লিখুন <strong>Diagnosis</strong>।
+  </div>
+</div>
+
+<div class="disclaimer">রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি, প্রয়োজনীয় চিকিৎসার বিকল্প নয়।</div>
+
+<div class="doc-footer">
+  <div class="brand">রাকী ফয়সাল আহমেদ সাবিত ✦ Raqi Faisal Ahmed Sabit</div>
+  <div>আল কুরআন রুকইয়াহ হিলিং সেন্টার — Al Quranic Ruqyah Healing Center</div>
+  <div>Page: Raqi Faisal Ahmed Sabit  |  Telegram: Raqi Faisal Ahmed Sabit (Official)</div>
+</div>
+
+</div>
+</body>
+</html>

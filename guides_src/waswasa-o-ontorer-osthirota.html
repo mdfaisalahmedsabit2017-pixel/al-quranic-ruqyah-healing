@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>ওয়াসওয়াসা: শয়তানের কুমন্ত্রণা, নাকি চিকিৎসার বিষয়? | রাকী ফয়সাল আহমেদ সাবিত</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="একই লক্ষণের দুটি ভিন্ন উৎস — আর দুটোরই আলাদা সমাধান — আল কুরআন রুকইয়াহ হিলিং সেন্টার।">
+<link rel="stylesheet" href="../assets/fonts.css">
+<style>
+/* এমারেল্ড-গোল্ড প্রিমিয়াম ডিজাইন সিস্টেম — মাস্টার প্রম্পট সেকশন ৪ */
+
+:root {
+  --emerald-deep: #052e22;
+  --emerald-mid: #0b5d43;
+  --emerald-light: #12775a;
+  --gold: #b8912f;
+  --gold-light: #e6cf8a;
+  --gold-pale: #f4efdd;
+  --page: #faf7ef;
+  --card: #fffdf8;
+  --ink: #22332c;
+  --ink-soft: #4a5b53;
+  --arabic-ink: #06382b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-size: 11pt;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+  color: var(--emerald-deep);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.arabic {
+  font-family: 'AlQuran IndoPak', 'Noto Naskh Arabic', serif;
+  direction: rtl;
+  text-align: center;
+  font-size: 21.5pt;
+  line-height: 3.0;
+  color: var(--arabic-ink);
+  unicode-bidi: isolate;
+}
+
+/* ─────────────── কভার পেজ ─────────────── */
+
+.cover {
+  page: cover;
+  height: 297mm;
+  background: linear-gradient(160deg, var(--emerald-deep) 0%, var(--emerald-mid) 55%, var(--emerald-light) 100%);
+  color: var(--gold-pale);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 26mm 18mm 22mm;
+  position: relative;
+  break-after: page;
+}
+
+/* মাঝের ব্লকটা বাকি জায়গা নিয়ে নিজে সেন্টার হবে, লেখকের ব্লক নিচেই থাকবে */
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cover::before,
+.cover::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+}
+.cover::before { inset: 10mm; }
+.cover::after  { inset: 13mm; border-width: 0.6px; border-color: var(--gold-light); }
+
+.cover-bismillah {
+  font-family: 'AlQuran IndoPak', serif;
+  direction: rtl;
+  font-size: 30pt;
+  line-height: 2.2;
+  color: var(--gold-light);
+  margin-bottom: 6mm;
+}
+
+/* বাংলায় letter-spacing দিলে যুক্তাক্ষর ভেঙে যায় — তাই word-spacing ব্যবহার */
+.cover-kicker {
+  font-size: 10.5pt;
+  word-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 5mm;
+}
+
+.cover h1 {
+  font-size: 32pt;
+  color: #fffdf5;
+  margin: 0 0 4mm;
+  line-height: 1.35;
+}
+
+.cover-sub {
+  font-size: 12.5pt;
+  color: var(--gold-pale);
+  max-width: 130mm;
+  line-height: 1.8;
+  margin: 0 auto 10mm;
+  opacity: 0.92;
+}
+
+.ornament {
+  color: var(--gold);
+  letter-spacing: 0.7em;
+  font-size: 12pt;
+  margin: 6mm 0;
+}
+
+.cover-author { padding-top: 8mm; }
+.cover-author .name {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 15pt;
+  color: #fffdf5;
+  margin-bottom: 2mm;
+}
+.cover-author .center {
+  font-size: 10.5pt;
+  color: var(--gold-light);
+}
+.cover-author .en {
+  font-size: 8.5pt;
+  color: var(--gold);
+  letter-spacing: 0.16em;
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── সূচিপত্র ─────────────── */
+
+.toc { break-after: page; padding-top: 4mm; }
+
+.toc h2 {
+  font-size: 19pt;
+  text-align: center;
+  margin-bottom: 2mm;
+}
+
+.toc-rule {
+  width: 44mm; height: 2px;
+  background: var(--gold);
+  margin: 0 auto 9mm;
+}
+
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+
+.toc li {
+  counter-increment: toc;
+  display: flex;
+  align-items: baseline;
+  gap: 3mm;
+  padding: 2.2mm 0;
+  border-bottom: 0.5px dotted #d8cfb4;
+}
+
+.toc li::before {
+  content: counter(toc, decimal);
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--gold);
+  font-size: 9.5pt;
+  min-width: 7mm;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  flex: 1;
+  font-size: 10.5pt;
+}
+
+.toc .leader {
+  flex: 1;
+  border-bottom: 0.5px dotted transparent;
+}
+
+.toc .pg { color: var(--gold); font-size: 9.5pt; }
+
+/* ─────────────── সেকশন ব্যান্ড ─────────────── */
+
+.section-band {
+  background: linear-gradient(100deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-pale);
+  padding: 5mm 7mm;
+  margin: 9mm 0 6mm;
+  border-left: 3.5px solid var(--gold);
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+.section-band h2 { color: #fffdf5; font-size: 14.5pt; margin: 0; }
+.section-band .band-note {
+  font-size: 9.5pt;
+  color: var(--gold-light);
+  margin-top: 2mm;
+  line-height: 1.75;
+  opacity: 0.94;
+}
+
+/* ─────────────── আয়াত কার্ড ─────────────── */
+
+.card {
+  background: var(--card);
+  border: 0.5px solid #e5dcc4;
+  border-top: 3px solid var(--gold);
+  padding: 6mm 6mm 5mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+  position: relative;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  margin-bottom: 4mm;
+}
+
+.medallion {
+  width: 11mm; height: 11mm;
+  flex: 0 0 11mm;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 11pt;
+  border: 1px solid var(--gold);
+}
+
+.card-title {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 12pt;
+  color: var(--emerald-deep);
+  font-weight: 600;
+}
+
+.card .arabic {
+  padding: 3mm 2mm 1mm;
+  border-top: 0.5px solid #ece3cb;
+  border-bottom: 0.5px solid #ece3cb;
+  margin-bottom: 4mm;
+}
+
+.translation {
+  background: #fbf8ee;
+  border-left: 3px solid var(--gold);
+  padding: 3.5mm 4.5mm;
+  font-size: 10.5pt;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 4mm;
+}
+
+.instruction {
+  border: 1px dashed var(--emerald-light);
+  background: #f3f8f5;
+  padding: 3mm 4mm;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 600;
+  color: var(--emerald-deep);
+  line-height: 1.75;
+}
+.instruction .niyyah {
+  display: block;
+  font-weight: 400;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── দোয়া কার্ড ─────────────── */
+
+.dua-card {
+  background: #fdf9ec;
+  border: 0.5px solid #e8dcbb;
+  border-top: 3px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+
+.dua-card .arabic { font-size: 19pt; line-height: 2.8; margin-bottom: 3.5mm; }
+.dua-card .dua-bn {
+  font-size: 10.5pt;
+  line-height: 1.9;
+  padding: 3mm 4mm;
+  background: #fffdf6;
+  border-left: 3px solid var(--emerald-light);
+  margin-bottom: 3mm;
+}
+.dua-card .dua-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 4mm;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+}
+.dua-card .dua-count { color: var(--emerald-deep); font-weight: 600; }
+
+/* ─────────────── সাধারণ ব্লক ─────────────── */
+
+.intro-block {
+  background: #fffdf6;
+  border: 0.5px solid #e8ddc2;
+  border-left: 3.5px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 7mm;
+  font-size: 10.8pt;
+  line-height: 1.95;
+  text-align: justify;
+}
+
+.symptom-list { list-style: none; padding: 0; margin: 0; }
+.symptom-list li {
+  position: relative;
+  padding: 2.2mm 0 2.2mm 8mm;
+  border-bottom: 0.5px dotted #e0d6bb;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  break-inside: avoid;
+}
+.symptom-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 1.5mm;
+  color: var(--gold);
+  font-size: 9pt;
+}
+
+.note-box {
+  background: var(--gold-pale);
+  border: 0.5px solid #e2d5ae;
+  padding: 4.5mm 5.5mm;
+  font-size: 10pt;
+  line-height: 1.85;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+.note-box strong { color: var(--emerald-deep); }
+
+.step-list { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding: 2.8mm 0 2.8mm 11mm;
+  font-size: 10.5pt;
+  line-height: 1.85;
+  border-bottom: 0.5px dotted #e0d6bb;
+  break-inside: avoid;
+}
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 2.6mm;
+  width: 7mm; height: 7mm;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  color: var(--gold-light);
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.2pt;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+table.grid th {
+  background: var(--emerald-deep);
+  color: var(--gold-pale);
+  text-align: right;
+  padding: 3mm 4mm;
+  font-weight: 600;
+  width: 34%;
+  vertical-align: top;
+  font-size: 10pt;
+}
+table.grid td {
+  padding: 3mm 4mm;
+  border-bottom: 0.5px solid #e3d9bf;
+  background: var(--card);
+  line-height: 1.8;
+}
+table.grid tr:nth-child(even) td { background: #fdfbf4; }
+
+.disclaimer {
+  margin-top: 9mm;
+  padding: 5mm 6mm;
+  border: 1px dashed var(--gold);
+  background: #fffdf6;
+  text-align: center;
+  font-size: 10pt;
+  color: var(--emerald-deep);
+  line-height: 1.8;
+  break-inside: avoid;
+}
+
+.doc-footer {
+  margin-top: 7mm;
+  padding-top: 4mm;
+  border-top: 1px solid var(--gold);
+  text-align: center;
+  font-size: 9pt;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  break-inside: avoid;
+}
+.doc-footer .brand {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+}
+
+
+@page {
+  size: A4;
+  margin: 20mm 18mm 17mm;
+}
+@page cover { margin: 0; }
+
+.lede {
+  font-size: 12.5pt;
+  line-height: 2.0;
+  color: var(--emerald-deep);
+  border-right: 3px solid var(--gold);
+  padding-right: 5mm;
+  margin: 0 0 7mm;
+}
+/* Direct children only. A plain `.article h2` also catches the heading inside
+   .section-band, and since this block loads after base.css it would win the
+   cascade and paint that heading dark emerald on a dark emerald band. */
+.article > h2 {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 14pt;
+  margin: 8mm 0 3mm;
+  break-after: avoid;
+}
+.article p { margin: 0 0 3.5mm; line-height: 2.05; text-align: justify; }
+
+.ayah-block {
+  border: 0.5px solid #e2d9c0;
+  background: #fffdf6;
+  border-radius: 2mm;
+  padding: 4mm 5mm;
+  margin: 5mm 0 6mm;
+  break-inside: avoid;
+}
+.ayah-block .label {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+  margin-bottom: 2mm;
+}
+.ayah-block .arabic { margin-bottom: 2.5mm; }
+.ayah-block .translation { margin: 0; }
+.ayah-block .why {
+  font-size: 9.5pt;
+  color: #4a5b53;
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+  margin-top: 3mm;
+}
+.caution-list { margin: 0; padding-right: 5mm; }
+.caution-list li { margin-bottom: 2.5mm; }
+.closing {
+  font-size: 12pt;
+  line-height: 2.0;
+  color: var(--emerald-deep);
+  border-top: 1px solid var(--gold);
+  padding-top: 4mm;
+  margin-top: 7mm;
+}
+.meta {
+  font-size: 9.5pt;
+  color: #4a5b53;
+  margin-bottom: 6mm;
+}
+
+body { background: #efeadd; padding: 0; }
+.page-wrap {
+  max-width: 190mm;
+  margin: 0 auto;
+  background: var(--page);
+  padding: 14mm 12mm 18mm;
+  box-shadow: 0 2px 30px rgba(5,46,34,0.13);
+}
+.cover { height: auto; min-height: 200mm; margin: 0 -12mm 12mm; }
+.print-only { display: none; }
+
+.web-nav {
+  background: var(--emerald-deep);
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 20;
+}
+.web-nav a { color: var(--gold-light); text-decoration: none; font-size: 14px; }
+.web-nav .home { color: #fffdf5; font-family: 'Noto Serif Bengali', serif; }
+.web-nav .dl a { border: 1px solid var(--gold); padding: 4px 12px; border-radius: 3px; }
+
+.ayah-block, .note-box { overflow-x: auto; }
+.arabic { font-size: 23px; line-height: 2.5; }
+
+@media (max-width: 640px) {
+  .page-wrap { padding: 10px 14px 30px; }
+  .cover { margin: 0 -14px 20px; padding: 40px 20px; min-height: auto; }
+  .cover h1 { font-size: 24px; }
+  .cover-bismillah { font-size: 24px; }
+  .arabic { font-size: 20px; line-height: 2.4; }
+  body { font-size: 16px; }
+  .article p { line-height: 1.95; }
+}
+</style>
+</head>
+<body>
+
+<nav class="web-nav">
+  <a class="home" href="index.html">← সব প্রবন্ধ</a>
+  <span class="dl"><a href="../../pdf/articles/waswasa-o-ontorer-osthirota.pdf">PDF ডাউনলোড</a></span>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ══════════════ কভার ══════════════ -->
+<section class="cover">
+  <div class="cover-main">
+    <div class="cover-bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-kicker">প্রবন্ধ</div>
+    <h1>ওয়াসওয়াসা: শয়তানের কুমন্ত্রণা, নাকি চিকিৎসার বিষয়?</h1>
+    <p class="cover-sub">একই লক্ষণের দুটি ভিন্ন উৎস — আর দুটোরই আলাদা সমাধান</p>
+    <div class="ornament">✦ ✦ ✦</div>
+  </div>
+  <div class="cover-author">
+    <div class="name">রাকী ফয়সাল আহমেদ সাবিত</div>
+    <div class="center">আল কুরআন রুকইয়াহ হিলিং সেন্টার</div>
+    <div class="en">Al Quranic Ruqyah Healing Center</div>
+  </div>
+</section>
+
+<div class="article">
+
+<div class="meta">পড়তে সময় লাগবে আনুমানিক ৮ মিনিট</div>
+
+<div class="lede">ওজু ঠিক হয়েছে কি না বারবার সন্দেহ। নামাজে কত রাকাত হলো মনে থাকে না। তালাক বা কুফরি কথা অনিচ্ছায় মাথায় ঘুরপাক খায়, আর সেই চিন্তার জন্যই মানুষটা নিজেকে অপরাধী ভাবতে থাকেন। এই অবস্থাকে আমরা এক নামে ‘ওয়াসওয়াসা’ বলি — কিন্তু এর পেছনে দুটো আলাদা জিনিস কাজ করতে পারে।</div>
+
+<h2>কুরআন যা বলেছে</h2>
+<p>কুমন্ত্রণাদাতার অস্তিত্ব কুরআনে স্বীকৃত এবং তার কাজের ধরনও বর্ণিত — সে অন্তরে ফিসফিস করে, তারপর সরে যায়।</p>
+<div class="ayah-block">
+  <div class="label">সূরা আন-নাস : ১-৬</div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ إِلٰهِ النَّاسِ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ الَّذِى يُوَسْوِسُ فِى صُدُورِ النَّاسِ مِنَ الْجِنَّةِ وَالنَّاسِ</div>
+  <div class="translation">বলুন, আমি আশ্রয় গ্রহণ করিতেছি মানুষের পালনকর্তার, মানুষের অধিপতির, মানুষের মা’বুদের তার অনিষ্ট থেকে, যে কুমন্ত্রণা দেয় ও আত্নগোপন করে, যে কুমন্ত্রণা দেয় মানুষের অন্তরে জ্বিনের মধ্য থেকে অথবা মানুষের মধ্য থেকে।</div>
+<div class="why">সূরা নাস — পুরো সূরাটিই কুমন্ত্রণাদাতা থেকে আশ্রয় প্রার্থনা।</div></div>
+<h2>সাহাবীরাও এই কষ্টে পড়েছিলেন</h2>
+<p>সাহাবীগণ রাসূল সাল্লাল্লাহু আলাইহি ওয়াসাল্লামের কাছে এসে বলেছিলেন, আমাদের মনে এমন কথা আসে যা মুখে আনতেও আমরা ভয় পাই। তিনি বললেন: “তোমরা কি সত্যিই তা অনুভব করেছ?” তাঁরা বললেন, হ্যাঁ। তিনি বললেন: “এটাই ইমানের স্পষ্ট প্রমাণ।” (মুসলিম ১৩২)</p>
+<p>এই হাদীসটি বোঝার জন্য জরুরি। খারাপ চিন্তা আসাটা গুনাহ নয়; বরং সেই চিন্তায় কষ্ট পাওয়াটাই প্রমাণ করে অন্তরে ইমান আছে। শয়তান ভাঙা ঘরে ঢিল ছোড়ে না।</p>
+<h2>কখন এটি চিকিৎসার বিষয়</h2>
+<p>কিন্তু সব ওয়াসওয়াসা এক নয়। যখন সন্দেহ একটি নির্দিষ্ট ছাঁচে বারবার ফিরে আসে, যখন মানুষটি একই কাজ বারবার করতে বাধ্য বোধ করেন — বারবার ওজু, বারবার হাত ধোয়া, বারবার দরজা পরীক্ষা — তখন এটি অবসেসিভ-কম্পালসিভ ডিসঅর্ডারের চেনা রূপ, যা একটি চিকিৎসাযোগ্য অবস্থা।</p>
+<p>এখানে দুটো জিনিস একসাথে সত্য হতে পারে, এবং সাধারণত হয়। শয়তান দুর্বল জায়গায় আঘাত করে; আর মানসিক অসুস্থতা সেই দুর্বল জায়গা তৈরি করে দেয়। তাই রুকইয়াহ ও চিকিৎসা পরস্পরবিরোধী নয় — একটিকে বাদ দিয়ে অন্যটি ধরলে রোগীই ক্ষতিগ্রস্ত হন।</p>
+<h2>শরীয়তের নির্দেশনা: তর্ক নয়, উপেক্ষা</h2>
+<p>ওয়াসওয়াসার বিরুদ্ধে শরীয়তের কৌশলটি চমকপ্রদ — যুক্তি দিয়ে হারানোর চেষ্টা নয়, বরং পাত্তা না দেওয়া। রাসূল সাল্লাল্লাহু আলাইহি ওয়াসাল্লাম বলেছেন, এমন হলে আল্লাহর কাছে আশ্রয় চাইতে এবং থেমে যেতে।</p>
+<p>কারণ ওয়াসওয়াসা তর্কে জেতার জিনিস নয়। যত উত্তর দেবেন, তত নতুন প্রশ্ন আসবে। ‘আমানতু বিল্লাহ’ বলে প্রসঙ্গ বদলে ফেলাটাই সমাধান।</p>
+<p>সন্দেহের ব্যাপারেও ফিকহের নিয়ম পরিষ্কার: নিশ্চিত জিনিস সন্দেহ দিয়ে বাতিল হয় না। ওজু করেছেন বলে নিশ্চিত জানেন — এরপর ভেঙেছে কি না সন্দেহ হলে ওজু আছেই ধরবেন। এই একটি নিয়ম মেনে চললেই অনেক কষ্ট কমে।</p>
+<div class="ayah-block">
+  <div class="label">সূরা আর-রা'দ : ২৮</div>
+  <div class="arabic">الَّذِينَ ءَامَنُوا وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ اللَّهِ ۗ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+  <div class="translation">যারা বিশ্বাস স্থাপন করে এবং তাদের অন্তর আল্লাহর যিকির দ্বারা শান্তি লাভ করে; জেনে রাখ, আল্লাহর যিকির দ্বারাই অন্তর সমূহ শান্তি পায়।</div>
+<div class="why">আল্লাহর স্মরণেই অন্তর প্রশান্ত হয় — এই প্রোটোকলের কেন্দ্রীয় আয়াত।</div></div>
+<h2>কোথা থেকে শুরু</h2>
+<p>সকাল-সন্ধ্যার যিকির নিয়ম করে পড়া, ঘুমের আগে আয়াতুল কুরসী, আর দিনে অন্তত একবার সূরা নাস — এগুলো ছোট মনে হলেও ধারাবাহিকভাবে করলে পার্থক্য তৈরি করে।</p>
+<p>সাথে ঘুম ঠিক করা, ক্যাফেইন কমানো এবং প্রয়োজনে মানসিক স্বাস্থ্য বিশেষজ্ঞের পরামর্শ নেওয়া — এতে ইমানের কোনো ঘাটতি হয় না। রোগের চিকিৎসা করা সুন্নাহ।</p>
+
+<!-- ══════════════ সাবধানতা ══════════════ -->
+<section class="section-band" id="cautions">
+  <h2>যেসব ভুল এড়িয়ে চলবেন</h2>
+</section>
+
+<ul class="caution-list">
+<li>মাথায় আসা খারাপ চিন্তার জন্য নিজেকে কাফির বা মুনাফিক ভাববেন না — কষ্ট পাওয়াটাই ইমানের প্রমাণ।</li><li>ওয়াসওয়াসার সাথে তর্ক করবেন না; আশ্রয় চেয়ে থেমে যান।</li><li>নামাজ-ওজু বারবার করার অভ্যাস গড়বেন না — একবার করে এগিয়ে যান।</li><li>মানসিক স্বাস্থ্যের চিকিৎসা নিতে দ্বিধা করবেন না; এটি রুকইয়াহর বিকল্প নয়, পরিপূরক।</li></ul>
+
+<div class="closing">ওয়াসওয়াসা ক্লান্তিকর, কিন্তু এটি ইমান নষ্ট হওয়ার লক্ষণ নয়। যিকির ধরে রাখুন, সন্দেহকে পাত্তা দেবেন না, আর প্রয়োজন হলে চিকিৎসা নিন। আল্লাহর স্মরণেই অন্তর প্রশান্ত হয়।</div>
+
+</div>
+
+<div class="note-box" style="margin-top:7mm;">
+  <strong>পুরো আয়াত সংকলনটি কোথায়:</strong>
+  এই বিষয়ের সম্পূর্ণ আয়াতসেট — ১২ টি অংশ, প্রতিটির
+  পাঠসংখ্যাসহ — আলাদা প্রোটোকল ডকুমেন্টে আছে:
+  <strong>অন্তরের প্রশান্তির আয়াত</strong>।
+  <div style="margin-top:2.5mm;">
+    <a href="../ayat-ontorer-proshanti.html">ওয়েবে পড়ুন</a> ·
+    <a href="../../pdf/ayat-ontorer-proshanti.pdf">PDF ডাউনলোড</a>
+  </div>
+</div>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>সেবা ও হাদিয়া:</strong>
+  <ul style="margin:2.5mm 0 0 0;padding-right:5mm;">
+    <li>মাসিক রুকইয়াহ — ১২টি সেশন + ডায়াগনোসিস। হাদিয়া <strong>৬৪০ টাকা</strong>।</li>
+    <li>সেলফ রুকইয়াহ গাইডলাইন — শুধু নিজের জন্য আলাদা গাইডলাইন। হাদিয়া <strong>৩০০ টাকা</strong>।</li>
+  </ul>
+  <div style="margin-top:2.5mm;">
+    নিজের সমস্যা কী — বদনজর, হাসাদ, সিহর নাকি অন্য কিছু — বুঝতে না পারলে
+    মেসেজে লিখুন <strong>Diagnosis</strong>।
+  </div>
+</div>
+
+<div class="disclaimer">রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি, প্রয়োজনীয় চিকিৎসার বিকল্প নয়।</div>
+
+<div class="doc-footer">
+  <div class="brand">রাকী ফয়সাল আহমেদ সাবিত ✦ Raqi Faisal Ahmed Sabit</div>
+  <div>আল কুরআন রুকইয়াহ হিলিং সেন্টার — Al Quranic Ruqyah Healing Center</div>
+  <div>Page: Raqi Faisal Ahmed Sabit  |  Telegram: Raqi Faisal Ahmed Sabit (Official)</div>
+</div>
+
+</div>
+</body>
+</html>

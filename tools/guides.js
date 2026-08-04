@@ -74,16 +74,27 @@ function rewrite(html, slug, meta) {
     const docx = /\s*<a href="(?:\.\.\/)+docx\/[^"]+\.docx">[^<]*<\/a>/g;
     out = out.replace(docx, '');
 
-    // Topic pages point at ../pdf/<slug>.pdf, collection pages at
-    // ../../pdf/alroqya/<slug>.pdf. Both become /guides/_files/<slug>.pdf.
-    const pdf = /href="(?:\.\.\/)+pdf\/(?:alroqya\/)?([^"]+\.pdf)"/g;
-    const linked = [];
+    // Three shapes reach the same place, because /guides/_files/ is flat:
+    //   topics       ../pdf/<slug>.pdf
+    //   collections  ../../pdf/alroqya/<slug>.pdf
+    //   articles     ../../pdf/articles/<slug>.pdf
+    // An article links its own PDF and also the PDF of the protocol it discusses,
+    // so more than one is normal; a document with none has lost its download.
+    const pdf = /href="(?:\.\.\/)+pdf\/(?:[\w-]+\/)?([^"/]+\.pdf)"/g;
+    const linked = new Set();
     out = out.replace(pdf, (_m, file) => {
-        linked.push(file);
+        linked.add(file);
         return `href="/guides/_files/${file}"`;
     });
-    if (linked.length !== 1) throw new Error(
-        `${slug}: expected exactly 1 PDF link, found ${linked.length}`);
+    if (!linked.size) throw new Error(`${slug}: no PDF download link found`);
+
+    // Articles link the protocol they discuss (../ayat-badnazar-hasad-series.html).
+    // In the folder-per-slug layout that sibling path resolves nowhere.
+    const crossLinks = [];
+    out = out.replace(/href="(?:\.\.\/)+([\w-]+)\.html"/g, (_m, target) => {
+        crossLinks.push(target);
+        return `href="/guides/${target}/"`;
+    });
     // Links only — some collection pages name the engine's original .docx source
     // in their attribution prose ("মূল ফাইল: sabit special alroqya.docx"), which
     // is a credit, not something a reader can download.
@@ -124,7 +135,7 @@ function rewrite(html, slug, meta) {
     })}</script>
 </head>`;
     if (!out.includes('</head>')) throw new Error(`${slug}: no </head>`);
-    return { html: out.replace('</head>', head), linked };
+    return { html: out.replace('</head>', head), linked, crossLinks };
 }
 
 function buildGuides(distDir) {
@@ -139,21 +150,18 @@ function buildGuides(distDir) {
 
     const files = fs.readdirSync(SRC).filter((f) => f.endsWith('.html')).sort();
     const items = [];
-    let bytes = 0;
+    const crossRefs = [];
 
     for (const file of files) {
         const slug = file.replace(/\.html$/, '');
 
         // An uncategorised slug is a new document nobody classified. Failing here
         // beats quietly dropping it off the index or filing it under "অন্যান্য".
-        let category = cfg.slugs[slug];
-        if (!category) {
-            const hit = Object.entries(cfg.prefixCategory)
-                .find(([p]) => slug.startsWith(p));
-            if (!hit) throw new Error(
-                `guides_src/${file}: no category. Add it to guides.json "slugs".`);
-            category = hit[1];
-        }
+        // There is deliberately no prefix fallback — see the note in guides.json:
+        // the alroqya collections and the jundul series both use ayat-* slugs.
+        const category = cfg.slugs[slug];
+        if (!category) throw new Error(
+            `guides_src/${file}: no category. Add it to guides.json "slugs".`);
         if (!cfg.categories.some((c) => c.bn === category)) {
             throw new Error(`${slug}: category "${category}" is not in guides.json "categories"`);
         }
@@ -162,7 +170,8 @@ function buildGuides(distDir) {
         const meta = extract(html, slug);
         meta.shortTitle = shortTitle(meta.fullTitle);
 
-        const { html: out, linked } = rewrite(html, slug, meta);
+        const { html: out, linked, crossLinks } = rewrite(html, slug, meta);
+        for (const target of crossLinks) crossRefs.push([slug, target]);
         const dir = path.join(outDir, slug);
         fs.mkdirSync(dir, { recursive: true });
         fs.writeFileSync(path.join(dir, 'index.html'), out);
@@ -175,7 +184,6 @@ function buildGuides(distDir) {
             if (!fs.existsSync(from)) throw new Error(
                 `${slug} links ${name}, but guides_src/files/${name} is missing`);
             fs.copyFileSync(from, path.join(outDir, '_files', name));
-            bytes += fs.statSync(from).size;
         }
 
         items.push({
@@ -187,9 +195,21 @@ function buildGuides(distDir) {
         });
     }
 
-    const downloads = fs.readdirSync(path.join(outDir, '_files')).length;
+    // An article pointing at a protocol that was never copied here would render
+    // as a live link to a 404. Cheaper to fail now than to find it in the wild.
+    const published = new Set(items.map((i) => i.slug));
+    const dangling = crossRefs.filter(([, target]) => !published.has(target));
+    if (dangling.length) throw new Error(
+        `cross-links to unpublished documents: `
+        + dangling.map(([from, to]) => `${from} -> ${to}`).join(', '));
+
+    // Measured off disk, not accumulated per link: articles link the protocol
+    // PDFs too, so summing per document counts those twice.
+    const dl = fs.readdirSync(path.join(outDir, '_files'));
+    const bytes = dl.reduce(
+        (n, f) => n + fs.statSync(path.join(outDir, '_files', f)).size, 0);
     console.log(`Guides: ${items.length} documents -> public/guides/<slug>/, `
-              + `${downloads} downloads (${(bytes / 1048576).toFixed(1)} MB)`);
+              + `${dl.length} downloads (${(bytes / 1048576).toFixed(1)} MB)`);
     return { items, categories: cfg.categories };
 }
 

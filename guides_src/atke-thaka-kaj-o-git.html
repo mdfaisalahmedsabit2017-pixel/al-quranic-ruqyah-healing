@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>কাজ আটকে থাকা: কখন এটি সিহর, আর কখন নয় | রাকী ফয়সাল আহমেদ সাবিত</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="বিয়ে, চাকরি ও রিজিকে বারবার বাধা — বিচার করার একটি কাঠামো — আল কুরআন রুকইয়াহ হিলিং সেন্টার।">
+<link rel="stylesheet" href="../assets/fonts.css">
+<style>
+/* এমারেল্ড-গোল্ড প্রিমিয়াম ডিজাইন সিস্টেম — মাস্টার প্রম্পট সেকশন ৪ */
+
+:root {
+  --emerald-deep: #052e22;
+  --emerald-mid: #0b5d43;
+  --emerald-light: #12775a;
+  --gold: #b8912f;
+  --gold-light: #e6cf8a;
+  --gold-pale: #f4efdd;
+  --page: #faf7ef;
+  --card: #fffdf8;
+  --ink: #22332c;
+  --ink-soft: #4a5b53;
+  --arabic-ink: #06382b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-size: 11pt;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+  color: var(--emerald-deep);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.arabic {
+  font-family: 'AlQuran IndoPak', 'Noto Naskh Arabic', serif;
+  direction: rtl;
+  text-align: center;
+  font-size: 21.5pt;
+  line-height: 3.0;
+  color: var(--arabic-ink);
+  unicode-bidi: isolate;
+}
+
+/* ─────────────── কভার পেজ ─────────────── */
+
+.cover {
+  page: cover;
+  height: 297mm;
+  background: linear-gradient(160deg, var(--emerald-deep) 0%, var(--emerald-mid) 55%, var(--emerald-light) 100%);
+  color: var(--gold-pale);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 26mm 18mm 22mm;
+  position: relative;
+  break-after: page;
+}
+
+/* মাঝের ব্লকটা বাকি জায়গা নিয়ে নিজে সেন্টার হবে, লেখকের ব্লক নিচেই থাকবে */
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cover::before,
+.cover::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+}
+.cover::before { inset: 10mm; }
+.cover::after  { inset: 13mm; border-width: 0.6px; border-color: var(--gold-light); }
+
+.cover-bismillah {
+  font-family: 'AlQuran IndoPak', serif;
+  direction: rtl;
+  font-size: 30pt;
+  line-height: 2.2;
+  color: var(--gold-light);
+  margin-bottom: 6mm;
+}
+
+/* বাংলায় letter-spacing দিলে যুক্তাক্ষর ভেঙে যায় — তাই word-spacing ব্যবহার */
+.cover-kicker {
+  font-size: 10.5pt;
+  word-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 5mm;
+}
+
+.cover h1 {
+  font-size: 32pt;
+  color: #fffdf5;
+  margin: 0 0 4mm;
+  line-height: 1.35;
+}
+
+.cover-sub {
+  font-size: 12.5pt;
+  color: var(--gold-pale);
+  max-width: 130mm;
+  line-height: 1.8;
+  margin: 0 auto 10mm;
+  opacity: 0.92;
+}
+
+.ornament {
+  color: var(--gold);
+  letter-spacing: 0.7em;
+  font-size: 12pt;
+  margin: 6mm 0;
+}
+
+.cover-author { padding-top: 8mm; }
+.cover-author .name {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 15pt;
+  color: #fffdf5;
+  margin-bottom: 2mm;
+}
+.cover-author .center {
+  font-size: 10.5pt;
+  color: var(--gold-light);
+}
+.cover-author .en {
+  font-size: 8.5pt;
+  color: var(--gold);
+  letter-spacing: 0.16em;
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── সূচিপত্র ─────────────── */
+
+.toc { break-after: page; padding-top: 4mm; }
+
+.toc h2 {
+  font-size: 19pt;
+  text-align: center;
+  margin-bottom: 2mm;
+}
+
+.toc-rule {
+  width: 44mm; height: 2px;
+  background: var(--gold);
+  margin: 0 auto 9mm;
+}
+
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+
+.toc li {
+  counter-increment: toc;
+  display: flex;
+  align-items: baseline;
+  gap: 3mm;
+  padding: 2.2mm 0;
+  border-bottom: 0.5px dotted #d8cfb4;
+}
+
+.toc li::before {
+  content: counter(toc, decimal);
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--gold);
+  font-size: 9.5pt;
+  min-width: 7mm;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  flex: 1;
+  font-size: 10.5pt;
+}
+
+.toc .leader {
+  flex: 1;
+  border-bottom: 0.5px dotted transparent;
+}
+
+.toc .pg { color: var(--gold); font-size: 9.5pt; }
+
+/* ─────────────── সেকশন ব্যান্ড ─────────────── */
+
+.section-band {
+  background: linear-gradient(100deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-pale);
+  padding: 5mm 7mm;
+  margin: 9mm 0 6mm;
+  border-left: 3.5px solid var(--gold);
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+.section-band h2 { color: #fffdf5; font-size: 14.5pt; margin: 0; }
+.section-band .band-note {
+  font-size: 9.5pt;
+  color: var(--gold-light);
+  margin-top: 2mm;
+  line-height: 1.75;
+  opacity: 0.94;
+}
+
+/* ─────────────── আয়াত কার্ড ─────────────── */
+
+.card {
+  background: var(--card);
+  border: 0.5px solid #e5dcc4;
+  border-top: 3px solid var(--gold);
+  padding: 6mm 6mm 5mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+  position: relative;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  margin-bottom: 4mm;
+}
+
+.medallion {
+  width: 11mm; height: 11mm;
+  flex: 0 0 11mm;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 11pt;
+  border: 1px solid var(--gold);
+}
+
+.card-title {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 12pt;
+  color: var(--emerald-deep);
+  font-weight: 600;
+}
+
+.card .arabic {
+  padding: 3mm 2mm 1mm;
+  border-top: 0.5px solid #ece3cb;
+  border-bottom: 0.5px solid #ece3cb;
+  margin-bottom: 4mm;
+}
+
+.translation {
+  background: #fbf8ee;
+  border-left: 3px solid var(--gold);
+  padding: 3.5mm 4.5mm;
+  font-size: 10.5pt;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 4mm;
+}
+
+.instruction {
+  border: 1px dashed var(--emerald-light);
+  background: #f3f8f5;
+  padding: 3mm 4mm;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 600;
+  color: var(--emerald-deep);
+  line-height: 1.75;
+}
+.instruction .niyyah {
+  display: block;
+  font-weight: 400;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── দোয়া কার্ড ─────────────── */
+
+.dua-card {
+  background: #fdf9ec;
+  border: 0.5px solid #e8dcbb;
+  border-top: 3px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+
+.dua-card .arabic { font-size: 19pt; line-height: 2.8; margin-bottom: 3.5mm; }
+.dua-card .dua-bn {
+  font-size: 10.5pt;
+  line-height: 1.9;
+  padding: 3mm 4mm;
+  background: #fffdf6;
+  border-left: 3px solid var(--emerald-light);
+  margin-bottom: 3mm;
+}
+.dua-card .dua-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 4mm;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+}
+.dua-card .dua-count { color: var(--emerald-deep); font-weight: 600; }
+
+/* ─────────────── সাধারণ ব্লক ─────────────── */
+
+.intro-block {
+  background: #fffdf6;
+  border: 0.5px solid #e8ddc2;
+  border-left: 3.5px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 7mm;
+  font-size: 10.8pt;
+  line-height: 1.95;
+  text-align: justify;
+}
+
+.symptom-list { list-style: none; padding: 0; margin: 0; }
+.symptom-list li {
+  position: relative;
+  padding: 2.2mm 0 2.2mm 8mm;
+  border-bottom: 0.5px dotted #e0d6bb;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  break-inside: avoid;
+}
+.symptom-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 1.5mm;
+  color: var(--gold);
+  font-size: 9pt;
+}
+
+.note-box {
+  background: var(--gold-pale);
+  border: 0.5px solid #e2d5ae;
+  padding: 4.5mm 5.5mm;
+  font-size: 10pt;
+  line-height: 1.85;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+.note-box strong { color: var(--emerald-deep); }
+
+.step-list { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding: 2.8mm 0 2.8mm 11mm;
+  font-size: 10.5pt;
+  line-height: 1.85;
+  border-bottom: 0.5px dotted #e0d6bb;
+  break-inside: avoid;
+}
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 2.6mm;
+  width: 7mm; height: 7mm;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  color: var(--gold-light);
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.2pt;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+table.grid th {
+  background: var(--emerald-deep);
+  color: var(--gold-pale);
+  text-align: right;
+  padding: 3mm 4mm;
+  font-weight: 600;
+  width: 34%;
+  vertical-align: top;
+  font-size: 10pt;
+}
+table.grid td {
+  padding: 3mm 4mm;
+  border-bottom: 0.5px solid #e3d9bf;
+  background: var(--card);
+  line-height: 1.8;
+}
+table.grid tr:nth-child(even) td { background: #fdfbf4; }
+
+.disclaimer {
+  margin-top: 9mm;
+  padding: 5mm 6mm;
+  border: 1px dashed var(--gold);
+  background: #fffdf6;
+  text-align: center;
+  font-size: 10pt;
+  color: var(--emerald-deep);
+  line-height: 1.8;
+  break-inside: avoid;
+}
+
+.doc-footer {
+  margin-top: 7mm;
+  padding-top: 4mm;
+  border-top: 1px solid var(--gold);
+  text-align: center;
+  font-size: 9pt;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  break-inside: avoid;
+}
+.doc-footer .brand {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+}
+
+
+@page {
+  size: A4;
+  margin: 20mm 18mm 17mm;
+}
+@page cover { margin: 0; }
+
+.lede {
+  font-size: 12.5pt;
+  line-height: 2.0;
+  color: var(--emerald-deep);
+  border-right: 3px solid var(--gold);
+  padding-right: 5mm;
+  margin: 0 0 7mm;
+}
+/* Direct children only. A plain `.article h2` also catches the heading inside
+   .section-band, and since this block loads after base.css it would win the
+   cascade and paint that heading dark emerald on a dark emerald band. */
+.article > h2 {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 14pt;
+  margin: 8mm 0 3mm;
+  break-after: avoid;
+}
+.article p { margin: 0 0 3.5mm; line-height: 2.05; text-align: justify; }
+
+.ayah-block {
+  border: 0.5px solid #e2d9c0;
+  background: #fffdf6;
+  border-radius: 2mm;
+  padding: 4mm 5mm;
+  margin: 5mm 0 6mm;
+  break-inside: avoid;
+}
+.ayah-block .label {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+  margin-bottom: 2mm;
+}
+.ayah-block .arabic { margin-bottom: 2.5mm; }
+.ayah-block .translation { margin: 0; }
+.ayah-block .why {
+  font-size: 9.5pt;
+  color: #4a5b53;
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+  margin-top: 3mm;
+}
+.caution-list { margin: 0; padding-right: 5mm; }
+.caution-list li { margin-bottom: 2.5mm; }
+.closing {
+  font-size: 12pt;
+  line-height: 2.0;
+  color: var(--emerald-deep);
+  border-top: 1px solid var(--gold);
+  padding-top: 4mm;
+  margin-top: 7mm;
+}
+.meta {
+  font-size: 9.5pt;
+  color: #4a5b53;
+  margin-bottom: 6mm;
+}
+
+body { background: #efeadd; padding: 0; }
+.page-wrap {
+  max-width: 190mm;
+  margin: 0 auto;
+  background: var(--page);
+  padding: 14mm 12mm 18mm;
+  box-shadow: 0 2px 30px rgba(5,46,34,0.13);
+}
+.cover { height: auto; min-height: 200mm; margin: 0 -12mm 12mm; }
+.print-only { display: none; }
+
+.web-nav {
+  background: var(--emerald-deep);
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 20;
+}
+.web-nav a { color: var(--gold-light); text-decoration: none; font-size: 14px; }
+.web-nav .home { color: #fffdf5; font-family: 'Noto Serif Bengali', serif; }
+.web-nav .dl a { border: 1px solid var(--gold); padding: 4px 12px; border-radius: 3px; }
+
+.ayah-block, .note-box { overflow-x: auto; }
+.arabic { font-size: 23px; line-height: 2.5; }
+
+@media (max-width: 640px) {
+  .page-wrap { padding: 10px 14px 30px; }
+  .cover { margin: 0 -14px 20px; padding: 40px 20px; min-height: auto; }
+  .cover h1 { font-size: 24px; }
+  .cover-bismillah { font-size: 24px; }
+  .arabic { font-size: 20px; line-height: 2.4; }
+  body { font-size: 16px; }
+  .article p { line-height: 1.95; }
+}
+</style>
+</head>
+<body>
+
+<nav class="web-nav">
+  <a class="home" href="index.html">← সব প্রবন্ধ</a>
+  <span class="dl"><a href="../../pdf/articles/atke-thaka-kaj-o-git.pdf">PDF ডাউনলোড</a></span>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ══════════════ কভার ══════════════ -->
+<section class="cover">
+  <div class="cover-main">
+    <div class="cover-bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-kicker">প্রবন্ধ</div>
+    <h1>কাজ আটকে থাকা: কখন এটি সিহর, আর কখন নয়</h1>
+    <p class="cover-sub">বিয়ে, চাকরি ও রিজিকে বারবার বাধা — বিচার করার একটি কাঠামো</p>
+    <div class="ornament">✦ ✦ ✦</div>
+  </div>
+  <div class="cover-author">
+    <div class="name">রাকী ফয়সাল আহমেদ সাবিত</div>
+    <div class="center">আল কুরআন রুকইয়াহ হিলিং সেন্টার</div>
+    <div class="en">Al Quranic Ruqyah Healing Center</div>
+  </div>
+</section>
+
+<div class="article">
+
+<div class="meta">পড়তে সময় লাগবে আনুমানিক ৭ মিনিট</div>
+
+<div class="lede">তিনবার বিয়ের কথা পাকা হয়ে ভেঙে গেছে। চাকরির ইন্টারভিউ ভালো হয়, ডাক আসে না। ব্যবসা শুরু হতে হতেই আটকে যায়। এই অভিজ্ঞতা থেকে প্রশ্নটা স্বাভাবিকভাবেই আসে — আমার ওপর কি কিছু করা হয়েছে? প্রশ্নটা বৈধ। কিন্তু উত্তরে পৌঁছানোর একটা শৃঙ্খলা আছে।</div>
+
+<h2>সিহর বাস্তব — কুরআনই বলেছে</h2>
+<p>জাদু কল্পনা নয়। কুরআন সরাসরি বলেছে জাদুকরেরা এমন বিদ্যা শেখে যা দিয়ে স্বামী-স্ত্রীর মাঝে বিচ্ছেদ ঘটানো হয় — সাথে এ-ও বলেছে, আল্লাহর অনুমতি ছাড়া তারা কারও কোনো ক্ষতি করতে পারে না।</p>
+<div class="ayah-block">
+  <div class="label">সূরা আল-বাকারা : ১০২</div>
+  <div class="arabic">وَاتَّبَعُوا مَا تَتْلُوا الشَّيٰطِينُ عَلَىٰ مُلْكِ سُلَيْمٰنَ ۖ وَمَا كَفَرَ سُلَيْمٰنُ وَلٰكِنَّ الشَّيٰطِينَ كَفَرُوا يُعَلِّمُونَ النَّاسَ السِّحْرَ وَمَا أُنزِلَ عَلَى الْمَلَكَيْنِ بِبَابِلَ هٰرُوتَ وَمٰرُوتَ ۚ وَمَا يُعَلِّمَانِ مِنْ أَحَدٍ حَتَّىٰ يَقُولَا إِنَّمَا نَحْنُ فِتْنَةٌ فَلَا تَكْفُرْ ۖ فَيَتَعَلَّمُونَ مِنْهُمَا مَا يُفَرِّقُونَ بِهِۦ بَيْنَ الْمَرْءِ وَزَوْجِهِۦ ۚ وَمَا هُم بِضَارِّينَ بِهِۦ مِنْ أَحَدٍ إِلَّا بِإِذْنِ اللَّهِ ۚ وَيَتَعَلَّمُونَ مَا يَضُرُّهُمْ وَلَا يَنفَعُهُمْ ۚ وَلَقَدْ عَلِمُوا لَمَنِ اشْتَرَىٰهُ مَا لَهُۥ فِى الْءَاخِرَةِ مِنْ خَلٰقٍ ۚ وَلَبِئْسَ مَا شَرَوْا بِهِۦ أَنفُسَهُمْ ۚ لَوْ كَانُوا يَعْلَمُونَ</div>
+  <div class="translation">তারা ঐ শাস্ত্রের অনুসরণ করল, যা সুলায়মানের রাজত্ব কালে শয়তানরা আবৃত্তি করত। সুলায়মান কুফর করেনি; শয়তানরাই কুফর করেছিল। তারা মানুষকে জাদুবিদ্যা এবং বাবেল শহরে হারুত ও মারুত দুই ফেরেশতার প্রতি যা অবতীর্ণ হয়েছিল, তা শিক্ষা দিত। তারা উভয়ই একথা না বলে কাউকে শিক্ষা দিত না যে, আমরা পরীক্ষার জন্য; কাজেই তুমি কাফের হয়ো না। অতঃপর তারা তাদের কাছ থেকে এমন জাদু শিখত, যদ্দ্বারা স্বামী ও স্ত্রীর মধ্যে বিচ্ছেদ ঘটে। তারা আল্লাহর আদেশ ছাড়া তদ্দ্বারা কারও অনিষ্ট করতে পারত না। যা তাদের ক্ষতি করে এবং উপকার না করে, তারা তাই শিখে। তারা ভালরূপে জানে যে, যে কেউ জাদু অবলম্বন করে, তার জন্য পরকালে কোন অংশ নেই। যার বিনিময়ে তারা আত্নবিক্রয় করেছে, তা খুবই মন্দ যদি তারা জানত।</div>
+<div class="why">সিহরের অস্তিত্ব ও তার সীমা — দুটোই একই আয়াতে।</div></div>
+<h2>গিঁটের আয়াত</h2>
+<p>সূরা ফালাকে ‘গিঁটে ফুঁ দেওয়া’-র অনিষ্ট থেকে আশ্রয় চাইতে বলা হয়েছে। এই একটি আয়াতই বুঝিয়ে দেয় যে বাঁধা-দেওয়া ধরনের জাদু একটি বাস্তব জিনিস, এবং তার প্রতিকারও আল্লাহর কাছেই।</p>
+<div class="ayah-block">
+  <div class="label">সূরা আল-ফালাক : ৪</div>
+  <div class="arabic">وَمِن شَرِّ النَّفّٰثٰتِ فِى الْعُقَدِ</div>
+  <div class="translation">গ্রন্থিতে ফুঁৎকার দিয়ে জাদুকারিনীদের অনিষ্ট থেকে</div>
+<div class="why">গিঁটে ফুঁ দেওয়া নারীদের অনিষ্ট থেকে আশ্রয়।</div></div>
+<h2>কিন্তু প্রথমে সাধারণ কারণগুলো বাদ দিন</h2>
+<p>বিয়ে ভাঙার সবচেয়ে সাধারণ কারণ সিহর নয় — যৌতুকের দরকষাকষি, পরিবারের অমত, খোঁজখবর নিয়ে অসন্তোষ। চাকরি না হওয়ার সবচেয়ে সাধারণ কারণ প্রতিযোগিতা, সিভি, বা যোগাযোগের অভাব।</p>
+<p>একজন রাকী হিসেবে বলতে পারি, এই সাধারণ কারণগুলো আগে সৎভাবে যাচাই না করে রুকইয়াহ ধরলে মানুষ দুটো জিনিস হারায় — সময়, আর সমস্যাটা আসলে সমাধান করার সুযোগ।</p>
+<p>শরীয়তও এটাই শেখায়। উপকরণ গ্রহণ করা তাওয়াক্কুলের বিপরীত নয়, বরং তার অংশ। উট বেঁধে তারপর ভরসা করার কথাটি এখানেই প্রযোজ্য।</p>
+<h2>কখন সিহরের সম্ভাবনা বাড়ে</h2>
+<p>যখন বাধাটা অস্বাভাবিকভাবে ধারাবাহিক — প্রতিবার ভিন্ন কারণে, কিন্তু ফলাফল একই। যখন সিদ্ধান্তের মুহূর্তে সংশ্লিষ্ট মানুষের মনোভাব হঠাৎ ও ব্যাখ্যাহীনভাবে বদলে যায়। যখন সাথে শারীরিক লক্ষণ থাকে — দুঃস্বপ্ন, বুকে চাপ, ইবাদতে অস্বাভাবিক আলস্য।</p>
+<p>এগুলোও নিশ্চিত প্রমাণ নয়, কিন্তু একসাথে অনেকগুলো থাকলে রুকইয়াহ শুরু করা যুক্তিসঙ্গত।</p>
+<h2>যা করা যাবে না</h2>
+<p>জাদুর সন্দেহ হলে সবচেয়ে বড় বিপদ প্রতিকারে নয়, প্রতিকারের ভুল রাস্তায়। ‘জাদু কেটে দেব’, ‘কে করেছে বলে দেব’, ‘তার ওপর ফিরিয়ে দেব’ — এই তিনটি প্রতিশ্রুতির যেকোনো একটি শুনলে সেখান থেকে উঠে চলে আসা উচিত।</p>
+<p>জাদু দিয়ে জাদু কাটানো (নুশরা) নিষিদ্ধ। জাদু ফিরিয়ে দেওয়ার আমল জাদুই। আর গায়েবের খবর দেওয়ার দাবি সরাসরি শরীয়তের সীমা অতিক্রম করে। বৈধ পথ একটাই — আল্লাহর কালাম, সহীহ দোয়া, আর ধৈর্য।</p>
+
+<!-- ══════════════ সাবধানতা ══════════════ -->
+<section class="section-band" id="cautions">
+  <h2>যেসব ভুল এড়িয়ে চলবেন</h2>
+</section>
+
+<ul class="caution-list">
+<li>আগে সাধারণ ও বাস্তব কারণগুলো সৎভাবে যাচাই করুন।</li><li>‘জাদু ফিরিয়ে দেওয়া’ বা ‘কে করেছে বলে দেওয়া’ — এমন কারও কাছে যাবেন না।</li><li>তাবিজ, কবচ, সুতা বা নকশা নেবেন না।</li><li>রুকইয়াহ চালিয়ে যাওয়ার পাশাপাশি চেষ্টা ও উপকরণ ছাড়বেন না।</li></ul>
+
+<div class="closing">সিহর বাস্তব, কিন্তু প্রতিটি বাধার নাম সিহর নয়। কারণ খুঁজুন সততার সাথে, প্রতিকার নিন শরীয়তের ভেতরে থেকে, আর ফল আল্লাহর হাতে ছেড়ে দিন। তিনি যা খুলে দেন, কেউ বাঁধতে পারে না।</div>
+
+</div>
+
+<div class="note-box" style="margin-top:7mm;">
+  <strong>পুরো আয়াত সংকলনটি কোথায়:</strong>
+  এই বিষয়ের সম্পূর্ণ আয়াতসেট — ২৩ টি অংশ, প্রতিটির
+  পাঠসংখ্যাসহ — আলাদা প্রোটোকল ডকুমেন্টে আছে:
+  <strong>গিঁট খোলা ও পবিত্রকরণ</strong>।
+  <div style="margin-top:2.5mm;">
+    <a href="../ayat-git-khola.html">ওয়েবে পড়ুন</a> ·
+    <a href="../../pdf/ayat-git-khola.pdf">PDF ডাউনলোড</a>
+  </div>
+</div>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>সেবা ও হাদিয়া:</strong>
+  <ul style="margin:2.5mm 0 0 0;padding-right:5mm;">
+    <li>মাসিক রুকইয়াহ — ১২টি সেশন + ডায়াগনোসিস। হাদিয়া <strong>৬৪০ টাকা</strong>।</li>
+    <li>সেলফ রুকইয়াহ গাইডলাইন — শুধু নিজের জন্য আলাদা গাইডলাইন। হাদিয়া <strong>৩০০ টাকা</strong>।</li>
+  </ul>
+  <div style="margin-top:2.5mm;">
+    নিজের সমস্যা কী — বদনজর, হাসাদ, সিহর নাকি অন্য কিছু — বুঝতে না পারলে
+    মেসেজে লিখুন <strong>Diagnosis</strong>।
+  </div>
+</div>
+
+<div class="disclaimer">রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি, প্রয়োজনীয় চিকিৎসার বিকল্প নয়।</div>
+
+<div class="doc-footer">
+  <div class="brand">রাকী ফয়সাল আহমেদ সাবিত ✦ Raqi Faisal Ahmed Sabit</div>
+  <div>আল কুরআন রুকইয়াহ হিলিং সেন্টার — Al Quranic Ruqyah Healing Center</div>
+  <div>Page: Raqi Faisal Ahmed Sabit  |  Telegram: Raqi Faisal Ahmed Sabit (Official)</div>
+</div>
+
+</div>
+</body>
+</html>

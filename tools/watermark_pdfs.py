@@ -28,6 +28,8 @@ Usage (run after syncing new HTML, before `node build.js`):
 """
 
 import argparse
+import hashlib
+import json
 import secrets
 import sys
 from pathlib import Path
@@ -38,6 +40,12 @@ REPO = Path(__file__).resolve().parent.parent
 GUIDES = REPO / "guides_src"
 DEST = GUIDES / "files"
 DEFAULT_ENGINE = Path(r"A:\claude code projects sabit\ruqyah pdf maker\output")
+
+# Each run picks a fresh random owner password, so re-stamping a document that
+# has not changed still produces different bytes — and these files are 1-3 MB
+# each in a git repository. Recording the source hash lets an unchanged document
+# keep the copy already committed, so a sync only touches what actually moved.
+MANIFEST = DEST / "sources.json"
 
 MARK = "alquranicruqyahhealing.com"
 SIGN = "Raqi Faisal Ahmed Sabit"
@@ -101,14 +109,31 @@ def main() -> int:
         return 1
 
     DEST.mkdir(parents=True, exist_ok=True)
-    done = pages = 0
+    seen = json.loads(MANIFEST.read_text("utf-8")) if MANIFEST.is_file() else {}
+    fresh = {}
+    done = skipped = pages = 0
     missing = []
 
     for slug in slugs:
-        src = (args.engine / "pdf" / "alroqya" / f"{slug}.pdf") if slug.startswith("ayat-") \
-            else (args.engine / "pdf" / f"{slug}.pdf")
-        if not src.is_file():
+        # The engine files topics at pdf/, the alroqya collections at
+        # pdf/alroqya/ and the articles at pdf/articles/. Slug prefixes cannot
+        # tell them apart — both the collections and the jundul topic series use
+        # ayat-* — so just look in all three.
+        for cand in (args.engine / "pdf" / f"{slug}.pdf",
+                     args.engine / "pdf" / "alroqya" / f"{slug}.pdf",
+                     args.engine / "pdf" / "articles" / f"{slug}.pdf"):
+            if cand.is_file():
+                src = cand
+                break
+        else:
             missing.append(slug)
+            continue
+
+        digest = hashlib.sha256(src.read_bytes()).hexdigest()
+        fresh[slug] = digest
+        out = DEST / f"{slug}.pdf"
+        if seen.get(slug) == digest and out.is_file():
+            skipped += 1
             continue
 
         doc = fitz.open(src)
@@ -126,7 +151,7 @@ def main() -> int:
         # keeps: the restrictions cannot be lifted by us either, which is fine —
         # the engine can always regenerate the source PDF.
         doc.save(
-            DEST / f"{slug}.pdf",
+            out,
             encryption=fitz.PDF_ENCRYPT_AES_256,
             owner_pw=secrets.token_urlsafe(24),
             user_pw="",
@@ -140,8 +165,11 @@ def main() -> int:
         docx.unlink()
         print(f"removed {docx.name} (DOCX is not published)")
 
+    MANIFEST.write_text(json.dumps(fresh, indent=1, sort_keys=True) + "\n", "utf-8")
+
     size = sum(p.stat().st_size for p in DEST.glob("*.pdf")) / 1048576
-    print(f"watermarked {done}/{len(slugs)} PDFs, {pages} pages, {size:.1f} MB -> {DEST}")
+    print(f"watermarked {done}, unchanged {skipped}, of {len(slugs)} — "
+          f"{pages} new pages stamped, {size:.1f} MB total -> {DEST}")
     if missing:
         print(f"!! no source PDF for: {', '.join(missing)}", file=sys.stderr)
         return 1

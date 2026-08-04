@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>ঘর ও শিশুর সাধারণ রুকইয়াহ — রুকইয়াহ প্রোটোকল | রাকী ফয়সাল আহমেদ সাবিত</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="পুরো পরিবারের জন্য প্রতিদিনের আয়াত সংকলন — আল কুরআন রুকইয়াহ হিলিং সেন্টার। রাকী ফয়সাল আহমেদ সাবিত কর্তৃক সংকলিত কুরআনভিত্তিক রুকইয়াহ প্রোটোকল।">
+<link rel="stylesheet" href="assets/fonts.css"><style>
+/* এমারেল্ড-গোল্ড প্রিমিয়াম ডিজাইন সিস্টেম — মাস্টার প্রম্পট সেকশন ৪ */
+
+:root {
+  --emerald-deep: #052e22;
+  --emerald-mid: #0b5d43;
+  --emerald-light: #12775a;
+  --gold: #b8912f;
+  --gold-light: #e6cf8a;
+  --gold-pale: #f4efdd;
+  --page: #faf7ef;
+  --card: #fffdf8;
+  --ink: #22332c;
+  --ink-soft: #4a5b53;
+  --arabic-ink: #06382b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  font-size: 11pt;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif Bengali', 'Noto Sans Bengali', serif;
+  color: var(--emerald-deep);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.arabic {
+  font-family: 'AlQuran IndoPak', 'Noto Naskh Arabic', serif;
+  direction: rtl;
+  text-align: center;
+  font-size: 21.5pt;
+  line-height: 3.0;
+  color: var(--arabic-ink);
+  unicode-bidi: isolate;
+}
+
+/* ─────────────── কভার পেজ ─────────────── */
+
+.cover {
+  page: cover;
+  height: 297mm;
+  background: linear-gradient(160deg, var(--emerald-deep) 0%, var(--emerald-mid) 55%, var(--emerald-light) 100%);
+  color: var(--gold-pale);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 26mm 18mm 22mm;
+  position: relative;
+  break-after: page;
+}
+
+/* মাঝের ব্লকটা বাকি জায়গা নিয়ে নিজে সেন্টার হবে, লেখকের ব্লক নিচেই থাকবে */
+.cover-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cover::before,
+.cover::after {
+  content: '';
+  position: absolute;
+  border: 2px solid var(--gold);
+  pointer-events: none;
+}
+.cover::before { inset: 10mm; }
+.cover::after  { inset: 13mm; border-width: 0.6px; border-color: var(--gold-light); }
+
+.cover-bismillah {
+  font-family: 'AlQuran IndoPak', serif;
+  direction: rtl;
+  font-size: 30pt;
+  line-height: 2.2;
+  color: var(--gold-light);
+  margin-bottom: 6mm;
+}
+
+/* বাংলায় letter-spacing দিলে যুক্তাক্ষর ভেঙে যায় — তাই word-spacing ব্যবহার */
+.cover-kicker {
+  font-size: 10.5pt;
+  word-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 5mm;
+}
+
+.cover h1 {
+  font-size: 32pt;
+  color: #fffdf5;
+  margin: 0 0 4mm;
+  line-height: 1.35;
+}
+
+.cover-sub {
+  font-size: 12.5pt;
+  color: var(--gold-pale);
+  max-width: 130mm;
+  line-height: 1.8;
+  margin: 0 auto 10mm;
+  opacity: 0.92;
+}
+
+.ornament {
+  color: var(--gold);
+  letter-spacing: 0.7em;
+  font-size: 12pt;
+  margin: 6mm 0;
+}
+
+.cover-author { padding-top: 8mm; }
+.cover-author .name {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 15pt;
+  color: #fffdf5;
+  margin-bottom: 2mm;
+}
+.cover-author .center {
+  font-size: 10.5pt;
+  color: var(--gold-light);
+}
+.cover-author .en {
+  font-size: 8.5pt;
+  color: var(--gold);
+  letter-spacing: 0.16em;
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── সূচিপত্র ─────────────── */
+
+.toc { break-after: page; padding-top: 4mm; }
+
+.toc h2 {
+  font-size: 19pt;
+  text-align: center;
+  margin-bottom: 2mm;
+}
+
+.toc-rule {
+  width: 44mm; height: 2px;
+  background: var(--gold);
+  margin: 0 auto 9mm;
+}
+
+.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+
+.toc li {
+  counter-increment: toc;
+  display: flex;
+  align-items: baseline;
+  gap: 3mm;
+  padding: 2.2mm 0;
+  border-bottom: 0.5px dotted #d8cfb4;
+}
+
+.toc li::before {
+  content: counter(toc, decimal);
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--gold);
+  font-size: 9.5pt;
+  min-width: 7mm;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  flex: 1;
+  font-size: 10.5pt;
+}
+
+.toc .leader {
+  flex: 1;
+  border-bottom: 0.5px dotted transparent;
+}
+
+.toc .pg { color: var(--gold); font-size: 9.5pt; }
+
+/* ─────────────── সেকশন ব্যান্ড ─────────────── */
+
+.section-band {
+  background: linear-gradient(100deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-pale);
+  padding: 5mm 7mm;
+  margin: 9mm 0 6mm;
+  border-left: 3.5px solid var(--gold);
+  break-after: avoid;
+  break-inside: avoid;
+}
+
+.section-band h2 { color: #fffdf5; font-size: 14.5pt; margin: 0; }
+.section-band .band-note {
+  font-size: 9.5pt;
+  color: var(--gold-light);
+  margin-top: 2mm;
+  line-height: 1.75;
+  opacity: 0.94;
+}
+
+/* ─────────────── আয়াত কার্ড ─────────────── */
+
+.card {
+  background: var(--card);
+  border: 0.5px solid #e5dcc4;
+  border-top: 3px solid var(--gold);
+  padding: 6mm 6mm 5mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+  position: relative;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  margin-bottom: 4mm;
+}
+
+.medallion {
+  width: 11mm; height: 11mm;
+  flex: 0 0 11mm;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--emerald-deep), var(--emerald-light));
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 11pt;
+  border: 1px solid var(--gold);
+}
+
+.card-title {
+  font-family: 'Noto Serif Bengali', serif;
+  font-size: 12pt;
+  color: var(--emerald-deep);
+  font-weight: 600;
+}
+
+.card .arabic {
+  padding: 3mm 2mm 1mm;
+  border-top: 0.5px solid #ece3cb;
+  border-bottom: 0.5px solid #ece3cb;
+  margin-bottom: 4mm;
+}
+
+.translation {
+  background: #fbf8ee;
+  border-left: 3px solid var(--gold);
+  padding: 3.5mm 4.5mm;
+  font-size: 10.5pt;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 4mm;
+}
+
+.instruction {
+  border: 1px dashed var(--emerald-light);
+  background: #f3f8f5;
+  padding: 3mm 4mm;
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 600;
+  color: var(--emerald-deep);
+  line-height: 1.75;
+}
+.instruction .niyyah {
+  display: block;
+  font-weight: 400;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  margin-top: 1.5mm;
+}
+
+/* ─────────────── দোয়া কার্ড ─────────────── */
+
+.dua-card {
+  background: #fdf9ec;
+  border: 0.5px solid #e8dcbb;
+  border-top: 3px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+
+.dua-card .arabic { font-size: 19pt; line-height: 2.8; margin-bottom: 3.5mm; }
+.dua-card .dua-bn {
+  font-size: 10.5pt;
+  line-height: 1.9;
+  padding: 3mm 4mm;
+  background: #fffdf6;
+  border-left: 3px solid var(--emerald-light);
+  margin-bottom: 3mm;
+}
+.dua-card .dua-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 4mm;
+  font-size: 9.5pt;
+  color: var(--ink-soft);
+  border-top: 0.5px dotted #ddd2b5;
+  padding-top: 2.5mm;
+}
+.dua-card .dua-count { color: var(--emerald-deep); font-weight: 600; }
+
+/* ─────────────── সাধারণ ব্লক ─────────────── */
+
+.intro-block {
+  background: #fffdf6;
+  border: 0.5px solid #e8ddc2;
+  border-left: 3.5px solid var(--emerald-light);
+  padding: 6mm;
+  margin-bottom: 7mm;
+  font-size: 10.8pt;
+  line-height: 1.95;
+  text-align: justify;
+}
+
+.symptom-list { list-style: none; padding: 0; margin: 0; }
+.symptom-list li {
+  position: relative;
+  padding: 2.2mm 0 2.2mm 8mm;
+  border-bottom: 0.5px dotted #e0d6bb;
+  font-size: 10.5pt;
+  line-height: 1.8;
+  break-inside: avoid;
+}
+.symptom-list li::before {
+  content: '✦';
+  position: absolute;
+  left: 1.5mm;
+  color: var(--gold);
+  font-size: 9pt;
+}
+
+.note-box {
+  background: var(--gold-pale);
+  border: 0.5px solid #e2d5ae;
+  padding: 4.5mm 5.5mm;
+  font-size: 10pt;
+  line-height: 1.85;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+.note-box strong { color: var(--emerald-deep); }
+
+.step-list { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+.step-list li {
+  counter-increment: step;
+  position: relative;
+  padding: 2.8mm 0 2.8mm 11mm;
+  font-size: 10.5pt;
+  line-height: 1.85;
+  border-bottom: 0.5px dotted #e0d6bb;
+  break-inside: avoid;
+}
+.step-list li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: 2.6mm;
+  width: 7mm; height: 7mm;
+  border-radius: 50%;
+  background: var(--emerald-light);
+  color: var(--gold-light);
+  font-size: 9pt;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10.2pt;
+  margin-bottom: 6mm;
+  break-inside: avoid;
+}
+table.grid th {
+  background: var(--emerald-deep);
+  color: var(--gold-pale);
+  text-align: right;
+  padding: 3mm 4mm;
+  font-weight: 600;
+  width: 34%;
+  vertical-align: top;
+  font-size: 10pt;
+}
+table.grid td {
+  padding: 3mm 4mm;
+  border-bottom: 0.5px solid #e3d9bf;
+  background: var(--card);
+  line-height: 1.8;
+}
+table.grid tr:nth-child(even) td { background: #fdfbf4; }
+
+.disclaimer {
+  margin-top: 9mm;
+  padding: 5mm 6mm;
+  border: 1px dashed var(--gold);
+  background: #fffdf6;
+  text-align: center;
+  font-size: 10pt;
+  color: var(--emerald-deep);
+  line-height: 1.8;
+  break-inside: avoid;
+}
+
+.doc-footer {
+  margin-top: 7mm;
+  padding-top: 4mm;
+  border-top: 1px solid var(--gold);
+  text-align: center;
+  font-size: 9pt;
+  color: var(--ink-soft);
+  line-height: 1.9;
+  break-inside: avoid;
+}
+.doc-footer .brand {
+  font-family: 'Noto Serif Bengali', serif;
+  color: var(--emerald-deep);
+  font-size: 10.5pt;
+}
+
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 17mm;
+}
+@page cover { margin: 0; }
+
+/* ওয়েব ভার্সন — রেসপন্সিভ */
+body { background: #efeadd; padding: 0; }
+.page-wrap {
+  max-width: 210mm;
+  margin: 0 auto;
+  background: var(--page);
+  padding: 14mm 12mm 18mm;
+  box-shadow: 0 2px 30px rgba(5,46,34,0.13);
+}
+.cover { height: auto; min-height: 240mm; margin: 0 -12mm 12mm; }
+.print-only { display: none; }
+
+.web-nav {
+  background: var(--emerald-deep);
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 20;
+}
+.web-nav a { color: var(--gold-light); text-decoration: none; font-size: 14px; }
+.web-nav .home { color: #fffdf5; font-family: 'Noto Serif Bengali', serif; }
+.web-nav .dl { display: flex; gap: 12px; flex-wrap: wrap; }
+.web-nav .dl a {
+  border: 1px solid var(--gold);
+  padding: 4px 12px;
+  border-radius: 3px;
+}
+
+.card, .dua-card, .note-box, .intro-block, table.grid { overflow-x: auto; }
+.arabic { font-size: 24px; line-height: 2.6; }
+.dua-card .arabic { font-size: 21px; }
+
+@media (max-width: 640px) {
+  .page-wrap { padding: 10px 12px 30px; }
+  .cover { margin: 0 -12px 20px; padding: 40px 20px; min-height: auto; }
+  .cover h1 { font-size: 26px; }
+  .cover-bismillah { font-size: 24px; }
+  .arabic { font-size: 20px; line-height: 2.4; }
+  body { font-size: 15px; }
+  table.grid th { width: 40%; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="web-nav">
+  <a class="home" href="index.html">← সব রুকইয়াহ গাইডলাইন</a>
+  <span class="dl">
+    <a href="../pdf/ayat-ghor-o-shishu.pdf">PDF ডাউনলোড</a>
+    <a href="../docx/ayat-ghor-o-shishu.docx">DOCX ডাউনলোড</a>
+  </span>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ══════════════ কভার ══════════════ -->
+<section class="cover">
+  <div class="cover-main">
+    <div class="cover-bismillah">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+    <div class="ornament">✦ ✦ ✦</div>
+    <div class="cover-kicker">রুকইয়াহ প্রোটোকল</div>
+    <h1>ঘর ও শিশুর সাধারণ রুকইয়াহ</h1>
+    <p class="cover-sub">পুরো পরিবারের জন্য প্রতিদিনের আয়াত সংকলন</p>
+    <div class="ornament">✦ ✦ ✦</div>
+  </div>
+  <div class="cover-author">
+    <div class="name">রাকী ফয়সাল আহমেদ সাবিত</div>
+    <div class="center">আল কুরআন রুকইয়াহ হিলিং সেন্টার</div>
+    <div class="en">Al Quranic Ruqyah Healing Center</div>
+  </div>
+</section>
+
+<!-- ══════════════ সূচিপত্র ══════════════ -->
+<section class="toc">
+  <h2>সূচিপত্র</h2>
+  <div class="toc-rule"></div>
+  <ol>
+    <li><a href="#intro">ভূমিকা — কাদের জন্য এই প্রোটোকল</a><span class="leader"></span></li>
+    <li><a href="#opening">শুরু করার দোয়া</a><span class="leader"></span></li>
+    <li><a href="#sec1">আয়াতসমূহ</a><span class="leader"></span></li>
+    <li><a href="#duas">বিশেষ দোয়া — ঘর ও শিশুর সাধারণ রুকইয়াহ</a><span class="leader"></span></li>
+    <li><a href="#closing">সমাপ্তির সূরা ও দোয়া</a><span class="leader"></span></li>
+    <li><a href="#self">সেলফ রুকইয়াহ গাইডলাইন</a><span class="leader"></span></li>
+    <li><a href="#supplement">সাপ্লিমেন্ট ও সাপ্তাহিক আমল</a><span class="leader"></span></li>
+    <li><a href="#daily">দৈনিক আমল</a><span class="leader"></span></li>
+  </ol>
+</section>
+
+<!-- ══════════════ ভূমিকা ══════════════ -->
+<section class="section-band" id="intro">
+  <h2>ভূমিকা — কাদের জন্য এই প্রোটোকল</h2>
+</section>
+
+<div class="intro-block">এই সংকলনটি কোনো নির্দিষ্ট সমস্যার জন্য নয় — ঘরের নিয়মিত আমল হিসেবে সাজানো। সূরা ফাতিহা, সূরা বাকারার শুরু ও শেষ, আয়াতুল কুরসী আর সাফফাতের প্রথম আয়াতগুলো দিয়ে শুরু হয়ে তিন কুল-এ শেষ। ছোট, প্রতিদিন পড়া যায়, আর শিশুদের শোনানোর জন্যও উপযুক্ত।</div>
+
+<h3 style="font-size:12.5pt;margin-bottom:3mm;">যেসব লক্ষণ থাকলে এই প্রোটোকল কাজে আসবে</h3>
+<ul class="symptom-list">
+<li>ঘরে নিয়মিত হিফাজতের আমল রাখতে চাইলে — সমস্যা থাকুক বা না থাকুক</li><li>শিশু ঘুমের মধ্যে চমকে ওঠে, অকারণে কাঁদে বা ভয় পায়</li><li>নতুন বাসায় ওঠার পর ঘরে অস্বস্তি লাগে</li><li>বাইরের লোকজনের আনাগোনা বেশি, নজর লাগার আশঙ্কা থাকে</li><li>রুকইয়াহ শুরু করতে চান কিন্তু কোথা থেকে ধরবেন বুঝছেন না</li></ul>
+
+<div class="note-box" style="margin-top:6mm;">
+  <strong>জরুরি নোট:</strong> উপরের লক্ষণগুলোর অধিকাংশেরই সাধারণ শারীরিক বা মানসিক কারণ থাকতে পারে।
+  তাই আগে প্রয়োজনীয় পরীক্ষা-নিরীক্ষা ও চিকিৎসা নিন। রুকইয়াহ চিকিৎসার সমান্তরালে চলবে,
+  বিকল্প হিসেবে নয়। কোনো লক্ষণ মিললেই নিশ্চিতভাবে সিহর বা জিনের আসর ধরে নেওয়া ঠিক নয়।
+</div>
+
+<!-- ══════════════ শুরুর দোয়া ══════════════ -->
+<section class="section-band" id="opening">
+  <h2>শুরু করার দোয়া</h2>
+  <div class="band-note">অযু করে কিবলামুখী হয়ে বসুন। নিয়ত করুন — আল্লাহর কালাম দিয়ে আল্লাহর কাছেই আরোগ্য চাইছি।</div>
+</section>
+
+<div class="dua-card">
+  <div class="arabic">بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ</div>
+  <div class="dua-bn">আল্লাহর নামে শুরু করছি, যাঁর নামের সাথে আসমান ও যমীনের কোনো কিছুই ক্ষতি করতে পারে না; তিনি সর্বশ্রোতা, সর্বজ্ঞ।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৩ বার</span>
+    <span>সকাল-সন্ধ্যা এই দোয়া পাঠকারীকে কোনো কিছু আকস্মিক ক্ষতি করতে পারে না। (তিরমিযী ৩৩৮৮)</span>
+  </div>
+</div>
+<div class="dua-card">
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ</div>
+  <div class="dua-bn">পরম করুণাময় অসীম দয়ালু আল্লাহর নামে।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ১৯ বার</span>
+    <span>রুকইয়াহ শুরুর আগে মনোযোগ ও নিয়ত স্থির করে পড়ুন।</span>
+  </div>
+</div>
+<div class="dua-card">
+  <div class="arabic">أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ</div>
+  <div class="dua-bn">আমি আল্লাহর পরিপূর্ণ কালিমাসমূহের আশ্রয় নিচ্ছি তাঁর সৃষ্টির সকল অনিষ্ট থেকে।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৩ বার</span>
+    <span>(মুসলিম ২৭০৮)</span>
+  </div>
+</div>
+
+<!-- ══════════════ আয়াত অধ্যায় ══════════════ -->
+<section class="section-band" id="sec1">
+  <h2>আয়াতসমূহ</h2>
+<div class="band-note">প্রতিটি আয়াতের পাশে যে পাঠসংখ্যা দেওয়া, সেটি সংকলনের নিজস্ব বিন্যাস। সংখ্যা মেলাতে না পারলে অসুবিধা নেই — মন দিয়ে পড়াটাই মূল।</div></section>
+
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১</div>
+    <div class="card-title">সূরা আল-ফাতিহা : ১-৭</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ الْحَمْدُ لِلَّهِ رَبِّ الْعٰلَمِينَ الرَّحْمٰنِ الرَّحِيمِ مٰلِكِ يَوْمِ الدِّينِ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ اهْدِنَا الصِّرٰطَ الْمُسْتَقِيمَ صِرٰطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ</div>
+  <div class="translation">শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু। যাবতীয় প্রশংসা আল্লাহ তাআলার যিনি সকল সৃষ্টি জগতের পালনকর্তা। যিনি নিতান্ত মেহেরবান ও দয়ালু। যিনি বিচার দিনের মালিক। আমরা একমাত্র তোমারই ইবাদত করি এবং শুধুমাত্র তোমারই সাহায্য প্রার্থনা করি। আমাদেরকে সরল পথ দেখাও, সে সমস্ত লোকের পথ, যাদেরকে তুমি নেয়ামত দান করেছ। তাদের পথ নয়, যাদের প্রতি তোমার গজব নাযিল হয়েছে এবং যারা পথভ্রষ্ট হয়েছে।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২</div>
+    <div class="card-title">সূরা আল-বাকারা : ১-৫</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ الم ذٰلِكَ الْكِتٰبُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَوٰةَ وَمِمَّا رَزَقْنٰهُمْ يُنفِقُونَ وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنزِلَ إِلَيْكَ وَمَا أُنزِلَ مِن قَبْلِكَ وَبِالْءَاخِرَةِ هُمْ يُوقِنُونَ أُولٰئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُولٰئِكَ هُمُ الْمُفْلِحُونَ</div>
+  <div class="translation">আলিফ লাম মীম। এ সেই কিতাব যাতে কোনই সন্দেহ নেই। পথ প্রদর্শনকারী পরহেযগারদের জন্য, যারা অদেখা বিষয়ের উপর বিশ্বাস স্থাপন করে এবং নামায প্রতিষ্ঠা করে। আর আমি তাদেরকে যে রুযী দান করেছি তা থেকে ব্যয় করে এবং যারা বিশ্বাস স্থাপন করেছে সেসব বিষয়ের উপর যা কিছু তোমার প্রতি অবতীর্ণ হয়েছে এবং সেসব বিষয়ের উপর যা তোমার পূর্ববর্তীদের প্রতি অবতীর্ণ হয়েছে। আর আখেরাতকে যারা নিশ্চিত বলে বিশ্বাস করে। তারাই নিজেদের পালনকর্তার পক্ষ থেকে সুপথ প্রাপ্ত, আর তারাই যথার্থ সফলকাম।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩</div>
+    <div class="card-title">সূরা আল-বাকারা : ১০২-১০৩</div>
+  </div>
+  <div class="arabic">وَاتَّبَعُوا مَا تَتْلُوا الشَّيٰطِينُ عَلَىٰ مُلْكِ سُلَيْمٰنَ ۖ وَمَا كَفَرَ سُلَيْمٰنُ وَلٰكِنَّ الشَّيٰطِينَ كَفَرُوا يُعَلِّمُونَ النَّاسَ السِّحْرَ وَمَا أُنزِلَ عَلَى الْمَلَكَيْنِ بِبَابِلَ هٰرُوتَ وَمٰرُوتَ ۚ وَمَا يُعَلِّمَانِ مِنْ أَحَدٍ حَتَّىٰ يَقُولَا إِنَّمَا نَحْنُ فِتْنَةٌ فَلَا تَكْفُرْ ۖ فَيَتَعَلَّمُونَ مِنْهُمَا مَا يُفَرِّقُونَ بِهِۦ بَيْنَ الْمَرْءِ وَزَوْجِهِۦ ۚ وَمَا هُم بِضَارِّينَ بِهِۦ مِنْ أَحَدٍ إِلَّا بِإِذْنِ اللَّهِ ۚ وَيَتَعَلَّمُونَ مَا يَضُرُّهُمْ وَلَا يَنفَعُهُمْ ۚ وَلَقَدْ عَلِمُوا لَمَنِ اشْتَرَىٰهُ مَا لَهُۥ فِى الْءَاخِرَةِ مِنْ خَلٰقٍ ۚ وَلَبِئْسَ مَا شَرَوْا بِهِۦ أَنفُسَهُمْ ۚ لَوْ كَانُوا يَعْلَمُونَ وَلَوْ أَنَّهُمْ ءَامَنُوا وَاتَّقَوْا لَمَثُوبَةٌ مِّنْ عِندِ اللَّهِ خَيْرٌ ۖ لَّوْ كَانُوا يَعْلَمُونَ</div>
+  <div class="translation">তারা ঐ শাস্ত্রের অনুসরণ করল, যা সুলায়মানের রাজত্ব কালে শয়তানরা আবৃত্তি করত। সুলায়মান কুফর করেনি; শয়তানরাই কুফর করেছিল। তারা মানুষকে জাদুবিদ্যা এবং বাবেল শহরে হারুত ও মারুত দুই ফেরেশতার প্রতি যা অবতীর্ণ হয়েছিল, তা শিক্ষা দিত। তারা উভয়ই একথা না বলে কাউকে শিক্ষা দিত না যে, আমরা পরীক্ষার জন্য; কাজেই তুমি কাফের হয়ো না। অতঃপর তারা তাদের কাছ থেকে এমন জাদু শিখত, যদ্দ্বারা স্বামী ও স্ত্রীর মধ্যে বিচ্ছেদ ঘটে। তারা আল্লাহর আদেশ ছাড়া তদ্দ্বারা কারও অনিষ্ট করতে পারত না। যা তাদের ক্ষতি করে এবং উপকার না করে, তারা তাই শিখে। তারা ভালরূপে জানে যে, যে কেউ জাদু অবলম্বন করে, তার জন্য পরকালে কোন অংশ নেই। যার বিনিময়ে তারা আত্নবিক্রয় করেছে, তা খুবই মন্দ যদি তারা জানত। যদি তারা ঈমান আনত এবং খোদাভীরু হত, তবে আল্লাহর কাছ থেকে উত্তম প্রতিদান পেত। যদি তারা জানত।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৪</div>
+    <div class="card-title">সূরা আল-বাকারা : ১৬৩-১৬৫</div>
+  </div>
+  <div class="arabic">وَإِلٰهُكُمْ إِلٰهٌ وٰحِدٌ ۖ لَّا إِلٰهَ إِلَّا هُوَ الرَّحْمٰنُ الرَّحِيمُ إِنَّ فِى خَلْقِ السَّمٰوٰتِ وَالْأَرْضِ وَاخْتِلٰفِ الَّيْلِ وَالنَّهَارِ وَالْفُلْكِ الَّتِى تَجْرِى فِى الْبَحْرِ بِمَا يَنفَعُ النَّاسَ وَمَا أَنزَلَ اللَّهُ مِنَ السَّمَاءِ مِن مَّاءٍ فَأَحْيَا بِهِ الْأَرْضَ بَعْدَ مَوْتِهَا وَبَثَّ فِيهَا مِن كُلِّ دَابَّةٍ وَتَصْرِيفِ الرِّيٰحِ وَالسَّحَابِ الْمُسَخَّرِ بَيْنَ السَّمَاءِ وَالْأَرْضِ لَءَايٰتٍ لِّقَوْمٍ يَعْقِلُونَ وَمِنَ النَّاسِ مَن يَتَّخِذُ مِن دُونِ اللَّهِ أَندَادًا يُحِبُّونَهُمْ كَحُبِّ اللَّهِ ۖ وَالَّذِينَ ءَامَنُوا أَشَدُّ حُبًّا لِّلَّهِ ۗ وَلَوْ يَرَى الَّذِينَ ظَلَمُوا إِذْ يَرَوْنَ الْعَذَابَ أَنَّ الْقُوَّةَ لِلَّهِ جَمِيعًا وَأَنَّ اللَّهَ شَدِيدُ الْعَذَابِ</div>
+  <div class="translation">আর তোমাদের উপাস্য একইমাত্র উপাস্য। তিনি ছাড়া মহা করুণাময় দয়ালু কেউ নেই। নিশ্চয়ই আসমান ও যমীনের সৃষ্টিতে, রাত ও দিনের বিবর্তনে এবং নদীতে নৌকাসমূহের চলাচলে মানুষের জন্য কল্যাণ রয়েছে। আর আল্লাহ তা’ আলা আকাশ থেকে যে পানি নাযিল করেছেন, তদ্দ্বারা মৃত যমীনকে সজীব করে তুলেছেন এবং তাতে ছড়িয়ে দিয়েছেন সবরকম জীব-জন্তু। আর আবহাওয়া পরিবর্তনে এবং মেঘমালার যা তাঁরই হুকুমের অধীনে আসমান ও যমীনের মাঝে বিচরণ করে, নিশ্চয়ই সে সমস্ত বিষয়ের মাঝে নিদর্শন রয়েছে বুদ্ধিমান সম্প্রদায়ের জন্যে। আর কোন লোক এমনও রয়েছে যারা অন্যান্যকে আল্লাহর সমকক্ষ সাব্যস্ত করে এবং তাদের প্রতি তেমনি ভালবাসা পোষণ করে, যেমন আল্লাহর প্রতি ভালবাসা হয়ে থাকে। কিন্তু যারা আল্লাহর প্রতি ঈমানদার তাদের ভালবাসা ওদের তুলনায় বহুগুণ বেশী। আর কতইনা উত্তম হ’ত যদি এ জালেমরা পার্থিব কোন কোন আযাব প্রত্যক্ষ করেই উপলব্ধি করে নিত যে, যাবতীয় ক্ষমতা শুধুমাত্র আল্লাহরই জন্য এবং আল্লাহর আযাবই সবচেয়ে কঠিনতর।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৫</div>
+    <div class="card-title">সূরা আল-বাকারা : ২৮৪-২৮৬</div>
+  </div>
+  <div class="arabic">لِّلَّهِ مَا فِى السَّمٰوٰتِ وَمَا فِى الْأَرْضِ ۗ وَإِن تُبْدُوا مَا فِى أَنفُسِكُمْ أَوْ تُخْفُوهُ يُحَاسِبْكُم بِهِ اللَّهُ ۖ فَيَغْفِرُ لِمَن يَشَاءُ وَيُعَذِّبُ مَن يَشَاءُ ۗ وَاللَّهُ عَلَىٰ كُلِّ شَىْءٍ قَدِيرٌ ءَامَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِۦ وَالْمُؤْمِنُونَ ۚ كُلٌّ ءَامَنَ بِاللَّهِ وَمَلٰئِكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِّن رُّسُلِهِۦ ۚ وَقَالُوا سَمِعْنَا وَأَطَعْنَا ۖ غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ لَا يُكَلِّفُ اللَّهُ نَفْسًا إِلَّا وُسْعَهَا ۚ لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ ۗ رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُۥ عَلَى الَّذِينَ مِن قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِۦ ۖ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا ۚ أَنتَ مَوْلَىٰنَا فَانصُرْنَا عَلَى الْقَوْمِ الْكٰفِرِينَ</div>
+  <div class="translation">যা কিছু আকাশসমূহে রয়েছে এবং যা কিছু যমীনে আছে, সব আল্লাহরই। যদি তোমরা মনের কথা প্রকাশ কর কিংবা গোপন কর, আল্লাহ তোমাদের কাছ থেকে তার হিসাব নেবেন। অতঃপর যাকে ইচ্ছা তিনি ক্ষমা করবেন এবং যাকে ইচ্ছা তিনি শাস্তি দেবেন। আল্লাহ সর্ববিষয়ে শক্তিমান। রসূল বিশ্বাস রাখেন ঐ সমস্ত বিষয় সম্পর্কে যা তাঁর পালনকর্তার পক্ষ থেকে তাঁর কাছে অবতীর্ণ হয়েছে এবং মুসলমানরাও সবাই বিশ্বাস রাখে আল্লাহর প্রতি, তাঁর ফেরেশতাদের প্রতি, তাঁর গ্রন্থসমুহের প্রতি এবং তাঁর পয়গম্বরগণের প্রতি। তারা বলে আমরা তাঁর পয়গম্বরদের মধ্যে কোন তারতম্য করিনা। তারা বলে, আমরা শুনেছি এবং কবুল করেছি। আমরা তোমার ক্ষমা চাই, হে আমাদের পালনকর্তা। তোমারই দিকে প্রত্যাবর্তন করতে হবে। আল্লাহ কাউকে তার সাধ্যাতীত কোন কাজের ভার দেন না, সে তাই পায় যা সে উপার্জন করে এবং তাই তার উপর বর্তায় যা সে করে। হে আমাদের পালনকর্তা, যদি আমরা ভুলে যাই কিংবা ভুল করি, তবে আমাদেরকে অপরাধী করো না। হে আমাদের পালনকর্তা! এবং আমাদের উপর এমন দায়িত্ব অর্পণ করো না, যেমন আমাদের পূর্ববর্তীদের উপর অর্পণ করেছ, হে আমাদের প্রভূ! এবং আমাদের দ্বারা ঐ বোঝা বহন করিও না, যা বহন করার শক্তি আমাদের নাই। আমাদের পাপ মোচন কর। আমাদেরকে ক্ষমা কর এবং আমাদের প্রতি দয়া কর। তুমিই আমাদের প্রভু। সুতরাং কাফের সম্প্রদায়ের বিরুদ্ধে আমাদের কে সাহায্যে কর।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৬</div>
+    <div class="card-title">সূরা আস-সাফফাত : ১-১০</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ وَالصّٰفّٰتِ صَفًّا فَالزّٰجِرٰتِ زَجْرًا فَالتّٰلِيٰتِ ذِكْرًا إِنَّ إِلٰهَكُمْ لَوٰحِدٌ رَّبُّ السَّمٰوٰتِ وَالْأَرْضِ وَمَا بَيْنَهُمَا وَرَبُّ الْمَشٰرِقِ إِنَّا زَيَّنَّا السَّمَاءَ الدُّنْيَا بِزِينَةٍ الْكَوَاكِبِ وَحِفْظًا مِّن كُلِّ شَيْطٰنٍ مَّارِدٍ لَّا يَسَّمَّعُونَ إِلَى الْمَلَإِ الْأَعْلَىٰ وَيُقْذَفُونَ مِن كُلِّ جَانِبٍ دُحُورًا ۖ وَلَهُمْ عَذَابٌ وَاصِبٌ إِلَّا مَنْ خَطِفَ الْخَطْفَةَ فَأَتْبَعَهُۥ شِهَابٌ ثَاقِبٌ</div>
+  <div class="translation">শপথ তাদের যারা সারিবদ্ধ হয়ে দাঁড়ানো, অতঃপর ধমকিয়ে ভীতি প্রদর্শনকারীদের, অতঃপর মুখস্থ আবৃত্তিকারীদের- নিশ্চয় তোমাদের মাবুদ এক। তিনি আসমান সমূহ, যমীনও এতদুভয়ের মধ্যবর্তী সবকিছুর পালনকর্তা এবং পালনকর্তা উদয়াচলসমূহের। নিশ্চয় আমি নিকটবর্তী আকাশকে তারকারাজির দ্বারা সুশোভিত করেছি। এবং তাকে সংরক্ষিত করেছি প্রত্যেক অবাধ্য শয়তান থেকে। ওরা উর্ধ্ব জগতের কোন কিছু শ্রবণ করতে পারে না এবং চার দিক থেকে তাদের প্রতি উল্কা নিক্ষেপ করা হয়। ওদেরকে বিতাড়নের উদ্দেশে। ওদের জন্যে রয়েছে বিরামহীন শাস্তি। তবে কেউ ছোঁ মেরে কিছু শুনে ফেললে জ্বলন্ত উল্কাপিন্ড তার পশ্চাদ্ধাবন করে।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৭</div>
+    <div class="card-title">সূরা আল-মু'মিনূন : ১১৫-১১৮</div>
+  </div>
+  <div class="arabic">أَفَحَسِبْتُمْ أَنَّمَا خَلَقْنٰكُمْ عَبَثًا وَأَنَّكُمْ إِلَيْنَا لَا تُرْجَعُونَ فَتَعٰلَى اللَّهُ الْمَلِكُ الْحَقُّ ۖ لَا إِلٰهَ إِلَّا هُوَ رَبُّ الْعَرْشِ الْكَرِيمِ وَمَن يَدْعُ مَعَ اللَّهِ إِلٰهًا ءَاخَرَ لَا بُرْهٰنَ لَهُۥ بِهِۦ فَإِنَّمَا حِسَابُهُۥ عِندَ رَبِّهِۦ ۚ إِنَّهُۥ لَا يُفْلِحُ الْكٰفِرُونَ وَقُل رَّبِّ اغْفِرْ وَارْحَمْ وَأَنتَ خَيْرُ الرّٰحِمِينَ</div>
+  <div class="translation">তোমরা কি ধারণা কর যে, আমি তোমাদেরকে অনর্থক সৃষ্টি করেছি এবং তোমরা আমার কাছে ফিরে আসবে না? অতএব শীর্ষ মহিমায় আল্লাহ, তিনি সত্যিকার মালিক, তিনি ব্যতীত কোন মাবুদ নেই। তিনি সম্মানিত আরশের মালিক। যে কেউ আল্লাহর সাথে অন্য উপাস্যকে ডাকে, তার কাছে যার সনদ নেই, তার হিসাব তার পালণকর্তার কাছে আছে। নিশ্চয় কাফেররা সফলকাম হবে না। বলূনঃ হে আমার পালনকর্তা, ক্ষমা করুন ও রহম করুন। রহমকারীদের মধ্যে আপনি শ্রেষ্ট রহমকারী।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৮</div>
+    <div class="card-title">সূরা আল-আ'রাফ : ১১৭-১২২</div>
+  </div>
+  <div class="arabic">۞ وَأَوْحَيْنَا إِلَىٰ مُوسَىٰ أَنْ أَلْقِ عَصَاكَ ۖ فَإِذَا هِىَ تَلْقَفُ مَا يَأْفِكُونَ فَوَقَعَ الْحَقُّ وَبَطَلَ مَا كَانُوا يَعْمَلُونَ فَغُلِبُوا هُنَالِكَ وَانقَلَبُوا صٰغِرِينَ وَأُلْقِىَ السَّحَرَةُ سٰجِدِينَ قَالُوا ءَامَنَّا بِرَبِّ الْعٰلَمِينَ رَبِّ مُوسَىٰ وَهٰرُونَ</div>
+  <div class="translation">তারপর আমি ওহীযোগে মূসাকে বললাম, এবার নিক্ষেপ কর তোমার লাঠিখানা। অতএব সঙ্গে সঙ্গে তা সে সমুদয়কে গিলতে লাগল, যা তারা বানিয়েছিল যাদু বলে। সুতরাং এভাবে প্রকাশ হয়ে গেল সত্য বিষয় এবং ভুল প্রতিপন্ন হয়ে গেল যা কিছু তারা করেছিল। সুতরাং তারা সেখানেই পরাজিত হয়ে গেল এবং অতীব লাঞ্ছিত হল। এবং যাদুকররা সেজদায় পড়ে গেল। বলল, আমরা ঈমান আনছি মহা বিশ্বের পরওয়ারদেগারের প্রতি। যিনি মূসা ও হারুনের পরওয়ারদেগার।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৯</div>
+    <div class="card-title">সূরা ইউনুস : ৭৯-৮২</div>
+  </div>
+  <div class="arabic">وَقَالَ فِرْعَوْنُ ائْتُونِى بِكُلِّ سٰحِرٍ عَلِيمٍ فَلَمَّا جَاءَ السَّحَرَةُ قَالَ لَهُم مُّوسَىٰ أَلْقُوا مَا أَنتُم مُّلْقُونَ فَلَمَّا أَلْقَوْا قَالَ مُوسَىٰ مَا جِئْتُم بِهِ السِّحْرُ ۖ إِنَّ اللَّهَ سَيُبْطِلُهُۥ ۖ إِنَّ اللَّهَ لَا يُصْلِحُ عَمَلَ الْمُفْسِدِينَ وَيُحِقُّ اللَّهُ الْحَقَّ بِكَلِمٰتِهِۦ وَلَوْ كَرِهَ الْمُجْرِمُونَ</div>
+  <div class="translation">আর ফেরাউন বলল, আমার কাছে নিয়ে এস সুদক্ষ যাদুকরদিগকে। তারপর যখন যাদুকররা এল, মূসা তাদেরকে বলল, নিক্ষেপ কর, তোমরা যা কিছু নিক্ষেপ করে থাক। অতঃপর যখন তারা নিক্ষেপ করল, মূসা বলল, যা কিছু তোমরা এনেছ তা সবই যাদু-এবার আল্লাহ এসব ভন্ডুল করে দিচ্ছেন। নিঃসন্দেহে আল্লাহ দুস্কর্মীদের কর্মকে সুষ্ঠুতা দান করেন না। আল্লাহ সত্যকে সত্যে পরিণত করেন স্বীয় নির্দেশে যদিও পাপীদের তা মনঃপুত নয়।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১০</div>
+    <div class="card-title">সূরা ত্বহা : ৬৫-৬৯</div>
+  </div>
+  <div class="arabic">قَالُوا يٰمُوسَىٰ إِمَّا أَن تُلْقِىَ وَإِمَّا أَن نَّكُونَ أَوَّلَ مَنْ أَلْقَىٰ قَالَ بَلْ أَلْقُوا ۖ فَإِذَا حِبَالُهُمْ وَعِصِيُّهُمْ يُخَيَّلُ إِلَيْهِ مِن سِحْرِهِمْ أَنَّهَا تَسْعَىٰ فَأَوْجَسَ فِى نَفْسِهِۦ خِيفَةً مُّوسَىٰ قُلْنَا لَا تَخَفْ إِنَّكَ أَنتَ الْأَعْلَىٰ وَأَلْقِ مَا فِى يَمِينِكَ تَلْقَفْ مَا صَنَعُوا ۖ إِنَّمَا صَنَعُوا كَيْدُ سٰحِرٍ ۖ وَلَا يُفْلِحُ السَّاحِرُ حَيْثُ أَتَىٰ</div>
+  <div class="translation">তারা বললঃ হে মূসা, হয় তুমি নিক্ষেপ কর, না হয় আমরা প্রথমে নিক্ষেপ করি। মূসা বললেনঃ বরং তোমরাই নিক্ষেপ কর। তাদের যাদুর প্রভাবে হঠাৎ তাঁর মনে হল, যেন তাদের রশিগুলো ও লাঠিগুলো চুটাছুটি করছে। অতঃপর মূসা মনে মনে কিছুটা ভীতি অনুভব করলেন। আমি বললামঃ ভয় করো না, তুমি বিজয়ী হবে। তোমার ডান হাতে যা আছে তুমি তা নিক্ষেপ কর। এটা যা কিছু তারা করেছে তা গ্রাস করে ফেলবে। তারা যা করেছে তা তো কেবল যাদুকরের কলাকৌশল। যাদুকর যেখানেই থাকুক, সফল হবে না।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১১</div>
+    <div class="card-title">সূরা আর-রহমান : ৩৩-৩৬</div>
+  </div>
+  <div class="arabic">يٰمَعْشَرَ الْجِنِّ وَالْإِنسِ إِنِ اسْتَطَعْتُمْ أَن تَنفُذُوا مِنْ أَقْطَارِ السَّمٰوٰتِ وَالْأَرْضِ فَانفُذُوا ۚ لَا تَنفُذُونَ إِلَّا بِسُلْطٰنٍ فَبِأَىِّ ءَالَاءِ رَبِّكُمَا تُكَذِّبَانِ يُرْسَلُ عَلَيْكُمَا شُوَاظٌ مِّن نَّارٍ وَنُحَاسٌ فَلَا تَنتَصِرَانِ فَبِأَىِّ ءَالَاءِ رَبِّكُمَا تُكَذِّبَانِ</div>
+  <div class="translation">হে জিন ও মানবকূল, নভোমন্ডল ও ভূমন্ডলের প্রান্ত অতিক্রম করা যদি তোমাদের সাধ্যে কুলায়, তবে অতিক্রম কর। কিন্তু ছাড়পত্র ব্যতীত তোমরা তা অতিক্রম করতে পারবে না। অতএব, তোমরা উভয়ে তোমাদের পালনকর্তার কোন কোন অবদানকে অস্বীকার করবে? ছাড়া হবে তোমাদের প্রতি অগ্নিস্ফুলিঙ্গ ও ধুম্রকুঞ্জ তখন তোমরা সেসব প্রতিহত করতে পারবে না। অতএব, তোমরা উভয়ে তোমাদের পালনকর্তার কোন কোন অবদানকে অস্বীকার করবে?</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১২</div>
+    <div class="card-title">সূরা আল-হাজ্জ : ১৯-২২</div>
+  </div>
+  <div class="arabic">۞ هٰذَانِ خَصْمَانِ اخْتَصَمُوا فِى رَبِّهِمْ ۖ فَالَّذِينَ كَفَرُوا قُطِّعَتْ لَهُمْ ثِيَابٌ مِّن نَّارٍ يُصَبُّ مِن فَوْقِ رُءُوسِهِمُ الْحَمِيمُ يُصْهَرُ بِهِۦ مَا فِى بُطُونِهِمْ وَالْجُلُودُ وَلَهُم مَّقٰمِعُ مِنْ حَدِيدٍ كُلَّمَا أَرَادُوا أَن يَخْرُجُوا مِنْهَا مِنْ غَمٍّ أُعِيدُوا فِيهَا وَذُوقُوا عَذَابَ الْحَرِيقِ</div>
+  <div class="translation">এই দুই বাদী বিবাদী, তারা তাদের পালনকর্তা সম্পর্কে বিতর্ক করে। অতএব যারা কাফের, তাদের জন্যে আগুনের পোশাক তৈরী করা হয়েছে। তাদের মাথার উপর ফুটন্ত পানি ঢেলে দেয়া হবে। ফলে তাদের পেটে যা আছে, তা এবং চর্ম গলে বের হয়ে যাবে। তাদের জন্যে আছে লোহার হাতুড়ি। তারা যখনই যন্ত্রনায় অতিষ্ঠ হয়ে জাহান্নাম থেকে বের হতে চাইবে, তখনই তাদেরকে তাতে ফিরিয়ে দেয়া হবে। বলা হবেঃ দহন শাস্তি আস্বাদন কর।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৩</div>
+    <div class="card-title">সূরা আল-হাশর : ২১-২৪</div>
+  </div>
+  <div class="arabic">لَوْ أَنزَلْنَا هٰذَا الْقُرْءَانَ عَلَىٰ جَبَلٍ لَّرَأَيْتَهُۥ خٰشِعًا مُّتَصَدِّعًا مِّنْ خَشْيَةِ اللَّهِ ۚ وَتِلْكَ الْأَمْثٰلُ نَضْرِبُهَا لِلنَّاسِ لَعَلَّهُمْ يَتَفَكَّرُونَ هُوَ اللَّهُ الَّذِى لَا إِلٰهَ إِلَّا هُوَ ۖ عٰلِمُ الْغَيْبِ وَالشَّهٰدَةِ ۖ هُوَ الرَّحْمٰنُ الرَّحِيمُ هُوَ اللَّهُ الَّذِى لَا إِلٰهَ إِلَّا هُوَ الْمَلِكُ الْقُدُّوسُ السَّلٰمُ الْمُؤْمِنُ الْمُهَيْمِنُ الْعَزِيزُ الْجَبَّارُ الْمُتَكَبِّرُ ۚ سُبْحٰنَ اللَّهِ عَمَّا يُشْرِكُونَ هُوَ اللَّهُ الْخٰلِقُ الْبَارِئُ الْمُصَوِّرُ ۖ لَهُ الْأَسْمَاءُ الْحُسْنَىٰ ۚ يُسَبِّحُ لَهُۥ مَا فِى السَّمٰوٰتِ وَالْأَرْضِ ۖ وَهُوَ الْعَزِيزُ الْحَكِيمُ</div>
+  <div class="translation">যদি আমি এই কোরআন পাহাড়ের উপর অবতীর্ণ করতাম, তবে তুমি দেখতে যে, পাহাড় বিনীত হয়ে আল্লাহ তা’আলার ভয়ে বিদীর্ণ হয়ে গেছে। আমি এসব দৃষ্টান্ত মানুষের জন্যে বর্ণনা করি, যাতে তারা চিন্তা-ভাবনা করে। তিনিই আল্লাহ তা’আলা, তিনি ব্যতীত কোন উপাস্য নেই; তিনি দৃশ্য ও অদৃশ্যকে জানেন তিনি পরম দয়ালু, অসীম দাতা। তিনিই আল্লাহ তিনি ব্যতিত কোন উপাস্য নেই। তিনিই একমাত্র মালিক, পবিত্র, শান্তি ও নিরাপত্তাদাতা, আশ্রয়দাতা, পরাক্রান্ত, প্রতাপান্বিত, মাহাত্ন?486;ীল। তারা যাকে অংশীদার করে আল্লাহ তা’ আলা তা থেকে পবিত্র। তিনিই আল্লাহ তা’আলা, স্রষ্টা, উদ্ভাবক, রূপদাতা, উত্তম নাম সমূহ তাঁরই। নভোমন্ডলে ও ভূমন্ডলে যা কিছু আছে, সবই তাঁর পবিত্রতা ঘোষণা করে। তিনি পরাক্রান্ত প্রজ্ঞাময়।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৪</div>
+    <div class="card-title">সূরা আল-জিন : ১-৫</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ أُوحِىَ إِلَىَّ أَنَّهُ اسْتَمَعَ نَفَرٌ مِّنَ الْجِنِّ فَقَالُوا إِنَّا سَمِعْنَا قُرْءَانًا عَجَبًا يَهْدِى إِلَى الرُّشْدِ فَـَٔامَنَّا بِهِۦ ۖ وَلَن نُّشْرِكَ بِرَبِّنَا أَحَدًا وَأَنَّهُۥ تَعٰلَىٰ جَدُّ رَبِّنَا مَا اتَّخَذَ صٰحِبَةً وَلَا وَلَدًا وَأَنَّهُۥ كَانَ يَقُولُ سَفِيهُنَا عَلَى اللَّهِ شَطَطًا وَأَنَّا ظَنَنَّا أَن لَّن تَقُولَ الْإِنسُ وَالْجِنُّ عَلَى اللَّهِ كَذِبًا</div>
+  <div class="translation">বলুনঃ আমার প্রতি ওহী নাযিল করা হয়েছে যে, জিনদের একটি দল কোরআন শ্রবণ করেছে, অতঃপর তারা বলেছেঃ আমরা বিস্ময়কর কোরআন শ্রবণ করেছি; যা সৎপথ প্রদর্শন করে। ফলে আমরা তাতে বিশ্বাস স্থাপন করেছি। আমরা কখনও আমাদের পালনকর্তার সাথে কাউকে শরীক করব না। এবং আরও বিশ্বাস করি যে, আমাদের পালনকর্তার মহান মর্যাদা সবার উর্ধ্বে। তিনি কোন পত্নী গ্রহণ করেননি এবং তাঁর কোন সন্তান নেই। আমাদের মধ্যে নির্বোধেরা আল্লাহ তা’আলা সম্পর্কে বাড়াবাড়ির কথাবার্তা বলত। অথচ আমরা মনে করতাম, মানুষ ও জিন কখনও আল্লাহ তা’আলা সম্পর্কে মিথ্যা বলতে পারে না।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৫</div>
+    <div class="card-title">সূরা আয-যিলযাল : ১-৮</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ إِذَا زُلْزِلَتِ الْأَرْضُ زِلْزَالَهَا وَأَخْرَجَتِ الْأَرْضُ أَثْقَالَهَا وَقَالَ الْإِنسٰنُ مَا لَهَا يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا يَوْمَئِذٍ يَصْدُرُ النَّاسُ أَشْتَاتًا لِّيُرَوْا أَعْمٰلَهُمْ فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُۥ وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُۥ</div>
+  <div class="translation">যখন পৃথিবী তার কম্পনে প্রকম্পিত হবে, যখন সে তার বোঝা বের করে দেবে। এবং মানুষ বলবে, এর কি হল ? সেদিন সে তার বৃত্তান্ত বর্ণনা করবে, কারণ, আপনার পালনকর্তা তাকে আদেশ করবেন। সেদিন মানুষ বিভিন্ন দলে প্রকাশ পাবে, যাতে তাদেরকে তাদের কৃতকর্ম দেখানো হয়। অতঃপর কেউ অণু পরিমাণ সৎকর্ম করলে তা দেখতে পাবে এবং কেউ অণু পরিমাণ অসৎকর্ম করলে তাও দেখতে পাবে।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ১ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৬</div>
+    <div class="card-title">সূরা আল-ইখলাস : ১-৪</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ هُوَ اللَّهُ أَحَدٌ اللَّهُ الصَّمَدُ لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ</div>
+  <div class="translation">বলুন, তিনি আল্লাহ, এক, আল্লাহ অমুখাপেক্ষী, তিনি কাউকে জন্ম দেননি এবং কেউ তাকে জন্ম দেয়নি এবং তার সমতুল্য কেউ নেই।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ৩ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৭</div>
+    <div class="card-title">সূরা আল-ফালাক : ১-৫</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ مِن شَرِّ مَا خَلَقَ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ وَمِن شَرِّ النَّفّٰثٰتِ فِى الْعُقَدِ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ</div>
+  <div class="translation">বলুন, আমি আশ্রয় গ্রহণ করছি প্রভাতের পালনকর্তার, তিনি যা সৃষ্টি করেছেন, তার অনিষ্ট থেকে, অন্ধকার রাত্রির অনিষ্ট থেকে, যখন তা সমাগত হয়, গ্রন্থিতে ফুঁৎকার দিয়ে জাদুকারিনীদের অনিষ্ট থেকে এবং হিংসুকের অনিষ্ট থেকে যখন সে হিংসা করে।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ৩ বার
+  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১৮</div>
+    <div class="card-title">সূরা আন-নাস : ১-৬</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ إِلٰهِ النَّاسِ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ الَّذِى يُوَسْوِسُ فِى صُدُورِ النَّاسِ مِنَ الْجِنَّةِ وَالنَّاسِ</div>
+  <div class="translation">বলুন, আমি আশ্রয় গ্রহণ করিতেছি মানুষের পালনকর্তার, মানুষের অধিপতির, মানুষের মা’বুদের তার অনিষ্ট থেকে, যে কুমন্ত্রণা দেয় ও আত্নগোপন করে, যে কুমন্ত্রণা দেয় মানুষের অন্তরে জ্বিনের মধ্য থেকে অথবা মানুষের মধ্য থেকে।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ৩ বার
+  </div>
+</div>
+
+<!-- ══════════════ বিশেষ দোয়া ══════════════ -->
+<section class="section-band" id="duas">
+  <h2>বিশেষ দোয়া — ঘর ও শিশুর সাধারণ রুকইয়াহ</h2>
+  <div class="band-note">এই দোয়াগুলো এই সমস্যার জন্য নির্দিষ্ট করে সাজানো। আয়াত পাঠ শেষে পড়ুন।</div>
+</section>
+
+<div class="dua-card">
+  <div class="arabic">اللَّهُمَّ احْرِقْ كُلَّ شَرٍّ عَلَى بَيْتِي وَأَهْلِي</div>
+  <div class="dua-bn">হে আল্লাহ! আমার ঘরে ও পরিবারে থাকা সমস্ত অনিষ্ট জ্বালিয়ে দিন।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৭ বার</span>
+  </div>
+</div>
+<div class="dua-card">
+  <div class="arabic">بِسْمِ اللَّهِ يُبْطَلُ كُلُّ تَسَلُّطٍ عَلَى بَيْتِي وَأَهْلِي</div>
+  <div class="dua-bn">আল্লাহর নামে — আমার ঘরে ও পরিবারে সমস্ত আধিপত্য বাতিল করা হলো।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৭ বার</span>
+  </div>
+</div>
+<div class="dua-card">
+  <div class="arabic">اللَّهُمَّ بِقُوَّتِكَ وَقُدْرَتِكَ فُكَّ كُلَّ عُقْدَةٍ عُقِدَتْ عَلَى بَيْتِي وَأَهْلِي</div>
+  <div class="dua-bn">হে আল্লাহ! আপনার শক্তি ও ক্ষমতা দিয়ে আমার ঘরে ও পরিবারে বাঁধা প্রতিটি গিঁট খুলে দিন।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৭ বার</span>
+  </div>
+</div>
+
+<!-- ══════════════ সমাপ্তি ══════════════ -->
+<section class="section-band" id="closing">
+  <h2>সমাপ্তির সূরা ও দোয়া</h2>
+  <div class="band-note">প্রতিটি সেশন এভাবে শেষ করুন। শেষে পানিতে ফুঁ দিয়ে পান করুন।</div>
+</section>
+
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">১</div>
+    <div class="card-title">সূরা আল-ইখলাস : ১-৪</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ هُوَ اللَّهُ أَحَدٌ اللَّهُ الصَّمَدُ لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ</div>
+  <div class="translation">বলুন, তিনি আল্লাহ, এক, আল্লাহ অমুখাপেক্ষী, তিনি কাউকে জন্ম দেননি এবং কেউ তাকে জন্ম দেয়নি এবং তার সমতুল্য কেউ নেই।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ৩ বার
+<span class="niyyah">নিয়ত: তাওহীদের ঘোষণা দিয়ে হৃদয় দৃঢ় করা</span>  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">২</div>
+    <div class="card-title">সূরা আল-ফালাক : ১-৫</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ مِن شَرِّ مَا خَلَقَ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ وَمِن شَرِّ النَّفّٰثٰتِ فِى الْعُقَدِ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ</div>
+  <div class="translation">বলুন, আমি আশ্রয় গ্রহণ করছি প্রভাতের পালনকর্তার, তিনি যা সৃষ্টি করেছেন, তার অনিষ্ট থেকে, অন্ধকার রাত্রির অনিষ্ট থেকে, যখন তা সমাগত হয়, গ্রন্থিতে ফুঁৎকার দিয়ে জাদুকারিনীদের অনিষ্ট থেকে এবং হিংসুকের অনিষ্ট থেকে যখন সে হিংসা করে।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ৭ বার
+<span class="niyyah">নিয়ত: জাদু, হাসাদ ও রাতের অনিষ্ট থেকে আশ্রয়</span>  </div>
+</div>
+<div class="card">
+  <div class="card-head">
+    <div class="medallion">৩</div>
+    <div class="card-title">সূরা আন-নাস : ১-৬</div>
+  </div>
+  <div class="arabic">بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ قُلْ أَعُوذُ بِرَبِّ النَّاسِ مَلِكِ النَّاسِ إِلٰهِ النَّاسِ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ الَّذِى يُوَسْوِسُ فِى صُدُورِ النَّاسِ مِنَ الْجِنَّةِ وَالنَّاسِ</div>
+  <div class="translation">বলুন, আমি আশ্রয় গ্রহণ করিতেছি মানুষের পালনকর্তার, মানুষের অধিপতির, মানুষের মা’বুদের তার অনিষ্ট থেকে, যে কুমন্ত্রণা দেয় ও আত্নগোপন করে, যে কুমন্ত্রণা দেয় মানুষের অন্তরে জ্বিনের মধ্য থেকে অথবা মানুষের মধ্য থেকে।</div>
+  <div class="instruction">
+    পাঠসংখ্যা: ৭ বার
+<span class="niyyah">নিয়ত: মানুষ ও জিনের ওয়াসওয়াসা থেকে আশ্রয়</span>  </div>
+</div>
+
+<div class="dua-card">
+  <div class="arabic">أُعِيذُكَ بِكَلِمَاتِ اللَّهِ التَّامَّةِ مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ</div>
+  <div class="dua-bn">আমি তোমাকে আল্লাহর পরিপূর্ণ কালিমাসমূহের আশ্রয়ে সোপর্দ করছি — প্রত্যেক শয়তান, বিষাক্ত প্রাণী এবং প্রত্যেক ক্ষতিকর বদনজর থেকে।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৩ বার</span>
+<span>নবীজি ﷺ হাসান ও হুসাইন রাযিয়াল্লাহু আনহুমাকে এই দোয়া পড়ে ঝাড়তেন। (বুখারী ৩৩৭১)</span>  </div>
+</div>
+<div class="dua-card">
+  <div class="arabic">بِسْمِ اللَّهِ أَرْقِيكَ مِنْ كُلِّ شَيْءٍ يُؤْذِيكَ مِنْ شَرِّ كُلِّ نَفْسٍ أَوْ عَيْنِ حَاسِدٍ اللَّهُ يَشْفِيكَ بِسْمِ اللَّهِ أَرْقِيكَ</div>
+  <div class="dua-bn">আল্লাহর নামে আমি তোমাকে ঝাড়ছি — এমন প্রতিটি জিনিস থেকে যা তোমাকে কষ্ট দেয়, প্রত্যেক প্রাণ ও হিংসুকের চোখের অনিষ্ট থেকে। আল্লাহ তোমাকে আরোগ্য দান করুন। আল্লাহর নামে আমি তোমাকে ঝাড়ছি।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৩ বার</span>
+<span>জিবরীল আলাইহিস সালাম নবীজি ﷺ-কে এভাবে রুকইয়াহ করেছিলেন। (মুসলিম ২১৮৬)</span>  </div>
+</div>
+<div class="dua-card">
+  <div class="arabic">اللَّهُمَّ رَبَّ النَّاسِ أَذْهِبِ الْبَأْسَ اشْفِ أَنْتَ الشَّافِي لَا شِفَاءَ إِلَّا شِفَاؤُكَ شِفَاءً لَا يُغَادِرُ سَقَمًا</div>
+  <div class="dua-bn">হে আল্লাহ, মানুষের প্রতিপালক! কষ্ট দূর করে দিন, আরোগ্য দান করুন। আপনিই আরোগ্যদাতা, আপনার আরোগ্য ছাড়া কোনো আরোগ্য নেই — এমন আরোগ্য যা কোনো রোগ অবশিষ্ট রাখে না।</div>
+  <div class="dua-meta">
+    <span class="dua-count">পাঠসংখ্যা: ৭ বার</span>
+<span>(বুখারী ৫৭৪৩)</span>  </div>
+</div>
+
+<!-- ══════════════ সেলফ রুকইয়াহ ══════════════ -->
+<section class="section-band" id="self">
+  <h2>📌 সেলফ রুকইয়াহ গাইডলাইন</h2>
+  <div class="band-note">ধারাবাহিকতাই মূল কথা। প্রতিদিন অল্প, কিন্তু নিয়মিত।</div>
+</section>
+
+<h3 style="font-size:12pt;margin-bottom:3mm;">পদ্ধতি — ধাপে ধাপে</h3>
+<ol class="step-list">
+<li>অযু করে কিবলামুখী হয়ে নিরিবিলি বসুন। মোবাইল দূরে রাখুন।</li><li>নিয়ত করুন — আল্লাহর কালাম দিয়ে আল্লাহর কাছে আরোগ্য চাইছি, কালামের নিজের কোনো শক্তি নেই, শক্তি আল্লাহর।</li><li>শুরুর দোয়াগুলো পড়ুন (অধ্যায় ১)।</li><li>এরপর আয়াতগুলো ক্রমানুসারে পড়ুন। পড়ার সময় দুই হাতের তালুতে ফুঁ দিয়ে সমস্যার জায়গায় হাত বুলান।</li><li>প্রতিটি আয়াতের নিচে দেওয়া নির্দেশনা বক্সে যতবার বলা আছে ততবার পড়ুন — কম-বেশি করার দরকার নেই।</li><li>মাঝে বাংলায় নিজের ভাষায় ১৫ মিনিট মন খুলে দোয়া করুন। কান্না আসলে আটকাবেন না।</li><li>শেষে সমাপ্তির সূরা ও দোয়াগুলো পড়ে পানিতে ফুঁ দিন।</li><li>প্রতিদিন কমপক্ষে ৪০ দিন চালিয়ে যান। মাঝে বাদ পড়লে হতাশ না হয়ে আবার শুরু করুন।</li></ol>
+
+<h3 style="font-size:12pt;margin:7mm 0 3mm;">দৈনিক সময়সূচি</h3>
+<table class="grid">
+  <tr><th>সকাল</th><td>ফজরের পর — আয়াত পাঠ ১৫ মিনিট</td></tr>
+  <tr><th>সন্ধ্যা</th><td>মাগরিবের পর — আয়াত পাঠ ১৫ মিনিট</td></tr>
+  <tr><th>রাত</th><td>ঘুমানোর আগে — সমাপ্তির সূরা ও দোয়া, পড়া পানি পান</td></tr>
+  <tr><th>সাপ্তাহিক</th><td>সপ্তাহে একদিন রুকইয়াহ গোসল</td></tr>
+</table>
+
+<h3 style="font-size:12pt;margin:7mm 0 3mm;">বাংলায় নিজের দোয়া (১৫ মিনিট)</h3>
+<div class="note-box">
+  আয়াত পাঠের মাঝে বা শেষে নিজের ভাষায় আল্লাহর কাছে চান। নিচেরটি একটি নমুনা —
+  হুবহু এটাই পড়তে হবে এমন নয়, নিজের কথায় বলুন।
+  <div style="margin-top:3.5mm;padding:3.5mm 4.5mm;background:#fffdf6;border-left:3px solid var(--emerald-light);line-height:1.95;">
+    হে আল্লাহ, আমার ঘরটাকে আপনি হিফাজত করুন। এই ঘরের দেয়াল, দরজা, প্রতিটি কোণ আপনার নামে সুরক্ষিত করে দিন। আমার সন্তানদের, আমার পরিবারের প্রত্যেককে আপনার আশ্রয়ে রাখুন। যে চোখ আমাদের দিকে হিংসা নিয়ে তাকিয়েছে, সেই নজরের ক্ষতি আপনি সরিয়ে দিন। আমাদের ঘরে বরকত দিন, শান্তি দিন।
+  </div>
+</div>
+
+<h3 style="font-size:12pt;margin:7mm 0 3mm;">পড়া তেল ম্যাসাজের স্থান</h3>
+<div class="note-box"><strong>ঘর ও শিশুর সাধারণ রুকইয়াহ-এর ক্ষেত্রে ফোকাস:</strong> শিশুর মাথার তালু ও পিঠ, বড়দের বুক ও দুই হাতের তালু</div>
+
+<!-- ══════════════ সাপ্লিমেন্ট ══════════════ -->
+<section class="section-band" id="supplement">
+  <h2>সাপ্লিমেন্ট ও সাপ্তাহিক আমল</h2>
+</section>
+
+<table class="grid">
+  <tr><th>পড়া পানি</th><td>এক বোতল পানিতে রুকইয়াহর আয়াতগুলো পড়ে ফুঁ দিন। দিনে ৩ বার — সকালে খালি পেটে, দুপুরে, রাতে ঘুমানোর আগে পান করুন।</td></tr>
+  <tr><th>পড়া মধু</th><td>খাঁটি মধুতে ফুঁ দিয়ে প্রতিদিন সকালে এক চামচ। সূরা নাহল ৬৯ নং আয়াত পড়ে ফুঁ দিলে ভালো।</td></tr>
+  <tr><th>পড়া অলিভ অয়েল</th><td>জয়তুন তেলে আয়াত পড়ে ফুঁ দিয়ে আক্রান্ত জায়গায় ম্যাসাজ করুন। রাতে ঘুমানোর আগে সবচেয়ে ভালো।</td></tr>
+  <tr><th>কালোজিরা</th><td>প্রতিদিন সকালে ৭টি কালোজিরা পড়া মধুর সাথে। নবীজি ﷺ বলেছেন কালোজিরায় মৃত্যু ছাড়া সব রোগের নিরাময় আছে। (বুখারী ৫৬৮৮)</td></tr>
+  <tr><th>রুকইয়াহ গোসল</th><td>বালতি পানিতে আয়াত পড়ে ফুঁ দিন, সাথে সাত পাতা বরই পাতা বাটা মিশিয়ে নিতে পারেন। মাথা থেকে ঢেলে গোসল করুন — সপ্তাহে একদিন।</td></tr>
+  <tr><th>ঘরে স্প্রে</th><td>পড়া পানি স্প্রে বোতলে নিয়ে ঘরের কোণা, দরজা-জানালা, বিছানার নিচে ছিটিয়ে দিন।</td></tr>
+</table>
+
+<!-- ══════════════ দৈনিক আমল ══════════════ -->
+<section class="section-band" id="daily">
+  <h2>দৈনিক আমল</h2>
+  <div class="band-note">রুকইয়াহর পাশাপাশি এই আমলগুলোই দীর্ঘমেয়াদি হিফাজত দেয়।</div>
+</section>
+
+<table class="grid">
+  <tr><th>ফজরের পর</th><td>সূরা ইয়াসীন ১ বার</td></tr>
+  <tr><th>সকাল-সন্ধ্যা</th><td>হিসনুল মুসলিমের সকাল-সন্ধ্যার যিকির নিয়মিত</td></tr>
+  <tr><th>আসরের পর</th><td>সূরা ওয়াকিয়াহ ১ বার</td></tr>
+  <tr><th>রাতে</th><td>সূরা ক্বফ ৩ বার, সূরা মুলক ১ বার</td></tr>
+  <tr><th>ঘুমানোর আগে</th><td>আয়াতুল কুরসী ১ বার, সূরা বাকারার শেষ দুই আয়াত, তিন কুল ৩ বার করে হাতে ফুঁ দিয়ে সারা শরীরে বুলানো</td></tr>
+  <tr><th>প্রতিদিন</th><td>সাধ্যমতো সাদাকাহ — অল্প হলেও প্রতিদিন। সাদাকাহ বালা দূর করে।</td></tr>
+  <tr><th>প্রতিদিন</th><td>ফরজ নামাজ জামাতে, ইস্তিগফার ১০০ বার, দরূদ ১০০ বার</td></tr>
+</table>
+
+<div class="note-box" style="margin-top:5mm;">
+  <strong>সেবা ও হাদিয়া:</strong>
+  <ul style="margin:2.5mm 0 0 0;padding-right:5mm;">
+    <li>মাসিক রুকইয়াহ — ১২টি সেশন + ডায়াগনোসিস। হাদিয়া <strong>৬৪০ টাকা</strong>।</li>
+    <li>সেলফ রুকইয়াহ গাইডলাইন — শুধু নিজের জন্য আলাদা গাইডলাইন। হাদিয়া <strong>৩০০ টাকা</strong>।</li>
+  </ul>
+  <div style="margin-top:2.5mm;">
+    নিজের সমস্যা কী — বদনজর, হাসাদ, সিহর নাকি অন্য কিছু — বুঝতে না পারলে
+    মেসেজে লিখুন <strong>Diagnosis</strong>। নিতে চাইলে মেসেজ করুন।
+  </div>
+</div>
+
+<div class="disclaimer">রুকইয়াহ একটি শরয়ী চিকিৎসা পদ্ধতি, প্রয়োজনীয় চিকিৎসার বিকল্প নয়।</div>
+
+<div class="doc-footer">
+  <div class="brand">রাকী ফয়সাল আহমেদ সাবিত ✦ Raqi Faisal Ahmed Sabit</div>
+  <div>আল কুরআন রুকইয়াহ হিলিং সেন্টার — Al Quranic Ruqyah Healing Center</div>
+  <div>Page: Raqi Faisal Ahmed Sabit  |  Telegram: Raqi Faisal Ahmed Sabit (Official)</div>
+</div>
+
+</div>
+</body>
+</html>
