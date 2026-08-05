@@ -21,10 +21,10 @@ def signingStoreResolved = signingStoreFile == null ? null : rootProject.file(si
 def hasSigningConfig = signingStoreResolved != null && signingStoreResolved.exists()
 
 android {
-    namespace "com.ruqyah.pro"
+    namespace "com.selfruqyah.app"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.ruqyah.pro"
+        applicationId "com.selfruqyah.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Bump BOTH by hand for every upload that reaches Play — including

@@ -23,6 +23,21 @@
             </intent-filter>
         </activity>
 
+        <!-- Push (offers and notices, sent to the FCM topic "all" by
+             api/push.js). Without these three the system uses the launcher icon
+             as a white silhouette and drops every message on Android 8+ into an
+             unnamed channel, where the user cannot mute it separately from
+             anything else. The channel id must match the one api/push.js sends. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_icon" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="default" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

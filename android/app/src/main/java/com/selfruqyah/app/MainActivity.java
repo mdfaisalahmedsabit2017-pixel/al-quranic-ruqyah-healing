@@ -1,4 +1,4 @@
-package com.ruqyah.pro;
+package com.selfruqyah.app;
 
 import com.getcapacitor.BridgeActivity;
 

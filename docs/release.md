@@ -1,4 +1,4 @@
-# রিলিজ রানবুক — Ruqyah Pro (Android)
+# রিলিজ রানবুক — Self Ruqyah (Android)
 
 এই ফাইলটা Phase 4-এর কাজ: **স্বাক্ষরিত (signed) AAB** কীভাবে তৈরি হয়, keystore কোথায় থাকে,
 আর Play Console-এ প্রথম আপলোডের আগে কী কী ঠিক থাকতে হবে।
@@ -52,7 +52,7 @@ keytool -genkeypair -v `
 
 - **পাসওয়ার্ড** — একটা শক্ত পাসওয়ার্ড দিন এবং পাসওয়ার্ড ম্যানেজারে সেভ করুন।
   `storepass` আর `keypass` একই রাখলে ঝামেলা কম।
-- **First and last name** → `Ruqyah Pro`
+- **First and last name** → `Self Ruqyah`
 - **Organizational unit / Organization** → আপনার নাম বা প্রতিষ্ঠানের নাম
 - **City / State / Country code** → যেমন `Dhaka` / `Dhaka` / `BD`
 

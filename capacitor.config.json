@@ -1,6 +1,6 @@
 {
-  "appId": "com.ruqyah.pro",
-  "appName": "Ruqyah Pro",
+  "appId": "com.selfruqyah.app",
+  "appName": "Self Ruqyah",
   "webDir": "native",
   "android": {
     "backgroundColor": "#080808"
@@ -27,7 +27,10 @@
     },
     "FirebaseAuthentication": {
       "skipNativeAuth": true,
-      "providers": ["google.com"]
+      "providers": ["google.com", "facebook.com", "phone"]
+    },
+    "PushNotifications": {
+      "presentationOptions": []
     }
   }
 }

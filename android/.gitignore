@@ -66,6 +66,11 @@ keystore.properties
 # Google Services (e.g. APIs or Firebase)
 google-services.json
 
+# Facebook Login. Holds the app id and client token — not as damaging as a
+# signing key, but they identify the Facebook app and this repository is public.
+# See docs/facebook-login.md.
+app/src/main/res/values/facebook.xml
+
 # Freeline
 freeline.py
 freeline/

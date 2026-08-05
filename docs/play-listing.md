@@ -48,13 +48,21 @@ Play Console-এ যা যা ভরতে হবে, সব এক জায�
 |---|---|---|
 | **Name** | Required | signup ফরম, `saveUserProfile` |
 | **Email address** | Required | Firebase Auth |
-| **Phone number** | Required | signup ফরম |
+| **Phone number** | Required | signup ফরম, **এবং OTP লগইন — নম্বরটাই অ্যাকাউন্ট** |
 | **User IDs** | Required | Firebase Auth uid |
 | **Other personal info** (বয়স, লিঙ্গ, এলাকা) | Optional | signup ফরম |
 | **Health info** ⚠️ | Optional | রোগী ফরম, লক্ষণ যাচাই, জার্নাল |
 | **Other user-generated content** | Optional | বইয়ের রিভিউ, জার্নাল এন্ট্রি |
 | **App interactions** | Optional | favourites, playlists, শোনার পরিসংখ্যান |
 | **Purchase history** | Optional | ওয়েবে করা কেনাকাটার রেকর্ড (অ্যাপে কেনা যায় না, কিন্তু আনলক দেখাতে পড়া হয়) |
+| **Device or other IDs** | Optional | FCM রেজিস্ট্রেশন টোকেন — পুশ নোটিফিকেশনের জন্য |
+
+> **Device or other IDs কেন "হ্যাঁ":** অ্যাপে কোনো analytics নেই, advertising ID
+> নেই, Android ID পড়া হয় না। কিন্তু পুশ নোটিফিকেশনের জন্য Firebase প্রতিটি
+> ডিভাইসে একটা রেজিস্ট্রেশন টোকেন বানায়, আর Google-এর নিজের নির্দেশনায় সেটা এই
+> ঘরেই পড়ে। আমরা টোকেনটা কোথাও সংরক্ষণ করি না (টপিক `all`-এ পাঠানো হয়,
+> দেখুন `docs/notifications.md`) — তবু Firebase-এর কাছে এটা থাকে, তাই ঘোষণা
+> করাই সৎ উত্তর। Purpose: **App functionality**।
 
 > **Health info অবশ্যই "হ্যাঁ" দিন।** রোগী ফরম ও লক্ষণ যাচাইয়ে স্বাস্থ্য সংক্রান্ত
 > তথ্য নেওয়া হয় এবং তা Firestore-এ জমা থাকে। এটি লুকানো Data safety নীতির
@@ -64,7 +72,7 @@ Play Console-এ যা যা ভরতে হবে, সব এক জায�
 
 Location · Financial info (payment method/card — অ্যাপে কেনা যায় না) · Contacts ·
 Calendar · SMS/Call log · Photos/Videos · Audio recordings · Files ·
-Crash logs · Diagnostics · Device or other IDs · Advertising ID
+Crash logs · Diagnostics · Advertising ID
 
 কোনো analytics বা crash-reporting SDK অ্যাপে নেই — তাই এই ঘরগুলো সৎভাবে "না"।
 
@@ -80,7 +88,7 @@ Play-এর সংজ্ঞায় সেটা "sharing" নয়।
 ### App name (≤৩০ অক্ষর)
 
 ```
-রুকইয়াহ অডিও — Ruqyah Pro
+Self Ruqyah — রুকইয়াহ অডিও
 ```
 
 ### Short description (≤৮০ অক্ষর)

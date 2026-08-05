@@ -56,6 +56,9 @@ window.showSection = function(section) {
     // Rendered on entry rather than at startup, so the status lines are current
     // — a streak or a journal entry may have changed since the app opened.
     if (section === 'practice') renderPracticeList();
+    // Same reason the guides are not fetched at startup: most sessions never
+    // open this tab, and it costs a request and a list of 70.
+    if (section === 'pdf' && libTab === 'guides' && !guideItems.length) loadGuides();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
@@ -154,6 +157,8 @@ async function init() {
         refreshBookRatings();     // fills in the star rating once Firestore answers
         updatePlayerModeButtons();
         initOnboarding();
+        initPhoneAuth();
+        initFacebookAuth();
         // Kept out of the shared catch: a plugin problem here has nothing to do
         // with loading the catalogue, and must not surface as "তথ্য লোড করা যায়নি"।
         try { initNativeShell(); } catch (e) { console.warn('Native shell init failed:', e); }
@@ -601,6 +606,23 @@ function setupEventListeners() {
     const globalSearchInput = document.getElementById('global-search-input');
     if (globalSearchInput) globalSearchInput.addEventListener('input', (e) => renderSearchResults(e.target.value));
 
+    // An OTP field that needs a separate tap on a button is a field people
+    // mistype into. Both steps submit on Enter, and Android's SMS autofill
+    // fires the same event.
+    document.getElementById('ph-number')?.addEventListener('keydown',
+        (e) => { if (e.key === 'Enter') window.sendOtp(); });
+    document.getElementById('ph-code')?.addEventListener('keydown',
+        (e) => { if (e.key === 'Enter') window.verifyOtp(); });
+    document.getElementById('ph-code')?.addEventListener('input', (e) => {
+        if (e.target.value.replace(/\D/g, '').length === 6) window.verifyOtp();
+    });
+
+    const guideSearch = document.getElementById('guide-search');
+    if (guideSearch) guideSearch.addEventListener('input', (e) => {
+        guideQuery = e.target.value;
+        renderGuides();
+    });
+
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSearchOverlay();
@@ -933,6 +955,10 @@ function initFirebase() {
         const authBtn = document.getElementById('auth-btn');
         if (authBtn) authBtn.classList.remove('hidden');
         firebaseReady = true;
+        // Notices need no account — they are read as an anonymous visitor, so
+        // this does not wait on onAuthStateChanged.
+        loadAnnouncements();
+        registerForPush();
     } catch (e) {
         console.warn('Firebase init failed:', e);
     }
@@ -1099,6 +1125,222 @@ async function newGoogleUserProfile(user) {
         courses: [],
     });
 }
+
+// ── Phone (OTP) sign-in ─────────────────────────────────────────────────────
+//
+// The number is the account. No email, no password — for most people using this
+// app that is the only sign-up they will finish.
+//
+// Two verification paths, one session. On the web Firebase requires a reCAPTCHA
+// challenge before it will send an SMS; on Android the plugin uses Play
+// Integrity instead, so there is no challenge to render. Both end at the same
+// place: a verificationId, which the JS SDK turns into a credential. Keeping
+// the session on the JS side (skipNativeAuth) is deliberate and matches Google
+// sign-in — everything downstream, profile, purchases, Firestore sync, reads
+// firebase.auth().currentUser and knows nothing about which path got us here.
+let phoneVerificationId = null;
+let phoneNumberSent = '';
+let recaptchaVerifier = null;
+let phoneCodeListener = null;
+
+const showPhoneError = (msg) => {
+    const el = document.getElementById('ph-error');
+    if (el) el.textContent = msg || '';
+};
+
+// 01712345678 / 1712345678 / +8801712345678 -> +8801712345678
+function toE164Bd(input) {
+    const digits = String(input || '').replace(/\D/g, '');
+    if (/^8801[3-9]\d{8}$/.test(digits)) return '+' + digits;
+    if (/^01[3-9]\d{8}$/.test(digits)) return '+88' + digits;
+    if (/^1[3-9]\d{8}$/.test(digits)) return '+880' + digits;
+    return null;
+}
+
+window.resetPhoneAuth = function() {
+    phoneVerificationId = null;
+    phoneNumberSent = '';
+    document.getElementById('phone-step-number')?.classList.remove('hidden');
+    document.getElementById('phone-step-code')?.classList.add('hidden');
+    const code = document.getElementById('ph-code');
+    if (code) code.value = '';
+    showPhoneError('');
+};
+
+function showOtpStep(number) {
+    phoneNumberSent = number;
+    document.getElementById('phone-step-number')?.classList.add('hidden');
+    document.getElementById('phone-step-code')?.classList.remove('hidden');
+    const sentTo = document.getElementById('ph-sent-to');
+    if (sentTo) sentTo.textContent = `${number} নম্বরে ৬ সংখ্যার কোড পাঠানো হয়েছে।`;
+    setTimeout(() => document.getElementById('ph-code')?.focus(), 120);
+}
+
+window.sendOtp = async function() {
+    // What was typed is checked before the connection is. Answering a mistyped
+    // number with "no connection" sends the user to look at their wifi.
+    const number = toE164Bd(document.getElementById('ph-number')?.value);
+    if (!number) { showPhoneError('নম্বরটি ঠিক নয়। ১১ সংখ্যার নম্বর দিন — যেমন 01712345678'); return; }
+    if (typeof firebase === 'undefined') { showPhoneError('সংযোগ পাওয়া যায়নি। আবার চেষ্টা করুন।'); return; }
+
+    const btn = document.getElementById('ph-send-btn');
+    showPhoneError('');
+    if (btn) { btn.disabled = true; btn.textContent = 'কোড পাঠানো হচ্ছে…'; }
+
+    try {
+        if (IS_NATIVE) {
+            const FirebaseAuth = nativePlugin('FirebaseAuthentication');
+            if (!FirebaseAuth) throw new Error('plugin_missing');
+            // The id arrives on an event, not as the call's return value, so the
+            // listener has to be in place before signInWithPhoneNumber is made.
+            // Registered once — re-registering on every retry stacks handlers
+            // and the second SMS resolves the first attempt's promise.
+            if (!phoneCodeListener) {
+                phoneCodeListener = await FirebaseAuth.addListener('phoneCodeSent', (event) => {
+                    phoneVerificationId = event.verificationId;
+                    showOtpStep(phoneNumberSent || number);
+                });
+            }
+            phoneNumberSent = number;
+            await FirebaseAuth.signInWithPhoneNumber({ phoneNumber: number });
+            // The listener moves the UI on. Nothing to do here.
+        } else {
+            // Recreated per attempt: a solved invisible reCAPTCHA is single-use,
+            // so reusing the verifier makes the second "কোড পাঠান" hang.
+            try { recaptchaVerifier?.clear(); } catch (e) { /* already gone */ }
+            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
+            const confirmation = await firebase.auth().signInWithPhoneNumber(number, recaptchaVerifier);
+            phoneVerificationId = confirmation.verificationId;
+            showOtpStep(number);
+        }
+    } catch (e) {
+        showPhoneError(phoneAuthMessage(e));
+        console.warn('OTP send failed:', e);
+        // "Not allowed" is a project setting, not a transient failure: it will
+        // be true for every user on every attempt until someone turns the
+        // provider on. Stop offering it rather than let it fail again.
+        if (/operation-not-allowed/i.test(String(e?.code) + String(e?.message))) {
+            localStorage.setItem('phoneAuthUnavailable', '1');
+        }
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'কোড পাঠান'; }
+    }
+};
+
+window.verifyOtp = async function() {
+    const code = (document.getElementById('ph-code')?.value || '').replace(/\D/g, '');
+    if (code.length < 6) { showPhoneError('৬ সংখ্যার কোডটি দিন'); return; }
+    if (!phoneVerificationId) { showPhoneError('কোডের মেয়াদ শেষ। আবার কোড পাঠান।'); return; }
+
+    const btn = document.getElementById('ph-verify-btn');
+    showPhoneError('');
+    if (btn) { btn.disabled = true; btn.textContent = 'যাচাই হচ্ছে…'; }
+
+    try {
+        const cred = firebase.auth.PhoneAuthProvider.credential(phoneVerificationId, code);
+        const result = await firebase.auth().signInWithCredential(cred);
+        // A phone account has no name and no email, so the profile it starts
+        // with is nearly empty — the number is the one thing known about it,
+        // and it is the thing the clinic actually contacts people on.
+        if (result.additionalUserInfo?.isNewUser) {
+            await saveUserProfile(result.user, {
+                name: '', email: '',
+                phone: (result.user.phoneNumber || phoneNumberSent || '').replace(/^\+88/, ''),
+                age: '', gender: '', location: '',
+                problemTypes: [], courses: [],
+            });
+        }
+        window.resetPhoneAuth();
+    } catch (e) {
+        showPhoneError(phoneAuthMessage(e));
+        console.warn('OTP verify failed:', e);
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'যাচাই করে প্রবেশ করুন'; }
+    }
+};
+
+function phoneAuthMessage(e) {
+    const code = e?.code || '';
+    const raw = String(e?.message || e);
+    const msgs = {
+        'auth/invalid-verification-code': 'কোডটি ভুল হয়েছে। আবার দেখে লিখুন।',
+        'auth/code-expired': 'কোডের মেয়াদ শেষ। আবার কোড পাঠান।',
+        'auth/invalid-phone-number': 'নম্বরটি ঠিক নয়।',
+        'auth/too-many-requests': 'অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।',
+        'auth/quota-exceeded': 'আজকের SMS সীমা শেষ। অন্য উপায়ে লগইন করুন।',
+        'auth/captcha-check-failed': 'যাচাই ব্যর্থ হয়েছে। পেজটি রিফ্রেশ করে আবার চেষ্টা করুন।',
+    };
+    if (msgs[code]) return msgs[code];
+    if (raw === 'plugin_missing') return 'এই বিল্ডে মোবাইল লগইন এখনো সেট করা হয়নি।';
+    // Phone sign-in is off on the project until someone enables the provider in
+    // the Firebase console; the SDK reports that as operation-not-allowed.
+    if (/operation-not-allowed/i.test(code + raw)) {
+        return 'মোবাইল নম্বর দিয়ে লগইন এখনো চালু করা হয়নি। Google বা ইমেইল দিয়ে চেষ্টা করুন।';
+    }
+    if (/BILLING_NOT_ENABLED|billing/i.test(raw)) {
+        return 'SMS পাঠানো যাচ্ছে না। Google বা ইমেইল দিয়ে চেষ্টা করুন।';
+    }
+    return raw;
+}
+
+// Phone sign-in is a paid feature on the Firebase side and has to be switched
+// on in the console before it will do anything. Rather than let every tap fail,
+// the block hides itself the first time the project answers "not allowed", and
+// remembers — an app that offers a broken button teaches people not to trust
+// the working ones.
+function initPhoneAuth() {
+    if (localStorage.getItem('phoneAuthUnavailable') === '1') {
+        document.getElementById('phone-auth-block')?.classList.add('hidden');
+        document.getElementById('social-divider')?.classList.add('hidden');
+    }
+}
+
+// ── Facebook sign-in ────────────────────────────────────────────────────────
+// Off until a Facebook app exists (App ID + client token) — on the web the
+// provider is not enabled on the Firebase project, and on Android the login SDK
+// is compiled out. See docs/facebook-login.md; the button appears when
+// window.FACEBOOK_ENABLED is set in firebase-config.js.
+function initFacebookAuth() {
+    const on = window.FACEBOOK_ENABLED === true &&
+        (!IS_NATIVE || !!nativePlugin('FirebaseAuthentication'));
+    document.getElementById('facebook-signin-btn')?.classList.toggle('hidden', !on);
+}
+
+window.signInWithFacebook = async () => {
+    if (typeof firebase === 'undefined') return;
+    try {
+        showAuthError('');
+        let result;
+        if (IS_NATIVE) {
+            const FirebaseAuth = nativePlugin('FirebaseAuthentication');
+            if (!FirebaseAuth) {
+                showAuthError('এই বিল্ডে Facebook সাইন-ইন এখনো সেট করা হয়নি।');
+                return;
+            }
+            const { credential } = await FirebaseAuth.signInWithFacebook();
+            if (!credential?.accessToken) {
+                showAuthError('Facebook থেকে সাইন-ইন তথ্য পাওয়া যায়নি। আবার চেষ্টা করুন।');
+                return;
+            }
+            const cred = firebase.auth.FacebookAuthProvider.credential(credential.accessToken);
+            result = await firebase.auth().signInWithCredential(cred);
+        } else {
+            result = await firebase.auth().signInWithPopup(new firebase.auth.FacebookAuthProvider());
+        }
+        if (result.additionalUserInfo?.isNewUser) await newGoogleUserProfile(result.user);
+    } catch (e) {
+        const raw = String(e?.message || e);
+        // Someone who signed up with Google and then taps Facebook hits this;
+        // the raw message names neither provider in a way anyone can act on.
+        if (/account-exists-with-different-credential/i.test(e?.code || raw)) {
+            showAuthError('এই ইমেইলটি অন্য উপায়ে (Google বা ইমেইল) নিবন্ধিত। সেভাবেই লগইন করুন।');
+        } else if (/popup-closed|cancel/i.test(e?.code || raw)) {
+            showAuthError('');
+        } else {
+            showAuthError(raw);
+        }
+    }
+};
 
 window.signInWithGoogle = async () => {
     if (typeof firebase === 'undefined') return;
@@ -1814,6 +2056,157 @@ window.submitCoursePurchase = async function() {
 /* /#web-only */
 
 // ══════════════════════════════════════════════════════════
+// READING LIBRARY — গাইড / পিডিএফ / লেখা
+// ══════════════════════════════════════════════════════════
+// One tab, three segments. The guides came last and had the furthest to travel:
+// 70 finished documents that existed only as pages on the website, with no way
+// to reach them from inside the app at all.
+
+let libTab = 'guides';
+
+window.showLibraryTab = function(tab) {
+    haptic(8);
+    libTab = tab;
+    for (const btn of document.querySelectorAll('.seg-btn[data-lib]')) {
+        btn.classList.toggle('active', btn.dataset.lib === tab);
+    }
+    for (const name of ['guides', 'pdf', 'blog']) {
+        document.getElementById(`lib-pane-${name}`)?.classList.toggle('hidden', name !== tab);
+    }
+    // Fetched on first view rather than at startup: most sessions are here to
+    // listen, and this is a network round trip plus a list of 70.
+    if (tab === 'guides' && !guideItems.length) loadGuides();
+};
+
+// ── Guides ──────────────────────────────────────────────────────────────────
+// Served from the deployment, not the bundle, so a guide published today shows
+// up in an APK installed last month — the same reason the blog is fetched.
+let guideItems = [];
+let guideCats = [];
+let guideCat = '';           // '' = all
+let guideQuery = '';
+
+async function loadGuides() {
+    const list = document.getElementById('guide-list');
+    if (list && !guideItems.length) {
+        list.innerHTML = '<p class="lib-msg">গাইড লোড হচ্ছে…</p>';
+    }
+    try {
+        const res = await fetch(`${API_BASE}/guides/index.json`, { cache: 'no-cache' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        guideItems = data.items || [];
+        guideCats = data.categories || [];
+    } catch (e) {
+        console.warn('Guides load failed:', e);
+        if (list) {
+            list.innerHTML = `<p class="lib-msg">গাইডগুলো আনা গেল না — ইন্টারনেট সংযোগ দেখে
+                <span class="resource-link" onclick="loadGuides()">আবার চেষ্টা করুন</span>।</p>`;
+        }
+        return;
+    }
+    renderGuideCats();
+    renderGuides();
+}
+window.loadGuides = loadGuides;
+
+function renderGuideCats() {
+    const el = document.getElementById('guide-cats');
+    if (!el) return;
+    const all = `<button class="guide-cat${guideCat ? '' : ' active'}" onclick="filterGuides('')">সব (${toBn(guideItems.length)})</button>`;
+    el.innerHTML = all + guideCats.map(c => {
+        const n = guideItems.filter(g => g.category === c.bn).length;
+        if (!n) return '';
+        return `<button class="guide-cat${guideCat === c.bn ? ' active' : ''}"
+                    onclick="filterGuides('${c.bn.replace(/'/g, "\\'")}')">${c.bn} (${toBn(n)})</button>`;
+    }).join('');
+}
+
+window.filterGuides = function(cat) {
+    haptic(8);
+    guideCat = cat;
+    renderGuideCats();
+    renderGuides();
+};
+
+function renderGuides() {
+    const el = document.getElementById('guide-list');
+    if (!el) return;
+
+    const q = guideQuery.trim().toLowerCase();
+    const matches = guideItems.filter(g =>
+        (!guideCat || g.category === guideCat) &&
+        (!q || g.title_bn.toLowerCase().includes(q) || (g.desc || '').toLowerCase().includes(q)));
+
+    if (!matches.length) {
+        el.innerHTML = `<p class="lib-msg">${guideItems.length ? 'কোনো গাইড মিলল না।' : 'এখনো কোনো গাইড প্রকাশিত হয়নি।'}</p>`;
+        return;
+    }
+
+    const card = g => `
+        <div class="guide-card" onclick="openGuide('${g.slug}')">
+            <div class="guide-card-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </div>
+            <div class="mn-0">
+                <p class="guide-card-t">${g.title_bn}</p>
+                <p class="guide-card-d">${g.desc || ''}</p>
+            </div>
+        </div>`;
+
+    // Grouped under their category headings, but only when the reader has not
+    // already picked one — repeating the heading they just tapped is noise.
+    if (guideCat || q) { el.innerHTML = matches.map(card).join(''); return; }
+
+    el.innerHTML = guideCats.map(c => {
+        const inCat = matches.filter(g => g.category === c.bn);
+        if (!inCat.length) return '';
+        return `<p class="guide-grp">${c.bn}</p>` + inCat.map(card).join('');
+    }).join('');
+}
+
+// ── Guide reader ────────────────────────────────────────────────────────────
+let currentGuide = null;
+
+window.openGuide = function(slug) {
+    haptic(10);
+    const g = guideItems.find(x => x.slug === slug);
+    const modal = document.getElementById('guide-modal');
+    const frame = document.getElementById('guide-frame');
+    const wrap = document.getElementById('guide-frame-wrap');
+    if (!g || !modal || !frame) return;
+
+    currentGuide = g;
+    document.getElementById('guide-modal-title').textContent = g.title_bn;
+    document.getElementById('guide-pdf-btn').style.display = g.pdf ? '' : 'none';
+    wrap?.classList.remove('ready');
+    frame.onload = () => wrap?.classList.add('ready');
+    // ?app=1 makes the page hide its own sticky web bar; this header replaces it.
+    frame.src = `${API_BASE || 'https://alquranicruqyahhealing.com'}/guides/${slug}/?app=1`;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeGuide = function() {
+    document.getElementById('guide-modal')?.classList.add('hidden');
+    // Blank the frame on close. Left loaded, 70 of these accumulate as live
+    // documents holding a 3.3 MB font sheet each.
+    const frame = document.getElementById('guide-frame');
+    if (frame) frame.src = 'about:blank';
+    document.body.style.overflow = 'auto';
+    currentGuide = null;
+};
+
+// The document's own download button is hidden inside the frame because an
+// Android WebView cannot display a PDF. This one routes the same file through
+// the app's pdf.js reader, which can — and which remembers the page.
+window.openGuidePdf = function() {
+    if (!currentGuide?.pdf) return;
+    haptic(10);
+    viewPDF(`guides/_files/${currentGuide.pdf}`, currentGuide.title_bn);
+};
+
+// ══════════════════════════════════════════════════════════
 // BLOG — written guidelines, shared with the website
 // ══════════════════════════════════════════════════════════
 // The posts are built into static pages for Google and Facebook; the app reads
@@ -1939,7 +2332,10 @@ window.closeSeries = function() {
     renderBlogList();
 };
 
-window.openBlogSection = function() { haptic(10); showSection('blog'); };
+// The blog used to be a section of its own, reachable only from this one link
+// on the home screen. It is now the third segment of the reading tab, which is
+// also where the guides and the PDFs live.
+window.openBlogSection = function() { haptic(10); showSection('pdf'); showLibraryTab('blog'); };
 
 let currentBlogPost = null;
 
@@ -2553,9 +2949,126 @@ window.switchAdminView = async function(view, btn) {
     adminView = view;
     document.querySelectorAll('.admin-view-btn').forEach(b => b.classList.remove('active'));
     btn?.classList.add('active');
+    document.getElementById('admin-notice-compose')?.classList.toggle('hidden', view !== 'notices');
+    document.getElementById('admin-filter-row')?.classList.toggle('hidden', view !== 'patients');
     if (view === 'purchases') await loadPurchases();
     else if (view === 'reviews') await loadReviewsAdmin();
+    else if (view === 'notices') await loadNoticesAdmin();
     else await loadPatients();
+};
+
+// ── Announcements, admin side ───────────────────────────────────────────────
+//
+// Publishing is two independent steps and the second is allowed to fail:
+//
+//   1. write the Firestore document   — the notice itself. Without this there
+//                                       is nothing for anyone to read.
+//   2. POST /api/push                 — the interruption. Needs a service
+//                                       account on the server; if that is not
+//                                       set up the notice is still published
+//                                       and the status line says so plainly.
+//
+// Doing it the other way round would be worse: a push that points at a notice
+// which does not exist.
+window.publishAnnouncement = async function() {
+    const status = document.getElementById('an-status');
+    const title = document.getElementById('an-title')?.value.trim() || '';
+    const body = document.getElementById('an-body')?.value.trim() || '';
+    const url = document.getElementById('an-url')?.value.trim() || '';
+    const kind = document.querySelector('input[name="an-kind"]:checked')?.value || 'notice';
+    const wantPush = !!document.getElementById('an-push')?.checked;
+
+    if (!title || !body) { showToast('শিরোনাম ও বিবরণ দুটোই লাগবে'); return; }
+    if (!db || !currentUser || currentUser.email !== ADMIN_EMAIL) {
+        showToast('Admin access নেই'); return;
+    }
+    if (url && !/^https?:\/\//i.test(url)) { showToast('লিংকটি http বা https দিয়ে শুরু হতে হবে'); return; }
+
+    if (status) status.textContent = 'পাঠানো হচ্ছে…';
+    try {
+        await db.collection('announcements').add({
+            title, body, url, kind,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: currentUser.email,
+        });
+    } catch (e) {
+        if (status) status.textContent = `❌ সেভ হয়নি: ${e.message}`;
+        return;
+    }
+
+    let pushLine = 'পুশ পাঠানো হয়নি (চেকবক্স বন্ধ ছিল)।';
+    if (wantPush) {
+        try {
+            const token = await currentUser.getIdToken();
+            const res = await fetch(`${API_BASE}/api/push`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ title, body }),
+            });
+            const json = await res.json().catch(() => ({}));
+            if (res.ok) pushLine = '📲 পুশ পাঠানো হয়েছে।';
+            else if (res.status === 501) pushLine = '⚠️ পুশ এখনো সেট করা হয়নি (FIREBASE_SERVICE_ACCOUNT নেই) — নোটিশটি অ্যাপের ভেতরে দেখা যাবে।';
+            else pushLine = `⚠️ পুশ যায়নি: ${json.error || res.status}`;
+        } catch (e) {
+            pushLine = `⚠️ পুশ যায়নি: ${e.message}`;
+        }
+    }
+
+    if (status) status.textContent = `✅ নোটিশ প্রকাশিত। ${pushLine}`;
+    ['an-title', 'an-body', 'an-url'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    await loadAnnouncements();
+    await loadNoticesAdmin();
+};
+
+async function loadNoticesAdmin() {
+    const listEl = document.getElementById('admin-patient-list');
+    if (!listEl || !db) return;
+    listEl.innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:16px">Loading...</p>';
+    try {
+        const snap = await db.collection('announcements')
+            .orderBy('createdAt', 'desc').limit(50).get();
+        const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (!rows.length) {
+            listEl.innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:24px">এখনো কোনো নোটিশ পাঠানো হয়নি</p>';
+            return;
+        }
+        listEl.innerHTML = rows.map(a => {
+            const when = a.createdAt?.seconds
+                ? new Date(a.createdAt.seconds * 1000).toLocaleString('bn-BD')
+                : 'পাঠানো হচ্ছে…';
+            return `
+            <div class="patient-card" style="border-left-color:${a.kind === 'offer' ? '#facc15' : 'var(--green)'}">
+                <div class="patient-card-header">
+                    <p class="patient-name">${a.kind === 'offer' ? '🎁 ' : '📢 '}${esc(a.title)}</p>
+                </div>
+                <p style="font-size:0.8rem;color:var(--text-sub);line-height:1.7">${esc(a.body).replace(/\n/g, '<br>')}</p>
+                <p class="patient-meta-row" style="margin-top:8px">📅 ${when}${a.url ? ` · 🔗 ${esc(a.url)}` : ''}</p>
+                <div class="patient-actions">
+                    <button onclick="deleteAnnouncement('${a.id}')" class="patient-action-btn">🗑 মুছে ফেলুন</button>
+                </div>
+            </div>`;
+        }).join('');
+    } catch (e) {
+        listEl.innerHTML = `<p style="color:#ff6b6b;font-size:0.82rem;text-align:center;padding:16px">${esc(e.message)}</p>`;
+    }
+}
+
+window.deleteAnnouncement = async function(id) {
+    if (!db || currentUser?.email !== ADMIN_EMAIL) return;
+    // Deleting withdraws it from the inbox. A push already delivered cannot be
+    // recalled — there is no unsend on a phone's notification shade.
+    if (!confirm('এই নোটিশটি মুছে ফেলবেন? যাদের ফোনে পুশ পৌঁছে গেছে, তাদের কাছ থেকে ওটা ফেরানো যাবে না।')) return;
+    try {
+        await db.collection('announcements').doc(id).delete();
+        showToast('নোটিশ মুছে ফেলা হয়েছে');
+        await loadAnnouncements();
+        await loadNoticesAdmin();
+    } catch (e) {
+        showToast('মোছা যায়নি: ' + e.message);
+    }
 };
 
 // Reader feedback, newest first. The "কীভাবে আরও ভালো করা যায়" answers are only
@@ -2794,6 +3307,8 @@ const OVERLAY_CLOSERS = {
     'yt-modal': 'minimizeOrClosePlayer',
     'pdf-modal': 'closePDF',
     'blog-modal': 'closeBlogPost',
+    'guide-modal': 'closeGuide',
+    'notice-modal': 'closeNoticeModal',
     'search-overlay': 'closeSearchOverlay',
     'login-modal': 'closeLoginModal',
     'delete-account-modal': 'closeDeleteAccountModal',
@@ -2848,10 +3363,15 @@ let lastBackPress = 0;
 // untouched, so there is nothing to keep in sync between two copies.
 function reflowNativeHome() {
     // Books belong with the other readable things, not on the home screen
-    // between a consultation card and a daily routine.
+    // between a consultation card and a daily routine. They go directly under
+    // the tab's heading — above the গাইড/পিডিএফ/লেখা segments, not inside one of
+    // them, because a book is none of those three.
     const pdfSection = document.getElementById('section-pdf');
     const books = document.getElementById('books-section');
-    if (pdfSection && books) pdfSection.insertBefore(books, pdfSection.firstChild);
+    const pdfTitle = pdfSection?.querySelector('.page-title');
+    if (pdfSection && books) {
+        pdfSection.insertBefore(books, pdfTitle ? pdfTitle.nextSibling : pdfSection.firstChild);
+    }
 
     // "Continue listening" is the reason someone reopens an audio app, so it
     // goes directly under the audio of the day instead of below the fold.
@@ -2881,7 +3401,12 @@ function initNativeShell() {
     // are in place and @capacitor-firebase/authentication is installed.
     if (!nativePlugin('FirebaseAuthentication')) {
         document.getElementById('google-signin-btn')?.classList.add('hidden');
-        document.querySelector('#login-modal .or-divider')?.classList.add('hidden');
+        // Same build, same story: without the plugin neither the phone flow nor
+        // Facebook has a native path, and the web fallbacks (an invisible
+        // reCAPTCHA, a popup window) do not work inside a WebView. With all
+        // three gone the "অথবা" rule above them separates nothing.
+        document.getElementById('phone-auth-block')?.classList.add('hidden');
+        document.getElementById('social-divider')?.classList.add('hidden');
     }
 
     const App = nativePlugin('App');
@@ -3608,6 +4133,9 @@ window.requestNotifications = async function() {
     if (await notifRequest()) {
         showToast('✅ Notification চালু হয়েছে!');
         localStorage.setItem('notifEnabled', '1');
+        // Only reachable now that permission exists — registerForPush bails out
+        // when it does not, and at startup it usually did not.
+        registerForPush();
         updateNotifBtn();
         notify('🌿 Al Quranic Ruqyah Healing',
                'Notification চালু হয়েছে! নতুন অডিও/PDF এলে জানাবো।');
@@ -3675,13 +4203,16 @@ function notify(title, body) {
     }
 }
 
+// The header bell is now the notices inbox, not a permission switch, so what
+// this reflects is the unread count. The permission state shows up inside the
+// inbox instead, as a prompt with a reason attached.
 function updateNotifBtn() {
-    const btn = document.getElementById('notif-btn');
+    const btn = document.getElementById('notice-btn');
     if (!btn) return;
-    if (!notifSupported()) { btn.classList.add('hidden'); return; }
-    const on = notifGranted();
-    btn.classList.toggle('active', on);
-    btn.title = on ? 'Notification চালু আছে ✅' : 'Notification চালু করুন';
+    btn.classList.toggle('active', notifGranted());
+    updateNoticeBtn();
+    // Only rerender if it is on screen; otherwise openNoticeModal does it.
+    if (!document.getElementById('notice-modal')?.classList.contains('hidden')) renderNotices();
 }
 
 function checkForNewContent() {
@@ -3691,6 +4222,179 @@ function checkForNewContent() {
                `${audioData.length - lastCount}টি নতুন রুকিয়াহ অডিও যোগ হয়েছে!`);
     }
     localStorage.setItem('lastAudioCount', audioData.length);
+}
+
+// ══════════════════════════════════════════════════════════
+// ANNOUNCEMENTS — notices and offers, written by the admin
+// ══════════════════════════════════════════════════════════
+//
+// Two delivery paths, because neither is sufficient alone:
+//
+//   Firestore `announcements`  — the record. Always present, works with no push
+//                                setup at all, and is what someone sees when
+//                                they open the app a week later.
+//   FCM push                   — the interruption. Reaches a phone with the app
+//                                closed, which the Firestore copy cannot.
+//
+// The inbox is the source of truth; the push is a pointer to it. If FCM is not
+// configured the app still works, notices still arrive, they simply wait to be
+// opened. Nothing here fails loudly when push is missing — see api/push.js.
+let announcements = [];
+
+const lastSeenNotice = () => parseInt(localStorage.getItem('lastSeenNotice') || '0', 10);
+
+function noticeTime(a) {
+    // serverTimestamp() resolves to a Firestore Timestamp on read, but a
+    // document written moments ago and served from the local cache carries a
+    // null there until the round trip completes.
+    return (a.createdAt?.seconds || 0) * 1000;
+}
+
+const unreadNotices = () => announcements.filter(a => noticeTime(a) > lastSeenNotice());
+
+async function loadAnnouncements() {
+    if (!db) return;
+    try {
+        const snap = await db.collection('announcements')
+            .orderBy('createdAt', 'desc').limit(30).get();
+        announcements = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) {
+        console.warn('Announcements load failed:', e);
+        return;
+    }
+    updateNoticeBtn();
+
+    // A first run has no watermark, so every existing notice would count as new
+    // and the app would open by announcing a months-old offer. Treat install
+    // time as the starting line and let the badge speak for what came before.
+    if (!localStorage.getItem('lastSeenNotice') && announcements.length) {
+        localStorage.setItem('lastSeenNotice', String(noticeTime(announcements[0]) - 1));
+    }
+
+    // Only ever the newest one, and only once. Without the marker a relaunch
+    // re-fires the same notice, which is how an app teaches people to turn
+    // notifications off.
+    const unread = unreadNotices();
+    if (unread.length && notifGranted()) {
+        const newest = unread[0];
+        if (localStorage.getItem('lastPushedNotice') !== newest.id) {
+            localStorage.setItem('lastPushedNotice', newest.id);
+            notify(newest.title || '🌿 নতুন নোটিশ', newest.body || '');
+        }
+    }
+}
+
+// ── Push registration ───────────────────────────────────────────────────────
+//
+// Subscribes the device to the FCM topic "all" rather than storing per-device
+// tokens in Firestore. A topic needs no token table, no cleanup when a device
+// is wiped, and no way for a leaked read rule to expose who has the app.
+// The cost is that targeting one user is impossible — which is fine, because
+// what is being sent is a notice to everybody.
+//
+// Everything here is best-effort. Push requires google-services.json, which the
+// build does not have until Firebase is set up; without it the plugin is absent
+// or registration fails, and the app must carry on. The notice still arrives —
+// it just waits in the inbox until the app is opened.
+function registerForPush() {
+    if (!IS_NATIVE) return;
+    const PN = nativePlugin('PushNotifications');
+    if (!PN) return;
+
+    // Push permission and local-notification permission are the same Android
+    // permission, so asking again after the user has already refused would just
+    // be a second silent no.
+    if (!notifGranted()) return;
+
+    try {
+        PN.addListener('registration', () => {
+            PN.subscribeToTopic?.({ topic: 'all' }).catch(() => {});
+        });
+        PN.addListener('registrationError', (e) => console.warn('Push registration failed:', e));
+        // Tapping a push opens the inbox, where the full text is.
+        PN.addListener('pushNotificationActionPerformed', () => {
+            loadAnnouncements().then(() => window.openNoticeModal?.());
+        });
+        // Delivered while the app is open: refresh the badge instead of
+        // interrupting someone who is already looking at the screen.
+        PN.addListener('pushNotificationReceived', () => { loadAnnouncements(); });
+        PN.register().catch((e) => console.warn('Push register failed:', e));
+    } catch (e) {
+        console.warn('Push setup failed:', e);
+    }
+}
+
+function updateNoticeBtn() {
+    const btn = document.getElementById('notice-btn');
+    if (!btn) return;
+    const n = unreadNotices().length;
+    let dot = btn.querySelector('.notice-badge');
+    if (n > 0) {
+        if (!dot) {
+            dot = document.createElement('span');
+            dot.className = 'notice-badge';
+            btn.appendChild(dot);
+        }
+        dot.textContent = n > 9 ? '৯+' : toBn(n);
+    } else if (dot) {
+        dot.remove();
+    }
+}
+
+window.openNoticeModal = function() {
+    haptic(10);
+    const modal = document.getElementById('notice-modal');
+    if (!modal) return;
+    renderNotices();
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeNoticeModal = function() {
+    document.getElementById('notice-modal')?.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    // Marked read on close rather than on open, so a notice glanced at and
+    // dismissed by the back button still counts as seen.
+    if (announcements.length) {
+        localStorage.setItem('lastSeenNotice', String(noticeTime(announcements[0])));
+    }
+    updateNoticeBtn();
+};
+
+function renderNotices() {
+    const el = document.getElementById('notice-list');
+    if (!el) return;
+
+    const toggle = notifSupported() && !notifGranted()
+        ? `<div class="notice-cta" onclick="requestNotifications()">
+               🔔 নতুন নোটিশ ও অফার সাথে সাথে পেতে নোটিফিকেশন চালু করুন
+           </div>`
+        : '';
+
+    if (!announcements.length) {
+        el.innerHTML = toggle + `<p class="lib-msg">${db
+            ? 'এখনো কোনো নোটিশ নেই।'
+            : 'নোটিশ দেখতে ইন্টারনেট সংযোগ লাগবে।'}</p>`;
+        return;
+    }
+
+    const seen = lastSeenNotice();
+    el.innerHTML = toggle + announcements.map(a => {
+        const t = noticeTime(a);
+        const when = t ? new Date(t).toLocaleDateString('bn-BD',
+            { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+        // Offers are the reason someone taps a badge; give them a visible edge.
+        const isOffer = a.kind === 'offer';
+        return `
+            <div class="notice-card${t > seen ? ' unread' : ''}${isOffer ? ' offer' : ''}">
+                <p class="notice-card-t">${isOffer ? '🎁 ' : ''}${esc(a.title)}</p>
+                <p class="notice-card-b">${esc(a.body).replace(/\n/g, '<br>')}</p>
+                <div class="notice-card-f">
+                    <span class="notice-card-d">${when}</span>
+                    ${a.url ? `<span class="resource-link" onclick="openExternal('${esc(a.url)}')">বিস্তারিত →</span>` : ''}
+                </div>
+            </div>`;
+    }).join('');
 }
 
 // ══════════════════════════════════════════════════════════

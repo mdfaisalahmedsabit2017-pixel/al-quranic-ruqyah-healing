@@ -8,3 +8,12 @@ const FIREBASE_CONFIG = {
     messagingSenderId: "500893735095",
     appId: "1:500893735095:web:26c992d1b3eab5934a9532"
 };
+
+// Facebook sign-in needs a Facebook app before it can work — an App ID and a
+// client token on the Facebook side, the provider switched on in Firebase, and
+// on Android the login SDK compiled in (rgcfaIncludeFacebook in
+// android/variables.gradle). Until all of that is done the button stays hidden,
+// because a login button that always errors costs more trust than a missing one
+// costs convenience. Set this to true as the last step. See
+// docs/facebook-login.md.
+window.FACEBOOK_ENABLED = false;

@@ -42,8 +42,8 @@ General → **Add app** → Android:
 
 | ফিল্ড | মান |
 |---|---|
-| Android package name | `com.ruqyah.pro` |
-| App nickname | `Ruqyah Pro` |
+| Android package name | `com.selfruqyah.app` |
+| App nickname | `Self Ruqyah` |
 | Debug signing certificate SHA-1 | ধাপ ১-এর SHA1 |
 
 যোগ করার পর **SHA-256**-টাও আলাদা করে যোগ করুন (একই স্ক্রিনে *Add fingerprint*)।
@@ -52,6 +52,29 @@ General → **Add app** → Android:
 
 Firebase Console → **Authentication → Sign-in method → Google → Enable**।
 Project support email হিসেবে নিজের ইমেইল দিন। **Save**।
+
+## ধাপ ৩ক — মোবাইল নম্বর (OTP) চালু করা
+
+**Authentication → Sign-in method → Phone → Enable**।
+
+অ্যাপে ফোন লগইনের কোড বসানো আছে ও চালু আছে, কিন্তু provider চালু না করলে
+Firebase `operation-not-allowed` ফেরত দেয় — সেটা পেলে অ্যাপ নিজেই ফোন বক্সটা
+লুকিয়ে ফেলে, যাতে প্রতিবার ব্যর্থ হওয়া একটা বাটন সামনে না থাকে। চালু করার পর
+অ্যাপের ডেটা মুছলে (বা `localStorage.removeItem('phoneAuthUnavailable')`) ফিরে আসে।
+
+### খরচ ও শর্ত
+
+| | |
+|---|---|
+| **প্ল্যান** | SMS পাঠাতে **Blaze (pay-as-you-go)** লাগে। Spark প্ল্যানে ফোন লগইন কাজ করে না। |
+| **দাম** | বাংলাদেশে প্রতি SMS আনুমানিক $0.01–0.05। মাসে ১০০০ সাইনআপ ≈ $১০–৫০। |
+| **সীমা** | Firebase Console → Authentication → Settings-এ দৈনিক SMS সীমা বেঁধে দিন। এটা না করলে একটা অপব্যবহারের রাত বড় বিল বানাতে পারে। |
+| **টেস্ট নম্বর** | Sign-in method → Phone → *Phone numbers for testing*-এ নম্বর ও কোড বসিয়ে রাখুন — টেস্ট করতে গিয়ে প্রতিবার আসল SMS-এর টাকা যাবে না। ক্লোজড টেস্টের ১৪ দিনে কাজে লাগবে। |
+
+**Android-এ reCAPTCHA লাগে না** — Play Integrity দিয়ে যাচাই হয়, তাই SHA-1/SHA-256
+ঠিকমতো নিবন্ধিত থাকা লাগবেই (ধাপ ২)। **ওয়েবে** একটা অদৃশ্য reCAPTCHA দেখায়,
+তার জন্য Authentication → Settings → **Authorized domains**-এ সাইটের ডোমেইন
+থাকতে হবে।
 
 ## ধাপ ৪ — google-services.json
 

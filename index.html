@@ -1022,6 +1022,58 @@
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
 
+        /* Segmented control for the reading tab: গাইড / পিডিএফ / লেখা */
+        .seg {
+            display: flex; gap: 4px; padding: 4px; margin-bottom: 14px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+        }
+        .seg-btn {
+            flex: 1; padding: 9px 6px; border: 0; border-radius: var(--r-md); cursor: pointer;
+            background: none; color: var(--text-sub); font-family: inherit;
+            font-size: 0.84rem; font-weight: 600; transition: background 0.16s, color 0.16s;
+        }
+        .seg-btn.active { background: var(--green-dim); color: var(--green); font-weight: 700; }
+
+        /* Guide list */
+        #guide-cats { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; scrollbar-width: none; }
+        #guide-cats::-webkit-scrollbar { display: none; }
+        .guide-cat {
+            flex-shrink: 0; padding: 7px 13px; border-radius: 999px; cursor: pointer;
+            background: var(--surface); border: 1px solid var(--border); color: var(--text-sub);
+            font-family: inherit; font-size: 0.78rem; font-weight: 600; white-space: nowrap;
+        }
+        .guide-cat.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+        .lib-msg { color: var(--text-dim); text-align: center; padding: 40px 12px; font-size: 0.85rem; line-height: 1.7; }
+        .guide-grp { font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin: 18px 0 8px; letter-spacing: 0.02em; }
+        .guide-grp:first-child { margin-top: 0; }
+        .guide-card {
+            display: flex; align-items: flex-start; gap: 11px; padding: 13px 14px; margin-bottom: 8px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); cursor: pointer;
+        }
+        .guide-card:active { background: var(--overlay); }
+        .guide-card-icon {
+            width: 34px; height: 34px; flex-shrink: 0; border-radius: var(--r-md);
+            background: var(--green-dim); color: var(--green);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .guide-card-t { font-size: 0.88rem; font-weight: 700; line-height: 1.45; }
+        .guide-card-d {
+            font-size: 0.76rem; color: var(--text-dim); line-height: 1.6; margin-top: 3px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        /* Guide reader. The framed document brings its own light A4 styling, so
+           the wrapper is white rather than the app's black — a black gutter
+           around a white page reads as a rendering fault. */
+        #guide-modal { background: var(--bg); }
+        #guide-frame-wrap { flex: 1; position: relative; background: #fff; }
+        #guide-frame { width: 100%; height: 100%; border: 0; display: block; }
+        #guide-loading {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            margin: 0; background: var(--bg); color: var(--text-dim); font-size: 0.85rem;
+        }
+        #guide-frame-wrap.ready #guide-loading { display: none; }
+
         #blog-modal { background: var(--bg); }
         .blog-modal-hdr {
             display: flex; justify-content: space-between; align-items: center; gap: 10px;
@@ -1108,7 +1160,34 @@
         .sleep-cancel:hover { background: rgba(255,100,100,0.08); }
 
         /* Notification bell active */
-        #notif-btn.active { color: var(--green); border-color: rgba(0,229,153,0.3); }
+        #notice-btn.active { color: var(--green); border-color: rgba(0,229,153,0.3); }
+        .notice-badge {
+            position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px;
+            padding: 0 4px; border-radius: 999px; background: #ff4d4f; color: #fff;
+            font-size: 0.62rem; font-weight: 800; line-height: 16px; text-align: center;
+            border: 2px solid var(--bg); box-sizing: content-box; pointer-events: none;
+        }
+        #notice-list { max-height: 62vh; overflow-y: auto; margin: 0 -4px; padding: 0 4px; }
+        .notice-cta {
+            padding: 12px 14px; margin-bottom: 12px; cursor: pointer;
+            background: var(--green-dim); border: 1px solid rgba(0,229,153,0.3);
+            border-radius: var(--r-lg); color: var(--green);
+            font-size: 0.8rem; font-weight: 600; line-height: 1.6;
+        }
+        .notice-card {
+            padding: 13px 14px; margin-bottom: 9px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-left: 3px solid var(--border); border-radius: var(--r-lg);
+        }
+        .notice-card.unread { border-left-color: var(--green); background: var(--raised); }
+        .notice-card.offer { border-left-color: #facc15; }
+        .notice-card-t { font-size: 0.88rem; font-weight: 700; line-height: 1.5; }
+        .notice-card-b { font-size: 0.82rem; color: var(--text-sub); line-height: 1.75; margin-top: 5px; }
+        .notice-card-f { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+        .notice-card-d { font-size: 0.7rem; color: var(--text-dim); }
+        .notice-card-f .resource-link { margin-left: auto; }
+        .an-kind { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: var(--text-sub); cursor: pointer; }
+        .an-kind input { accent-color: var(--green); }
 
         /* Voice search mic */
         #voice-search-btn { transition: all 0.2s; }
@@ -1623,6 +1702,21 @@
             transition: border-color 0.15s, background 0.15s;
         }
         .google-btn:hover { border-color: var(--border-hi); background: var(--overlay); }
+        .google-btn + .google-btn { margin-top: 8px; }
+        .fb-btn { border-color: rgba(24,119,242,0.35); }
+
+        /* Phone (OTP) sign-in */
+        .phone-lead { font-size: 0.8rem; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; }
+        .phone-row { display: flex; align-items: stretch; gap: 8px; }
+        .phone-cc {
+            display: flex; align-items: center; padding: 0 12px; flex-shrink: 0;
+            background: var(--raised); border: 1px solid var(--border-md);
+            border-radius: var(--r-md); color: var(--text-sub);
+            font-size: 0.875rem; font-weight: 700;
+        }
+        .phone-row .auth-input { margin: 0; flex: 1; letter-spacing: 0.06em; }
+        .phone-sent { font-size: 0.78rem; color: var(--text-sub); line-height: 1.65; margin-bottom: 8px; }
+        #recaptcha-container:empty { display: none; }
         .or-divider { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
         .or-line { flex: 1; height: 1px; background: var(--border); }
         .or-text  { font-size: 0.75rem; color: var(--text-dim); }
@@ -2187,7 +2281,11 @@
             Al Quranic Ruqyah
         </div>
         <div class="header-actions">
-            <button id="notif-btn" onclick="requestNotifications()" class="btn-icon" title="Notification চালু করুন">
+            <!-- The bell used to do nothing but ask for permission, which is a
+                 question, not a destination. It now opens the notices; the
+                 permission prompt lives inside, where there is something to
+                 explain what granting it would get you. -->
+            <button id="notice-btn" onclick="openNoticeModal()" class="btn-icon rel" title="নোটিশ ও অফার">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
             </button>
             <button id="search-toggle" onclick="showSearchOverlay()" class="btn-icon" title="খুঁজুন">
@@ -2513,20 +2611,6 @@
             </div>
         </div>
 
-        <!-- BLOG SECTION -->
-        <div id="section-blog" class="hidden container">
-            <div class="page-title">
-                <div class="page-title-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                </div>
-                ব্লগ ও গাইডলাইন
-            </div>
-            <p style="font-size:0.82rem;color:var(--text-sub);margin-bottom:16px">
-                রুকইয়াহ, বদনজর, হাসাদ, জাদু ও জ্বীন সংক্রান্ত কুরআন ও সহীহ সুন্নাহভিত্তিক লেখা।
-            </p>
-            <div id="blog-list" class="blog-cards"></div>
-        </div>
-
         <!-- AUDIO LIBRARY SECTION -->
         <div id="section-library" class="hidden container">
             <div class="page-title">
@@ -2550,15 +2634,41 @@
             <div id="audio-container" class="grid-audio"></div>
         </div>
 
-        <!-- PDF SECTION -->
+        <!-- LIBRARY (READING) SECTION -->
+        <!-- Three kinds of reading used to live in three places: the 83 PDFs
+             here, the blog behind a link on the home screen, and the 70 written
+             guides nowhere in the app at all — they existed only as pages on the
+             website. One tab, three segments. -->
         <div id="section-pdf" class="hidden container">
             <div class="page-title">
                 <div class="page-title-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 </div>
-                পিডিএফ লাইব্রেরি
+                পড়ার লাইব্রেরি
             </div>
-            <div id="pdf-container" class="grid-pdf"></div>
+
+            <div class="seg" role="tablist">
+                <button class="seg-btn active" data-lib="guides" onclick="showLibraryTab('guides')" role="tab">গাইড</button>
+                <button class="seg-btn" data-lib="pdf" onclick="showLibraryTab('pdf')" role="tab">পিডিএফ</button>
+                <button class="seg-btn" data-lib="blog" onclick="showLibraryTab('blog')" role="tab">লেখা</button>
+            </div>
+
+            <div id="lib-pane-guides" class="lib-pane">
+                <input type="text" id="guide-search" placeholder="গাইড খুঁজুন — যেমন: বদনজর, সিহর, আশিক জিন" class="search-bar">
+                <div id="guide-cats"></div>
+                <div id="guide-list"></div>
+            </div>
+
+            <div id="lib-pane-pdf" class="lib-pane hidden">
+                <div id="pdf-container" class="grid-pdf"></div>
+            </div>
+
+            <div id="lib-pane-blog" class="lib-pane hidden">
+                <p style="font-size:0.82rem;color:var(--text-sub);margin-bottom:16px">
+                    রুকইয়াহ, বদনজর, হাসাদ, জাদু ও জ্বীন সংক্রান্ত কুরআন ও সহীহ সুন্নাহভিত্তিক লেখা।
+                </p>
+                <div id="blog-list" class="blog-cards"></div>
+            </div>
         </div>
 
         <!-- PRACTICE (আমল) SECTION -->
@@ -2757,6 +2867,38 @@
         <div id="blog-post-body" class="blog-post-body"></div>
     </div>
 
+    <!-- ── NOTICES & OFFERS ────────────────────────────────── -->
+    <div id="notice-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <button onclick="closeNoticeModal()" class="modal-close-btn">✕</button>
+            <p class="modal-title">🔔 নোটিশ ও অফার</p>
+            <div id="notice-list"></div>
+        </div>
+    </div>
+
+    <!-- ── GUIDE READER ────────────────────────────────────── -->
+    <!-- The 70 guides are complete, self-designed A4 documents with their own
+         stylesheet, cover page and table of contents. Re-rendering their markup
+         inside the app's prose styles would throw that design away, so the
+         published page is framed as-is; ?app=1 tells it to drop its own web bar,
+         which this header replaces. Cross-origin by design — the frame cannot
+         reach the app and the app cannot reach the frame. -->
+    <div id="guide-modal" class="modal hidden">
+        <div class="blog-modal-hdr">
+            <button onclick="closeGuide()" class="blog-back-btn" aria-label="ফিরে যান">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+            </button>
+            <span id="guide-modal-title" class="blog-modal-title">গাইড</span>
+            <button id="guide-pdf-btn" onclick="openGuidePdf()" class="blog-back-btn" aria-label="পিডিএফ হিসেবে পড়ুন">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            </button>
+        </div>
+        <div id="guide-frame-wrap">
+            <p id="guide-loading">গাইড লোড হচ্ছে…</p>
+            <iframe id="guide-frame" title="রুকইয়াহ গাইড" referrerpolicy="no-referrer"></iframe>
+        </div>
+    </div>
+
     <!-- ── TOAST ───────────────────────────────────────────── -->
     <div id="toast">লিঙ্ক কপি হয়েছে!</div>
 
@@ -2904,6 +3046,47 @@
                 <button id="tab-signup" class="auth-tab" onclick="setAuthTab('signup')">নতুন অ্যাকাউন্ট</button>
             </div>
 
+            <!-- ─ PHONE (OTP) ─
+                 The number is the account: no email, no password. For most
+                 people here that is the only sign-up they will finish, so it
+                 goes above everything else. Hidden by initPhoneAuth when the
+                 Phone provider is not enabled on the Firebase project — an OTP
+                 button that always errors is worse than no OTP button. -->
+            <div id="phone-auth-block">
+                <p class="phone-lead">📱 মোবাইল নম্বর দিয়ে</p>
+
+                <div id="phone-step-number">
+                    <div class="phone-row">
+                        <span class="phone-cc">+৮৮০</span>
+                        <input id="ph-number" type="tel" inputmode="numeric" autocomplete="tel"
+                               placeholder="1XXXXXXXXX" class="auth-input" maxlength="11">
+                    </div>
+                    <button id="ph-send-btn" onclick="sendOtp()" class="btn-primary w-full" style="margin-top:8px">
+                        কোড পাঠান
+                    </button>
+                </div>
+
+                <div id="phone-step-code" class="hidden">
+                    <p id="ph-sent-to" class="phone-sent"></p>
+                    <input id="ph-code" type="tel" inputmode="numeric" autocomplete="one-time-code"
+                           placeholder="৬ সংখ্যার কোড" class="auth-input" maxlength="6">
+                    <button id="ph-verify-btn" onclick="verifyOtp()" class="btn-primary w-full" style="margin-top:8px">
+                        যাচাই করে প্রবেশ করুন
+                    </button>
+                    <div class="auth-footer">
+                        <button onclick="resetPhoneAuth()" class="auth-footer-muted">নম্বর বদলান</button>
+                    </div>
+                </div>
+
+                <p id="ph-error" class="auth-error" style="min-height:18px"></p>
+                <!-- Firebase's web phone flow requires a reCAPTCHA host element.
+                     It renders invisibly; the native flow uses Play Integrity
+                     instead and never touches this. -->
+                <div id="recaptcha-container"></div>
+            </div>
+
+            <div id="social-divider" class="or-divider"><div class="or-line"></div><span class="or-text">অথবা</span><div class="or-line"></div></div>
+
             <!-- Google. Hidden by initNativeShell in the APK unless the native
                  Firebase Authentication plugin is actually configured — the web
                  popup flow cannot work inside a WebView. -->
@@ -2911,6 +3094,15 @@
                 <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.2 30.2 0 24 0 14.7 0 6.7 5.5 2.7 13.5l7.8 6C12.3 13.2 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.2-.4-4.7H24v9h12.7c-.6 3-2.4 5.5-5 7.2l7.7 6c4.5-4.1 7.1-10.2 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.5c-.6-1.6-.9-3.3-.9-5s.3-3.4.9-5l-7.8-6C1 15 0 19.4 0 24s1 9 2.7 12.5l7.8-6z"/><path fill="#34A853" d="M24 48c6.2 0 11.5-2 15.3-5.5l-7.7-6c-2 1.4-4.6 2.2-7.6 2.2-6.3 0-11.7-3.7-13.5-9l-7.8 6C6.7 42.5 14.7 48 24 48z"/></svg>
                 Google দিয়ে প্রবেশ করুন
             </button>
+
+            <!-- Facebook. Needs a Facebook app (App ID + client token) before it
+                 can work at all, so initFacebookAuth hides it until those exist
+                 — see docs/facebook-login.md. -->
+            <button id="facebook-signin-btn" onclick="signInWithFacebook()" class="google-btn fb-btn hidden">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>
+                Facebook দিয়ে প্রবেশ করুন
+            </button>
+
             <div class="or-divider"><div class="or-line"></div><span class="or-text">অথবা ইমেইল দিয়ে</span><div class="or-line"></div></div>
 
             <!-- ─ LOGIN FORM ─ -->
@@ -3264,6 +3456,27 @@
                 <button class="auth-tab admin-view-btn active" onclick="switchAdminView('patients',this)">🩺 Patients</button>
                 <button class="auth-tab admin-view-btn" onclick="switchAdminView('purchases',this)">💳 Purchases</button>
                 <button class="auth-tab admin-view-btn" onclick="switchAdminView('reviews',this)">⭐ Reviews</button>
+                <button class="auth-tab admin-view-btn" onclick="switchAdminView('notices',this)">🔔 নোটিশ</button>
+            </div>
+
+            <!-- Announcement composer. Hidden unless the নোটিশ view is active. -->
+            <div id="admin-notice-compose" class="hidden" style="margin-bottom:14px">
+                <input type="text" id="an-title" class="form-input" maxlength="80"
+                       placeholder="শিরোনাম — যেমন: ঈদ উপলক্ষে ৩০% ছাড়">
+                <textarea id="an-body" class="form-input" rows="4" maxlength="600"
+                          style="margin-top:8px;resize:vertical"
+                          placeholder="বিস্তারিত লিখুন। ব্যবহারকারী এটাই নোটিফিকেশনে ও অ্যাপের ভেতরে দেখবে।"></textarea>
+                <input type="url" id="an-url" class="form-input" style="margin-top:8px"
+                       placeholder="লিংক (ঐচ্ছিক) — https://…">
+                <div class="flex ai-c g-3" style="margin-top:10px;flex-wrap:wrap">
+                    <label class="an-kind"><input type="radio" name="an-kind" value="notice" checked> 📢 নোটিশ</label>
+                    <label class="an-kind"><input type="radio" name="an-kind" value="offer"> 🎁 অফার</label>
+                    <label class="an-kind"><input type="checkbox" id="an-push" checked> 📲 ফোনে পুশ পাঠাও</label>
+                </div>
+                <button onclick="publishAnnouncement()" class="btn-primary" style="width:100%;margin-top:10px">
+                    সবার কাছে পাঠান
+                </button>
+                <p id="an-status" style="font-size:0.75rem;color:var(--text-dim);margin-top:8px;line-height:1.6"></p>
             </div>
 
             <!-- Patient filters -->

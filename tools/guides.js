@@ -100,7 +100,17 @@ function rewrite(html, slug, meta) {
     // is a credit, not something a reader can download.
     if (/href="[^"]*\.docx"/.test(out)) throw new Error(`${slug}: a .docx link survived`);
 
-    const head = `<link rel="canonical" href="${canonical}">
+    // The app opens these pages in an in-app frame with ?app=1. There the
+    // document's own sticky bar is wrong twice over: its back-link leads to the
+    // website's guide index, and its download button hands a PDF to an Android
+    // WebView, which cannot render one. The app supplies both itself — the
+    // download goes through the app's pdf.js reader. Cross-origin means the app
+    // cannot reach into the frame, so the page has to hide the bar on its own.
+    const appEmbed = `<style>html.app-embed .web-nav{display:none}</style>
+<script>if(location.search.indexOf('app=1')>-1)document.documentElement.className+=' app-embed'</script>`;
+
+    const head = `${appEmbed}
+<link rel="canonical" href="${canonical}">
 <meta name="author" content="${AUTHOR}">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:site_name" content="${SITE_NAME}">
@@ -186,12 +196,19 @@ function buildGuides(distDir) {
             fs.copyFileSync(from, path.join(outDir, '_files', name));
         }
 
+        // An article links the protocol PDFs it discusses as well as its own, so
+        // "the download for this document" is specifically <slug>.pdf when that
+        // exists. Falling back to the first link is right for the handful of
+        // collections whose PDF is named after the series, not the page.
+        const ownPdf = linked.has(`${slug}.pdf`) ? `${slug}.pdf` : [...linked][0];
+
         items.push({
             slug,
             url: `/guides/${slug}/`,
             title_bn: meta.shortTitle,
             desc: meta.desc,
             category,
+            pdf: ownPdf,
         });
     }
 
@@ -202,6 +219,14 @@ function buildGuides(distDir) {
     if (dangling.length) throw new Error(
         `cross-links to unpublished documents: `
         + dangling.map(([from, to]) => `${from} -> ${to}`).join(', '));
+
+    // The list the app reads. It is served from the deployment rather than
+    // bundled in the APK for the same reason blog/index.json is: a guide
+    // published today has to appear in an app installed last month, and the app
+    // has no way to update its own bundle between Play releases.
+    fs.writeFileSync(
+        path.join(outDir, 'index.json'),
+        JSON.stringify({ categories: cfg.categories, items }));
 
     // Measured off disk, not accumulated per link: articles link the protocol
     // PDFs too, so summing per document counts those twice.

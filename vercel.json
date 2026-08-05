@@ -22,7 +22,15 @@
     {
       "source": "/guides/(_assets|_files)/(.*)",
       "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/(blog|guides)/(.*).json",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Cache-Control", "value": "public, max-age=300" }
       ]
     }
   ],

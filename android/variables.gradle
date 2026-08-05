@@ -20,6 +20,16 @@ ext {
     // on the device rather than failing the build. Must be true for the Google
     // provider to actually work.
     rgcfaIncludeGoogle = true
+
+    // Same trap, second provider. Left false until the Facebook app exists:
+    // the login SDK pulls in a manifest that *requires* facebook_app_id and
+    // facebook_client_token string resources, so turning this on before those
+    // are set makes the app crash at launch rather than merely lack a button.
+    // Flip to true at the same time as android/app/src/main/res/values/
+    // facebook.xml gets real values — see docs/facebook-login.md.
+    rgcfaIncludeFacebook = false
+    facebookLoginVersion = '18.0.0'
+
     firebaseAuthVersion = '23.1.0'
     playServicesAuthVersion = '21.2.0'
     androidxCredentialsVersion = '1.3.0'

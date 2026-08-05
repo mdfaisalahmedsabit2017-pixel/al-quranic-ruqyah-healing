@@ -186,11 +186,18 @@ filesToCopy.forEach(name => {
 // The manifest is one source file, but the app lives at a different path in
 // each target: /app.html on the web (the root is the marketing page) and the
 // root itself in the APK.
+//
+// The two products also carry different names. The website is the clinic's
+// brand, "Al Quranic Ruqyah Healing"; the Play Store listing is the product,
+// "Self Ruqyah". Keeping one name in both places would either put a mouthful on
+// the launcher or lose the site's identity in search.
 {
     const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, 'manifest.json'), 'utf8'));
     if (isNative) {
         manifest.id = '/';
         manifest.start_url = './';
+        manifest.name = 'Self Ruqyah';
+        manifest.short_name = 'Self Ruqyah';
     }
     fs.writeFileSync(path.join(distDir, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
     console.log(`Built manifest.json (start_url ${manifest.start_url})`);

@@ -69,9 +69,26 @@ window.IntersectionObserver = class {
 window.matchMedia = () => ({ matches: false, addEventListener() {}, addListener() {} });
 window.scrollTo = () => {};
 window.navigator.vibrate = () => {};
+// Guides and blog posts are fetched from the deployment, not read out of the
+// bundle, so there is no file to point at — these stand in for the two indexes
+// the reading tab loads. Small on purpose: the assertions below care that the
+// list renders and groups by category, not how many rows come back.
+const GUIDES = {
+    categories: [{ bn: 'সিহর ও জাদু' }, { bn: 'জিন সংক্রান্ত' }],
+    items: [
+        { slug: 'a', title_bn: 'ক', desc: 'এক', category: 'সিহর ও জাদু', pdf: 'a.pdf' },
+        { slug: 'b', title_bn: 'খ', desc: 'দুই', category: 'সিহর ও জাদু', pdf: 'b.pdf' },
+        { slug: 'c', title_bn: 'গ', desc: 'তিন', category: 'জিন সংক্রান্ত', pdf: 'c.pdf' },
+    ],
+};
+
 window.fetch = (u) => {
-    const name = String(u).split('/').pop();
-    const body = name === 'audio.json' ? audio : name === 'pdf_list.json' ? pdfs : [];
+    const url = String(u);
+    const name = url.split('/').pop();
+    const body = name === 'audio.json' ? audio
+        : name === 'pdf_list.json' ? pdfs
+        : /\/guides\/index\.json/.test(url) ? GUIDES
+        : [];
     return Promise.resolve({
         ok: true,
         json: () => Promise.resolve(body),
@@ -95,8 +112,13 @@ try {
     process.exit(1);
 }
 
+// Lets a fetch chain started by a click settle before the next assertion reads
+// the DOM. setTimeout(0) rather than a microtask: the app awaits a response and
+// then renders, so the render lands one macrotask later.
+const tick = () => new Promise((r) => setTimeout(r, 0));
+
 // init() is async; fetch resolves on the microtask queue.
-setTimeout(() => {
+setTimeout(async () => {
     const d = window.document;
     const q = s => d.querySelectorAll(s);
     const lines = [];
@@ -137,6 +159,79 @@ setTimeout(() => {
     check('pdf grid renders', q('#pdf-container > *').length > 0,
         `${q('#pdf-container > *').length} items`);
 
+    // ── Reading tab: গাইড / পিডিএফ / লেখা ────────────────────────────────────
+    // The guides reached the app last and are the easiest thing here to break
+    // silently: the list is fetched, so an empty pane looks like "nothing
+    // published yet" rather than like a bug. It did exactly that on the website
+    // for months, because /blog/index.json had no CORS header and the fetch the
+    // app makes from https://localhost was rejected with no visible symptom.
+    check('reading tab has three segments', q('.seg-btn[data-lib]').length === 3,
+        `${q('.seg-btn[data-lib]').length}`);
+    check('blog list moved into the reading tab', !!d.querySelector('#lib-pane-blog #blog-list'));
+
+    window.showSection('pdf');
+    window.showLibraryTab('guides');
+    await tick();
+    const guideCards = q('#guide-list .guide-card');
+    check('guide list renders', guideCards.length === GUIDES.items.length,
+        `${guideCards.length} of ${GUIDES.items.length}`);
+    check('guides are grouped by category', q('#guide-list .guide-grp').length === 2,
+        `${q('#guide-list .guide-grp').length} headings`);
+    check('category chips include an "all" chip', q('#guide-cats .guide-cat').length === 3,
+        `${q('#guide-cats .guide-cat').length}`);
+
+    window.filterGuides('জিন সংক্রান্ত');
+    check('filtering a category narrows the list',
+        q('#guide-list .guide-card').length === 1, `${q('#guide-list .guide-card').length}`);
+    check('a filtered list drops the group headings', q('#guide-list .guide-grp').length === 0);
+    window.filterGuides('');
+
+    // The whole point of framing the published page rather than re-rendering it
+    // is that the document keeps its own design; ?app=1 is what stops its web
+    // bar from showing up inside the app on top of the app's own header.
+    window.openGuide('a');
+    const guideSrc = d.getElementById('guide-frame')?.getAttribute('src') || '';
+    check('opening a guide frames the published page',
+        /\/guides\/a\/\?app=1$/.test(guideSrc), guideSrc);
+    check('guide reader opens', !d.getElementById('guide-modal')?.classList.contains('hidden'));
+    window.closeGuide();
+    check('closing a guide unloads the frame',
+        d.getElementById('guide-frame')?.getAttribute('src') === 'about:blank');
+
+    // ── Notices ──────────────────────────────────────────────────────────────
+    check('notices are reachable from the header', !!d.getElementById('notice-btn'));
+    check('notice inbox exists', !!d.getElementById('notice-modal'));
+    window.openNoticeModal();
+    check('notice inbox opens', !d.getElementById('notice-modal')?.classList.contains('hidden'));
+    check('an empty inbox says so, rather than rendering nothing',
+        (d.getElementById('notice-list')?.textContent || '').trim().length > 0);
+    window.closeNoticeModal();
+
+    // ── Sign-in options ──────────────────────────────────────────────────────
+    check('phone sign-in is built into the login sheet', !!d.getElementById('phone-auth-block'));
+    check('phone starts on the number step, not the code step',
+        d.getElementById('phone-step-code')?.classList.contains('hidden'));
+    // The formatter is the part a wrong keystroke reaches first, and Bangladeshi
+    // numbers get typed all three of these ways.
+    for (const [input, want] of [
+        ['01712345678', '+8801712345678'],
+        ['1712345678', '+8801712345678'],
+        ['+880 1712-345678', '+8801712345678'],
+    ]) {
+        d.getElementById('ph-number').value = input;
+        window.sendOtp();
+        check(`"${input}" is accepted as a phone number`,
+            !/ঠিক নয়/.test(d.getElementById('ph-error')?.textContent || ''),
+            d.getElementById('ph-error')?.textContent);
+    }
+    d.getElementById('ph-number').value = '12345';
+    window.sendOtp();
+    check('a short number is rejected before any SMS is attempted',
+        /ঠিক নয়/.test(d.getElementById('ph-error')?.textContent || ''));
+    window.resetPhoneAuth();
+    check('Facebook stays hidden until it is configured',
+        d.getElementById('facebook-signin-btn')?.classList.contains('hidden'));
+
     if (window.BUILD_TARGET === 'native') {
         window.showSection('practice');
         const rows = q('#practice-list .practice-row');
@@ -168,6 +263,11 @@ setTimeout(() => {
             d.getElementById('google-signin-btn')?.classList.contains('hidden'));
         check('native shell ran (or-divider hidden with it)',
             d.querySelector('#login-modal .or-divider')?.classList.contains('hidden'));
+        // The phone flow needs the same plugin: its web fallback is an invisible
+        // reCAPTCHA, which cannot solve inside a WebView. Offered without the
+        // plugin it would be a button that always fails.
+        check('phone sign-in hidden when the native plugin is absent',
+            d.getElementById('phone-auth-block')?.classList.contains('hidden'));
         check('account deletion is reachable', !!d.getElementById('delete-account-modal'));
         check('four nav tabs', q('.nav-item').length === 4, `${q('.nav-item').length}`);
         check('health disclaimers pinned on all three screens',
@@ -176,6 +276,8 @@ setTimeout(() => {
         check('five nav tabs', q('.nav-item').length === 5, `${q('.nav-item').length}`);
         check('purchase modal still present', !!d.getElementById('course-buy-modal'));
         check('utility rows still on the home screen', q('#section-home .util-row').length === 2);
+        check('phone sign-in offered on the web',
+            !d.getElementById('phone-auth-block')?.classList.contains('hidden'));
     }
 
     const before = fatal.length;

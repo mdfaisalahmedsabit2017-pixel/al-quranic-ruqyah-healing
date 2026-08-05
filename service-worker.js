@@ -1,6 +1,6 @@
 // Bump CACHE_NAME on every release that changes index.html / app.js.
 // v5 also switches the app shell off cache-first — see the fetch handler.
-const CACHE_NAME = 'ruqyah-pro-v11';  // v11: config files moved off the cache-first path
+const CACHE_NAME = 'ruqyah-pro-v12';  // v12: reading tab, notices, phone/Facebook sign-in
 const AUDIO_CACHE = 'ruqyah-audio-dl-v1';
 
 // Files that change with every deploy. Cache-first on these meant a returning

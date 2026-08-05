@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Ruqyah Pro</string>
-    <string name="title_activity_main">Ruqyah Pro</string>
-    <string name="package_name">com.ruqyah.pro</string>
-    <string name="custom_url_scheme">com.ruqyah.pro</string>
+    <string name="app_name">Self Ruqyah</string>
+    <string name="title_activity_main">Self Ruqyah</string>
+    <string name="package_name">com.selfruqyah.app</string>
+    <string name="custom_url_scheme">com.selfruqyah.app</string>
 </resources>
