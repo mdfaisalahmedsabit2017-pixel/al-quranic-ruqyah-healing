@@ -122,7 +122,13 @@ function inlineStyles(html, srcFile) {
         process.exit(1);
     }
 
-    const css = files.map(f => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
+    let css = files.map(f => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
+    // CSS comments and the JS marker syntax are the same shape, so the same
+    // stripper works. It has to run here rather than in buildHtml: the styles
+    // are inlined AFTER the markup is stripped, so rules for markup that was
+    // just cut would otherwise ride along into the APK — which is how the
+    // install banner's styles survived while its markup did not.
+    css = stripJsMarkers(css, isNative ? 'web-only' : 'native-only');
     // Re-indented to sit inside <style> exactly as the hand-written block did,
     // so the built output is unchanged by the extraction.
     const indented = css.split('\n').map(l => (l.trim() ? '        ' + l : l)).join('\n');

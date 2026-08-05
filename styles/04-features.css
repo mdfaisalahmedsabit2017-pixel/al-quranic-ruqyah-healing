@@ -394,6 +394,7 @@
 .onboarding-skip { margin-top: 12px; font-size: 0.82rem; color: var(--text-dim); background: none; border: none; cursor: pointer; font-family: inherit; }
 
 /* Install Banner */
+/* #web-only : styles for markup that is cut from the APK. */
 .install-banner {
     position: fixed; bottom: calc(var(--nav-total) + 10px); left: 12px; right: 12px;
     background: var(--surface); border: 1px solid rgba(0,229,153,0.25);
@@ -406,6 +407,7 @@
 .install-banner-text { font-size: 0.875rem; font-weight: 600; }
 .install-banner-sub { font-size: 0.72rem; color: var(--text-sub); margin-top: 2px; }
 .install-banner-actions { display: flex; gap: 6px; flex-shrink: 0; }
+/* /#web-only */
 .install-btn { padding: 8px 16px; border-radius: var(--r-md); background: var(--green); color: #000; font-weight: 700; font-size: 0.82rem; border: none; cursor: pointer; font-family: inherit; white-space: nowrap; }
 .install-dismiss { width: 32px; height: 32px; border-radius: var(--r-md); background: var(--raised); border: 1px solid var(--border); color: var(--text-sub); cursor: pointer; display: flex; align-items: center; justify-content: center; }
 

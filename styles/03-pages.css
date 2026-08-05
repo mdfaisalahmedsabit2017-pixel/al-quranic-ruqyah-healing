@@ -90,7 +90,10 @@
 .practice-list { display: flex; flex-direction: column; gap: 8px; }
 .practice-row {
     display: flex; align-items: center; gap: 14px;
-    width: 100%; text-align: right;
+    /* A <button> centres its text by default, so this has to be stated. It said
+       `right` until a Play screenshot showed the whole tab reading right to
+       left — titles jammed against the chevron with a gap after the icon. */
+    width: 100%; text-align: left;
     background: var(--surface, rgba(255,255,255,0.03));
     border: 1px solid var(--border, rgba(255,255,255,0.06));
     border-radius: var(--r-md);

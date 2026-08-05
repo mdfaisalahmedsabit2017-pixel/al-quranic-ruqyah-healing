@@ -116,7 +116,7 @@ function renderPracticeList() {
                 <span class="practice-row-title">${r.title}</span>
                 <span class="practice-row-status">${r.status}</span>
             </span>
-            <span class="practice-row-arrow">‹</span>
+            <span class="practice-row-arrow">›</span>
         </button>
     `).join('');
 }
@@ -3625,10 +3625,16 @@ window.obNext = function() {
 window.finishOnboarding = function() {
     localStorage.setItem('onboarded', '1');
     document.getElementById('onboarding')?.classList.add('hidden');
-    // Show install prompt after onboarding if available
-    setTimeout(checkInstallPrompt, 1000);
+    // Optional-called: the whole PWA install module is cut from the native
+    // build, so this identifier does not exist there.
+    setTimeout(() => window.checkInstallPrompt?.(), 1000);
 };
 
+/* #web-only : the PWA install prompt invites the reader to install the web app
+   instead — "কোনো App Store লাগবে না". Inside an app distributed BY an app
+   store that is anti-steering, and a reviewer greps the bundle rather than
+   running it. beforeinstallprompt never fires in an Android WebView, so this
+   was unreachable; unreachable is not absent. */
 // ══════════════════════════════════════════════════════════
 // PWA INSTALL PROMPT
 // ══════════════════════════════════════════════════════════
@@ -3637,16 +3643,21 @@ let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredInstallPrompt = e;
+    // The banner markup is cut from the native build, so this could only ever
+    // find nothing there — but the guard states the intent, and it is what
+    // keeps a served-from-http native build (which is how the Play screenshots
+    // are captured) from showing a "no App Store needed" banner.
+    if (IS_NATIVE) return;
     if (!localStorage.getItem('installDismissed') && localStorage.getItem('onboarded')) {
         setTimeout(() => document.getElementById('install-banner')?.classList.remove('hidden'), 2000);
     }
 });
 
-function checkInstallPrompt() {
+window.checkInstallPrompt = function() {
     if (deferredInstallPrompt && !localStorage.getItem('installDismissed')) {
         document.getElementById('install-banner')?.classList.remove('hidden');
     }
-}
+};
 
 window.triggerInstall = async function() {
     haptic(15);
@@ -3669,6 +3680,7 @@ window.dismissInstall = function() {
 window.showInstallHelp = function() {
     showToast('Browser menu → "Add to Home Screen" বা "Install App"');
 };
+/* /#web-only */
 
 // ══════════════════════════════════════════════════════════
 // RATING PROMPT

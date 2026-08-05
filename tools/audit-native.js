@@ -49,6 +49,18 @@ const FORBIDDEN_ANYWHERE = [
 // Purchase-facing language: banned in markup, reviewed elsewhere.
 const PURCHASE_LANGUAGE = ['৳', 'কিনুন', 'bkash', 'bKash', 'nagad', 'Nagad', 'Rocket'];
 
+// Anti-steering is not only about payment. Play's policy also covers pointing
+// users at another way to GET the app, and this codebase is a PWA as well as an
+// APK — it carries an install banner whose subtitle is, literally, "no App
+// Store needed". beforeinstallprompt never fires in an Android WebView so it
+// could not have appeared, but unreachable is not absent, and a reviewer who
+// unzips the bundle greps the strings rather than running the app.
+const DISTRIBUTION_STEERING = [
+    'App Store লাগবে না',
+    'install-banner',
+    'beforeinstallprompt',
+];
+
 // Function definitions that must not survive marker stripping.
 const FORBIDDEN_DEFINITIONS = [
     'window.openBuyModal',
@@ -108,6 +120,15 @@ for (const file of files) {
                 failures.push(`${at}  purchase language "${needle}" in shipped markup`);
             } else {
                 review.push(`${at}  ${needle}  ${line.trim().slice(0, 90)}`);
+            }
+        }
+
+        for (const needle of DISTRIBUTION_STEERING) {
+            // The comment explaining the guard in app.js names the handler, so
+            // exempt comment lines — the check is about shipped markup and live
+            // code, not about the note saying why the code is gated.
+            if (line.includes(needle) && !/^\s*(\/\/|\*|<!--)/.test(line)) {
+                failures.push(`${at}  distribution steering "${needle}"`);
             }
         }
     });

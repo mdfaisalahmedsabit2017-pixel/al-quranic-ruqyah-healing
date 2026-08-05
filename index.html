@@ -1284,6 +1284,13 @@
     </div>
 
     <!-- ── INSTALL BANNER ─────────────────────────────────── -->
+    <!-- #web-only : this invites the reader to install the PWA instead — "কোনো
+         App Store লাগবে না", no app store needed. Inside an app distributed BY
+         an app store that is textbook anti-steering, and a reviewer who unzips
+         the bundle greps for exactly this kind of sentence. beforeinstallprompt
+         never fires in an Android WebView so it would not have appeared, but
+         "unreachable" is not the same as "absent" and only one of them survives
+         a policy review. -->
     <div id="install-banner" class="install-banner hidden">
         <div>
             <p class="install-banner-text">📱 Home screen-এ add করুন</p>
@@ -1294,6 +1301,7 @@
             <button class="install-dismiss" onclick="dismissInstall()">✕</button>
         </div>
     </div>
+    <!-- /#web-only -->
 
     <!-- ── RATING MODAL ───────────────────────────────────── -->
     <div id="rating-modal" class="modal-overlay hidden">
