@@ -2097,8 +2097,19 @@ let guideQuery = '';
 
 async function loadGuides() {
     const list = document.getElementById('guide-list');
+    // Skeleton rows rather than a "loading" line, matching the audio and PDF
+    // tabs. The list is fetched over the network, so on a slow connection this
+    // is what the tab looks like for a second or two — and a word centred in an
+    // empty screen reads as an empty screen.
     if (list && !guideItems.length) {
-        list.innerHTML = '<p class="lib-msg">গাইড লোড হচ্ছে…</p>';
+        list.innerHTML = Array(5).fill(`
+            <div class="guide-card">
+                <div class="skeleton" style="width:34px;height:34px;border-radius:10px;flex-shrink:0"></div>
+                <div style="flex:1">
+                    <div class="skeleton" style="height:14px;width:62%;border-radius:6px"></div>
+                    <div class="skeleton" style="height:11px;width:88%;border-radius:6px;margin-top:8px"></div>
+                </div>
+            </div>`).join('');
     }
     try {
         const res = await fetch(`${API_BASE}/guides/index.json`, { cache: 'no-cache' });
@@ -2225,17 +2236,40 @@ window.openGuidePdf = function() {
 let blogPosts = [];
 
 async function loadBlog() {
+    // Same reasoning as the guides: fetched, so this is the tab's real state
+    // for as long as the network takes.
+    const listEl = document.getElementById('blog-list');
+    if (listEl && !blogPosts.length) {
+        listEl.innerHTML = Array(3).fill(`
+            <div class="blog-card">
+                <div class="skeleton" style="height:130px;border-radius:0"></div>
+                <div class="blog-card-b">
+                    <div class="skeleton" style="height:10px;width:38%;border-radius:6px"></div>
+                    <div class="skeleton" style="height:15px;width:80%;border-radius:6px;margin-top:9px"></div>
+                    <div class="skeleton" style="height:11px;width:95%;border-radius:6px;margin-top:8px"></div>
+                </div>
+            </div>`).join('');
+    }
     try {
         const res = await fetch(`${API_BASE}/blog/index.json`, { cache: 'no-cache' });
-        if (!res.ok) return;
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         blogPosts = await res.json();
     } catch (e) {
         console.warn('Blog load failed:', e);
-        return;                       // offline: leave the section empty, no error UI
+        // Both exits used to just return, which was fine when the pane started
+        // empty. With a skeleton in place that would leave it shimmering for
+        // ever — the one loading state worse than no loading state.
+        if (listEl) {
+            listEl.innerHTML = `<p class="lib-msg">লেখাগুলো আনা গেল না — ইন্টারনেট সংযোগ দেখে
+                <span class="resource-link" onclick="loadBlog()">আবার চেষ্টা করুন</span>।</p>`;
+        }
+        document.querySelector('.home-blog')?.classList.add('hidden');
+        return;
     }
     renderBlogLatest();
     renderBlogList();
 }
+window.loadBlog = loadBlog;
 
 const blogCard = (p) => `
     <div class="blog-card" onclick="openBlogPost('${p.slug}')">

@@ -149,6 +149,19 @@ setTimeout(async () => {
         });
         check('every local file the markup references is bundled',
             missing.length === 0, missing.join(', '));
+
+        // jsdom applies no CSS, so nothing else here can notice an unstyled
+        // page. The stylesheet is authored as styles/*.css and inlined by
+        // build.js; if that step were skipped the app would boot, render every
+        // element, pass every other assertion, and look like a wall of text.
+        // These three tokens come from the first, middle and last file.
+        const style = /<style>([\s\S]*?)<\/style>/.exec(raw);
+        const cssText = style ? style[1] : '';
+        const wanted = ['--bg:', '.audio-card', '#app-nav'];
+        const absent = wanted.filter(t => !cssText.includes(t));
+        check('the stylesheet was inlined into the page',
+            cssText.length > 50000 && absent.length === 0,
+            `${(cssText.length / 1024).toFixed(0)} KB` + (absent.length ? `, missing ${absent.join(', ')}` : ''));
     }
 
     const cards = q('#audio-container .audio-card');

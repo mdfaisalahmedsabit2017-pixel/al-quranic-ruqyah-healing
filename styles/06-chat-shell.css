@@ -1,0 +1,332 @@
+/* 06-chat-shell.css — AI chat, international design layer, motion, desktop shell
+   Extracted from index.html. build.js concatenates styles/*.css in
+   filename order and inlines the result; load order is therefore the
+   numeric prefix, and it is load-bearing. */
+
+/* ═══════════════════════════════════════════════════
+   CHATBOT
+   ═══════════════════════════════════════════════════ */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--hdr-total) - var(--nav-total) - 64px);
+    background: var(--surface);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+.chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--raised);
+    border-bottom: 1px solid var(--border);
+}
+.chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.chat-avatar {
+    font-size: 1.8rem;
+}
+.chat-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+}
+.chat-subtitle {
+    font-size: 0.72rem;
+    color: var(--green);
+    font-weight: 600;
+}
+.chat-messages-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.chat-msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 82%;
+}
+.chat-msg.bot {
+    align-self: flex-start;
+}
+.chat-msg.user {
+    align-self: flex-end;
+}
+.chat-msg-bubble {
+    padding: 10px 14px;
+    border-radius: var(--r-lg);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+.chat-msg.bot .chat-msg-bubble {
+    background: var(--raised);
+    color: var(--text);
+    border-top-left-radius: 4px;
+    border: 1px solid var(--border);
+}
+.chat-msg.user .chat-msg-bubble {
+    background: var(--green-dim);
+    color: var(--text);
+    border-top-right-radius: 4px;
+    border: 1px solid rgba(0,229,153,0.18);
+}
+.chat-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    align-self: flex-start;
+}
+.chat-chip {
+    background: var(--overlay);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.chat-chip:hover {
+    border-color: var(--green-glow);
+    color: var(--text);
+    background: var(--raised);
+}
+.chat-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--raised);
+    border-top: 1px solid var(--border);
+}
+#chat-input {
+    flex: 1;
+    padding: 11px 16px;
+    border-radius: var(--r-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+#chat-input:focus {
+    border-color: var(--green);
+}
+.chat-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    align-self: flex-start;
+}
+.chat-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--border-hi);
+    border-top: 2px solid var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════
+   INTERNATIONAL DESIGN LAYER
+   Appended last so it overrides without editing the rules above.
+   Everything here is presentation only — no markup or JS depends on it,
+   so it can be deleted wholesale to return to the previous look.
+   ═══════════════════════════════════════════════════ */
+
+:root {
+    --sidebar-w: 252px;
+    --shell-max: 1040px;
+    /* one shadow ramp instead of ad-hoc rgba values per component */
+    --sh-1: 0 1px 2px rgba(0,0,0,0.35);
+    --sh-2: 0 4px 14px rgba(0,0,0,0.40);
+    --sh-3: 0 14px 40px rgba(0,0,0,0.50);
+    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ── Line icons replace emoji in structural spots ──
+   Emoji render differently on every OS and can't take the accent
+   colour, which is the loudest "hobby project" signal in the UI.
+   Status emoji inside toasts (✅ ⚠️) are intentionally left alone. */
+.ico {
+    width: 1em; height: 1em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+/* ── Typography: tighter headings, looser body ── */
+.section-title {
+    font-size: 1.02rem;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title .ico { width: 1.05em; height: 1.05em; color: var(--green); stroke-width: 1.8; }
+.section-header-row { align-items: baseline; }
+
+.consult-icon { color: var(--green); }
+.consult-icon .ico { width: 22px; height: 22px; }
+
+.course-emoji { color: var(--green); line-height: 1; }
+.course-badge { display: inline-flex; align-items: center; gap: 5px; }
+.course-badge .ico { stroke-width: 2.2; }
+.book-btn, .book-btn-ghost, .course-buy-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+}
+.course-title, .book-title, .patient-name { letter-spacing: -0.015em; }
+.course-desc, .book-desc { line-height: 1.6; }
+
+/* Bengali numerals and Latin sit on different baselines; the Latin face
+   runs large next to Hind Siliguri, so pull it back a touch. */
+.course-price, .book-title { font-feature-settings: "ss01"; }
+
+/* ── Cards: real elevation instead of a flat 1px outline ── */
+.course-card, .book-card, .consult-card, .patient-card {
+    box-shadow: var(--sh-1);
+    transition: transform 0.18s var(--ease),
+                border-color 0.18s var(--ease),
+                box-shadow 0.18s var(--ease);
+}
+@media (hover: hover) {
+    .course-card:hover, .book-card:hover, .consult-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--sh-2);
+    }
+}
+
+/* ── Buttons: consistent press feedback ── */
+.course-buy-btn, .book-btn, .book-btn-ghost, .btn-primary {
+    transition: transform 0.12s var(--ease), background 0.15s var(--ease),
+                box-shadow 0.15s var(--ease);
+}
+.course-buy-btn:active, .book-btn:active, .btn-primary:active { transform: scale(0.985); }
+
+/* ── Visible keyboard focus (was missing entirely) ── */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+    border-radius: var(--r-sm);
+}
+
+/* Tab switching. Without this a section swap is an instant repaint,
+   which reads as a page reload rather than as movement inside one app.
+   Short on purpose — long enough to be felt, not long enough to wait
+   for. Disabled wholesale by the reduced-motion block below. */
+@keyframes sectionIn {
+    from { opacity: 0; transform: translateY(8px); }
+}
+.section-enter { animation: sectionIn .13s cubic-bezier(.2,.8,.2,1) both; }
+
+/* Sheets and modals. Every one of the twenty-odd overlays in this file
+   opens by having .hidden removed, and .hidden is display:none — going
+   from display:none to displayed restarts a CSS animation on its own,
+   so this needs no JavaScript and no per-modal wiring.
+   The backdrop fades and the panel rises: an overlay that simply
+   appears reads as a new screen, one that rises reads as something
+   sliding over the screen you were already on.
+   Minimising the player does not touch .hidden (it swaps a class on
+   <body>), so the mini/full transition is unaffected — which matters,
+   because re-animating there would re-render the YouTube frame. */
+@keyframes sheetIn { from { opacity: 0; } }
+@keyframes sheetPanelIn {
+    from { opacity: 0; transform: translateY(12px) scale(.985); }
+}
+.modal-overlay:not(.hidden),
+.modal:not(.hidden) { animation: sheetIn .14s ease-out both; }
+.modal-overlay:not(.hidden) > .modal-box {
+    animation: sheetPanelIn .19s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ═══ DESKTOP SHELL ═══
+   Below 1024px nothing here applies, so the phone layout — where almost
+   all the traffic is — stays exactly as it was. Above it, the bottom tab
+   bar becomes a real sidebar instead of five buttons stretched across a
+   1500px screen. */
+@media (min-width: 1024px) {
+    #app-nav {
+        top: 0; bottom: 0; right: auto;
+        width: var(--sidebar-w);
+        height: 100vh;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 4px;
+        padding: calc(var(--hdr-h) + 16px) 12px 16px;
+        border-top: none;
+        border-right: 1px solid var(--border);
+        background: rgba(10,10,10,0.92);
+        overflow-y: auto;
+    }
+    .nav-item {
+        flex: none;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: var(--r-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        position: relative;
+    }
+    .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .nav-item.active svg { transform: none; }
+    .nav-item.active::before {
+        content: '';
+        position: absolute; left: 0; top: 50%;
+        width: 3px; height: 18px; margin-top: -9px;
+        border-radius: 0 3px 3px 0;
+        background: var(--green);
+    }
+    @media (hover: hover) {
+        .nav-item:not(.active):hover { background: rgba(255,255,255,0.04); }
+    }
+
+    #app-header {
+        left: var(--sidebar-w);
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+    main, #main-content { margin-left: var(--sidebar-w); }
+    .container {
+        max-width: var(--shell-max);
+        padding: 28px 32px 40px;
+    }
+    .footer { margin-left: var(--sidebar-w); }
+}
+
+/* Very wide screens: stop the column growing forever */
+@media (min-width: 1600px) {
+    .container { max-width: 1140px; }
+}

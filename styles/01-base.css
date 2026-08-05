@@ -1,0 +1,281 @@
+/* 01-base.css — tokens, reset, typography, layout, cards, buttons, header, bottom nav
+   Extracted from index.html. build.js concatenates styles/*.css in
+   filename order and inlines the result; load order is therefore the
+   numeric prefix, and it is load-bearing. */
+
+/* ═══════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════ */
+:root {
+    --bg:         #080808;
+    --surface:    #0f0f0f;
+    --raised:     #141414;
+    --overlay:    #1b1b1b;
+    --border:     rgba(255,255,255,0.065);
+    --border-md:  rgba(255,255,255,0.11);
+    --border-hi:  rgba(255,255,255,0.18);
+
+    --green:      #00E599;
+    --green-dk:   #00c97d;
+    --green-glow: rgba(0,229,153,0.2);
+    --green-dim:  rgba(0,229,153,0.08);
+    --green-faint: rgba(0,229,153,0.04);
+
+    --text:       #f0f0f0;
+    --text-sub:   #8a8a8a;
+    --text-dim:   #444;
+    --text-inv:   #000;
+
+    --r-sm:  8px;
+    --r-md:  12px;
+    --r-lg:  16px;
+    --r-xl:  20px;
+    --r-2xl: 28px;
+
+    --hdr-h: 56px;
+    --nav-h: 68px;
+
+    /* Display cutout / gesture bar. targetSdk 35 means Android 15 draws
+       the app edge-to-edge whether we ask for it or not, so without
+       these the header sits under the status bar and the bottom nav
+       under the gesture pill. The 0px fallbacks keep desktop unchanged.
+       Requires viewport-fit=cover on the viewport meta. */
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+
+    /* Full occupied height of the two bars. Anything that floats above
+       the nav or below the header should measure against these, not the
+       raw --nav-h/--hdr-h, or it will sit under the system UI. */
+    --nav-total: calc(var(--nav-h) + var(--sab));
+    --hdr-total: calc(var(--hdr-h) + var(--sat));
+}
+
+/* ═══════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { color-scheme: dark; height: 100%; }
+body {
+    font-family: 'Hind Siliguri', 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100%;
+    padding-top: calc(var(--hdr-h) + var(--sat));
+    padding-bottom: calc(var(--nav-h) + var(--sab) + 12px);
+}
+
+/* ═══════════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════════ */
+h1, h2, h3, h4 { line-height: 1.25; font-weight: 700; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ═══════════════════════════════════════════════════
+   LAYOUT UTILITIES
+═══════════════════════════════════════════════════ */
+.container { max-width: 860px; margin: 0 auto; padding: 20px 16px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.grid-audio { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.grid-pdf   { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 600px) {
+    .grid-audio { grid-template-columns: 1fr 1fr; }
+    .grid-pdf   { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 900px) {
+    .grid-pdf   { grid-template-columns: 1fr 1fr 1fr; }
+}
+.flex  { display: flex; }
+.col   { flex-direction: column; }
+.ai-c  { align-items: center; }
+.jc-b  { justify-content: space-between; }
+.jc-c  { justify-content: center; }
+.g-1   { gap: 4px; }
+.g-2   { gap: 8px; }
+.g-3   { gap: 12px; }
+.g-4   { gap: 16px; }
+.f-1   { flex: 1; }
+.mn-0  { min-width: 0; }
+.s-0   { flex-shrink: 0; }
+.hidden { display: none !important; }
+.mt-a  { margin-top: auto; }
+.rel   { position: relative; }
+.abs   { position: absolute; }
+.inset { inset: 0; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.oh { overflow: hidden; }
+.oa { overflow: auto; }
+.oy { overflow-y: auto; }
+.trunc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.clamp1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ta-c  { text-align: center; }
+.ta-r  { text-align: right; }
+.ta-l  { text-align: left; }
+.space-y > * + * { margin-top: 10px; }
+.space-y-sm > * + * { margin-top: 6px; }
+.space-y-lg > * + * { margin-top: 16px; }
+
+/* ═══════════════════════════════════════════════════
+   SURFACE / CARD
+═══════════════════════════════════════════════════ */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-xl);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+    border-color: rgba(0,229,153,0.22);
+    box-shadow: 0 0 0 1px rgba(0,229,153,0.12), 0 16px 48px rgba(0,0,0,0.6);
+    transform: translateY(-1px);
+}
+.card-flat {
+    background: var(--raised);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+}
+
+/* ═══════════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════════ */
+.btn-primary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    background: var(--green); color: var(--text-inv);
+    border: none; border-radius: var(--r-md);
+    padding: 11px 22px; font-weight: 700; font-size: 0.875rem;
+    transition: background 0.15s, box-shadow 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+.btn-primary:hover  { background: var(--green-dk); box-shadow: 0 0 24px var(--green-glow); }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-ghost {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    background: transparent; color: var(--text-sub);
+    border: 1px solid var(--border-md); border-radius: var(--r-md);
+    padding: 11px 22px; font-weight: 600; font-size: 0.875rem;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    white-space: nowrap;
+}
+.btn-ghost:hover { border-color: var(--border-hi); color: var(--text); background: var(--raised); }
+
+.btn-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--raised); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    color: var(--text-sub);
+}
+.btn-icon:hover { background: var(--overlay); border-color: var(--border-md); color: var(--text); }
+
+.btn-icon-sq {
+    width: 36px; height: 36px; border-radius: var(--r-md);
+    background: var(--raised); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    color: var(--text-sub);
+}
+.btn-icon-sq:hover { background: var(--overlay); color: var(--text); }
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+#app-header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    /* The bar keeps its 56px of content and grows by the status-bar
+       inset, so the blurred background reaches the top of the screen
+       while the buttons stay clear of it. */
+    height: calc(var(--hdr-h) + var(--sat));
+    padding-top: var(--sat);
+    background: rgba(8,8,8,0.82);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding-left: calc(16px + var(--sal));
+    padding-right: calc(16px + var(--sar));
+}
+.header-logo {
+    font-size: 1rem; font-weight: 800;
+    color: var(--green); letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 7px;
+}
+.header-logo-dot {
+    width: 7px; height: 7px; background: var(--green);
+    border-radius: 50%; box-shadow: 0 0 8px var(--green);
+}
+.header-actions { display: flex; align-items: center; gap: 6px; }
+
+/* Profile dropdown */
+#profile-dropdown {
+    position: absolute; right: 0; top: calc(100% + 8px);
+    background: var(--surface);
+    border: 1px solid var(--border-md);
+    border-radius: var(--r-xl);
+    padding: 16px;
+    min-width: 200px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    z-index: 60;
+}
+.dropdown-sep {
+    height: 1px; background: var(--border);
+    margin: 12px 0;
+}
+.dropdown-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px; border-radius: var(--r-md);
+    font-size: 0.85rem; font-weight: 600;
+    color: var(--text-sub); background: none; border: none; width: 100%;
+    cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.dropdown-item:hover { background: var(--raised); color: var(--text); }
+.dropdown-item.danger { color: #ff6b6b; }
+.dropdown-item.danger:hover { background: rgba(255,107,107,0.08); }
+
+/* Avatar */
+.user-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    object-fit: cover; border: 2px solid var(--green);
+}
+.user-initials-badge {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--green); color: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 800;
+}
+
+/* ═══════════════════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════════════════ */
+#app-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+    height: calc(var(--nav-h) + var(--sab));
+    background: rgba(8,8,8,0.9);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: stretch;
+    /* Extra bottom padding lifts the tab labels above the gesture pill. */
+    padding: 6px calc(4px + var(--sar)) calc(10px + var(--sab)) calc(4px + var(--sal));
+}
+.nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+    border-radius: var(--r-md); border: none;
+    background: transparent; color: var(--text-dim);
+    font-family: inherit; font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.02em; cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+}
+.nav-item svg { transition: transform 0.2s; }
+.nav-item:hover { color: var(--text-sub); }
+.nav-item.active {
+    color: var(--green);
+    background: var(--green-dim);
+}
+.nav-item.active svg { transform: scale(1.1); }

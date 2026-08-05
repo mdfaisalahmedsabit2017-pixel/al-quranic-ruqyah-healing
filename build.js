@@ -73,15 +73,81 @@ function assertMarkersWellFormed(html, tag, srcFile) {
     }
 }
 
+// The stylesheet is authored as styles/*.css and inlined into a single <style>
+// here, replacing the run of <link> tags in the source. Two reasons it is
+// inlined rather than shipped as a file:
+//
+//   - service-worker.js is network-first on the app shell and cache-first on
+//     everything else. A separate stylesheet would fall on the cache-first
+//     side, making CSS the one asset a fix could never reach on a device that
+//     already has the app.
+//   - it is one fewer request on a cold start, and on the phone that start is
+//     the whole first impression.
+//
+// Order is the filename order, and it is load-bearing: 01-base.css defines the
+// custom properties everything after it reads. Splitting on any other basis —
+// by feature, alphabetically by selector — would need @layer to stay correct.
+const STYLE_LINKS = /(?:[ \t]*<link rel="stylesheet" href="styles\/[^"]+">\r?\n)+/;
+
+function inlineStyles(html, srcFile) {
+    if (!STYLE_LINKS.test(html)) {
+        // Not a warning. Every stylesheet rule in the app is in those files, so
+        // a build that quietly skipped them would produce an unstyled page and
+        // say nothing about it.
+        console.error(`\n❌ ${srcFile} has no <link rel="stylesheet" href="styles/...">.`);
+        console.error('   build.js inlines styles/*.css there; without the tags the page has no CSS.');
+        process.exit(1);
+    }
+    const dir = path.join(__dirname, 'styles');
+    const files = fs.existsSync(dir)
+        ? fs.readdirSync(dir).filter(f => f.endsWith('.css')).sort()
+        : [];
+    if (!files.length) {
+        console.error('\n❌ styles/ is missing or has no .css files.');
+        console.error('   Every rule in the app lives there; the built page would have no CSS at all.');
+        process.exit(1);
+    }
+    // The build inlines whatever is on disk, so a new file always reaches both
+    // outputs. What drifts is index.html's own <link> list, which is the only
+    // thing that styles the page when it is opened straight from the repo —
+    // and a rule that works in the build but not in the source file is a
+    // uniquely confusing thing to debug.
+    const linked = [...html.matchAll(/href="styles\/([^"]+)"/g)].map(m => m[1]);
+    const missing = files.filter(f => !linked.includes(f));
+    const extra = linked.filter(f => !files.includes(f));
+    if (missing.length || extra.length) {
+        console.error(`\n❌ ${srcFile}'s <link> tags do not match styles/.`);
+        if (missing.length) console.error(`   on disk but not linked: ${missing.join(', ')}`);
+        if (extra.length) console.error(`   linked but not on disk: ${extra.join(', ')}`);
+        process.exit(1);
+    }
+
+    const css = files.map(f => fs.readFileSync(path.join(dir, f), 'utf8')).join('\n');
+    // Re-indented to sit inside <style> exactly as the hand-written block did,
+    // so the built output is unchanged by the extraction.
+    const indented = css.split('\n').map(l => (l.trim() ? '        ' + l : l)).join('\n');
+    return html.replace(STYLE_LINKS, `    <style>\n${indented}\n    </style>\n`);
+}
+
 function buildHtml(srcFile, destFile) {
     let html = fs.readFileSync(path.join(__dirname, srcFile), 'utf8');
     const before = html.length;
     assertMarkersWellFormed(html, 'web-only', srcFile);
     assertMarkersWellFormed(html, 'native-only', srcFile);
     html = stripMarkers(html, isNative ? 'web-only' : 'native-only');
+    const stripped = before - html.length;
+    // After stripping, so a #web-only region can never contain the link block.
+    const afterStrip = html.length;
+    if (srcFile === 'index.html') html = inlineStyles(html, srcFile);
+    const inlined = html.length - afterStrip;
     fs.writeFileSync(path.join(distDir, destFile), html);
-    const saved = before - html.length;
-    console.log(`Built ${srcFile} -> ${outName}/${destFile}` + (saved ? ` (stripped ${(saved / 1024).toFixed(1)} KB)` : ''));
+    // Reported separately: stripping removes markup and inlining adds CSS, and
+    // netting them off produced a single "stripped -120 KB" that read as a bug.
+    const note = [
+        stripped ? `stripped ${(stripped / 1024).toFixed(1)} KB` : '',
+        inlined ? `+${(inlined / 1024).toFixed(1)} KB css` : '',
+    ].filter(Boolean).join(', ');
+    console.log(`Built ${srcFile} -> ${outName}/${destFile}` + (note ? ` (${note})` : ''));
 }
 
 // The web root must be the marketing page, but Vercel checks the filesystem
