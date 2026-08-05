@@ -208,7 +208,14 @@ setTimeout(async () => {
     window.closeNoticeModal();
 
     // ── Sign-in options ──────────────────────────────────────────────────────
+    // v1.0 ships Google and email only. Both of the other flows are written and
+    // switched off at the config, so what is asserted here is that they are
+    // genuinely not on screen — and, below, that the phone number formatter
+    // still behaves, since it is what a wrong keystroke reaches first on the
+    // day the flag is flipped.
     check('phone sign-in is built into the login sheet', !!d.getElementById('phone-auth-block'));
+    check('phone sign-in stays hidden while PHONE_LOGIN_ENABLED is false',
+        d.getElementById('phone-auth-block')?.classList.contains('hidden'));
     check('phone starts on the number step, not the code step',
         d.getElementById('phone-step-code')?.classList.contains('hidden'));
     // The formatter is the part a wrong keystroke reaches first, and Bangladeshi
@@ -263,11 +270,7 @@ setTimeout(async () => {
             d.getElementById('google-signin-btn')?.classList.contains('hidden'));
         check('native shell ran (or-divider hidden with it)',
             d.querySelector('#login-modal .or-divider')?.classList.contains('hidden'));
-        // The phone flow needs the same plugin: its web fallback is an invisible
-        // reCAPTCHA, which cannot solve inside a WebView. Offered without the
-        // plugin it would be a button that always fails.
-        check('phone sign-in hidden when the native plugin is absent',
-            d.getElementById('phone-auth-block')?.classList.contains('hidden'));
+        check('email sign-in survives in the APK', !!d.getElementById('auth-email'));
         check('account deletion is reachable', !!d.getElementById('delete-account-modal'));
         check('four nav tabs', q('.nav-item').length === 4, `${q('.nav-item').length}`);
         check('health disclaimers pinned on all three screens',
@@ -276,8 +279,13 @@ setTimeout(async () => {
         check('five nav tabs', q('.nav-item').length === 5, `${q('.nav-item').length}`);
         check('purchase modal still present', !!d.getElementById('course-buy-modal'));
         check('utility rows still on the home screen', q('#section-home .util-row').length === 2);
-        check('phone sign-in offered on the web',
-            !d.getElementById('phone-auth-block')?.classList.contains('hidden'));
+        // Google and email survive on both targets — email above all, because
+        // every account created before this release has a password and nothing
+        // else. Removing it would lock those people out for good.
+        check('Google sign-in offered on the web',
+            !d.getElementById('google-signin-btn')?.classList.contains('hidden'));
+        check('email sign-in still offered', !!d.getElementById('auth-email')
+            && !d.getElementById('auth-login-section')?.classList.contains('hidden'));
     }
 
     const before = fatal.length;

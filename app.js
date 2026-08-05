@@ -1283,14 +1283,23 @@ function phoneAuthMessage(e) {
     return raw;
 }
 
-// Phone sign-in is a paid feature on the Firebase side and has to be switched
-// on in the console before it will do anything. Rather than let every tap fail,
-// the block hides itself the first time the project answers "not allowed", and
-// remembers — an app that offers a broken button teaches people not to trust
+// Phone sign-in is off in v1.0 — it bills per SMS and needs the Blaze plan, so
+// it stays behind PHONE_LOGIN_ENABLED until that is deliberately turned on.
+//
+// The second condition is the runtime safety net for after it is enabled:
+// Firebase answers operation-not-allowed when the provider is switched off at
+// the project level, and that is a setting, not a transient failure — it will
+// be true for every user on every attempt. Hide it rather than let it fail
+// again, because an app that offers a broken button teaches people not to trust
 // the working ones.
 function initPhoneAuth() {
-    if (localStorage.getItem('phoneAuthUnavailable') === '1') {
-        document.getElementById('phone-auth-block')?.classList.add('hidden');
+    const off = window.PHONE_LOGIN_ENABLED !== true
+        || localStorage.getItem('phoneAuthUnavailable') === '1';
+    if (!off) return;
+    document.getElementById('phone-auth-block')?.classList.add('hidden');
+    // The "অথবা" rule separates phone from the social buttons. With phone gone
+    // and Facebook off, it sits above Google alone and divides nothing.
+    if (window.FACEBOOK_ENABLED !== true) {
         document.getElementById('social-divider')?.classList.add('hidden');
     }
 }

@@ -53,7 +53,12 @@ General → **Add app** → Android:
 Firebase Console → **Authentication → Sign-in method → Google → Enable**।
 Project support email হিসেবে নিজের ইমেইল দিন। **Save**।
 
-## ধাপ ৩ক — মোবাইল নম্বর (OTP) চালু করা
+## ধাপ ৩ক — মোবাইল নম্বর (OTP) — v1.0-এ বন্ধ
+
+> **v1.0-এ ফোন লগইন বন্ধ।** কোড বসানো ও টেস্ট করা আছে, কিন্তু
+> `firebase-config.js`-এ `window.PHONE_LOGIN_ENABLED = false` — তাই লগইন
+> পর্দায় শুধু Google ও ইমেইল দেখা যায়। খরচ শুরু করার সিদ্ধান্ত নিলে নিচের
+> ধাপগুলো করে ওই লাইনটা `true` করবেন — সেটাই শেষ ধাপ, প্রথম নয়।
 
 **Authentication → Sign-in method → Phone → Enable**।
 
