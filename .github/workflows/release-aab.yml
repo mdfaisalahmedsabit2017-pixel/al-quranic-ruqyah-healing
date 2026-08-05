@@ -69,6 +69,11 @@ jobs:
       - name: Policy audit (native/)
         run: npm run audit:native
 
+      # An auth provider whose SDK variables.gradle excludes builds cleanly and
+      # then crashes the app on launch. Must not reach a production track.
+      - name: Android config check
+        run: npm run check:android
+
       - name: Smoke test
         run: node tools/smoke.js native
 

@@ -46,6 +46,12 @@ jobs:
       - name: Policy audit
         run: npm run audit:native
 
+      # A provider listed in capacitor.config.json whose SDK variables.gradle
+      # leaves out compiles, links, packages and then kills the app on launch
+      # with NoClassDefFoundError. Nothing else in this pipeline can see it.
+      - name: Android config check
+        run: npm run check:android
+
       # Boots the built page in jsdom. Catches startup exceptions that a parse
       # check and a handler cross-reference both sail straight past.
       - name: Smoke test

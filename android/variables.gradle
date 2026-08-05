@@ -21,12 +21,20 @@ ext {
     // provider to actually work.
     rgcfaIncludeGoogle = true
 
-    // Same trap, second provider. Left false until the Facebook app exists:
-    // the login SDK pulls in a manifest that *requires* facebook_app_id and
-    // facebook_client_token string resources, so turning this on before those
-    // are set makes the app crash at launch rather than merely lack a button.
-    // Flip to true at the same time as android/app/src/main/res/values/
-    // facebook.xml gets real values — see docs/facebook-login.md.
+    // Same trap, second provider, and it bites from BOTH sides:
+    //
+    //   false + "facebook.com" in capacitor.config.json → the plugin builds a
+    //     FacebookAuthProviderHandler at load time, the compileOnly classes are
+    //     not in the APK, NoClassDefFoundError escapes every catch(Exception)
+    //     in the chain, and the app dies on the splash screen. (This shipped.)
+    //   true + no facebook.xml → the login SDK's manifest requires the
+    //     facebook_app_id and facebook_client_token resources and the app dies
+    //     the same way.
+    //
+    // So this flag and the providers list must move together, and both must
+    // wait for android/app/src/main/res/values/facebook.xml to hold real
+    // values. tools/check-android.js enforces the pairing; see
+    // docs/facebook-login.md for the order.
     rgcfaIncludeFacebook = false
     facebookLoginVersion = '18.0.0'
 

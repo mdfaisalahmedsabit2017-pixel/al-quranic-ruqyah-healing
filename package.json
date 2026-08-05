@@ -7,9 +7,10 @@
     "build": "node build.js --target=web",
     "build:native": "node build.js --target=native",
     "audit:native": "node tools/audit-native.js",
+    "check:android": "node tools/check-android.js",
     "smoke": "node tools/smoke.js native && node tools/smoke.js public",
-    "check": "npm run build && npm run build:native && npm run audit:native && npm run smoke",
-    "sync": "npm run build:native && npm run audit:native && npx cap sync android",
+    "check": "npm run build && npm run build:native && npm run audit:native && npm run check:android && npm run smoke",
+    "sync": "npm run build:native && npm run audit:native && npm run check:android && npx cap sync android",
     "assets": "npx capacitor-assets generate --android",
     "brand": "node tools/make_brand_assets.js && npx capacitor-assets generate --android"
   },

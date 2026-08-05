@@ -89,7 +89,18 @@ Facebook ড্যাশবোর্ড → **Settings → Basic → Add Platfor
 rgcfaIncludeFacebook = true
 ```
 
-> ⚠️ **ক্রম মানতেই হবে।** `facebook.xml`-এর আগে এটা `true` করলে অ্যাপ **চালু হওয়ার সাথে সাথেই ক্র্যাশ করবে** — Facebook SDK-র manifest ওই দুটো string রিসোর্স *বাধ্যতামূলক* করে। বাটন না থাকা নয়, পুরো অ্যাপ বন্ধ।
+**একই সাথে** `capacitor.config.json`-এ প্রোভাইডার ফেরত দিন:
+
+```json
+"providers": ["google.com", "facebook.com", "phone"]
+```
+
+> ⚠️ **এই দুটো একসাথেই বদলাতে হবে, এবং `facebook.xml`-এর পরে।** যেকোনো একটা এগিয়ে গেলে অ্যাপ **চালু হওয়ার সাথে সাথেই বন্ধ হয়ে যাবে**, কোনো এরর মেসেজ ছাড়াই:
+>
+> - প্রোভাইডার তালিকায় আছে কিন্তু gradle ফ্ল্যাগ `false` → ক্লাসগুলো APK-তে নেই, প্লাগিন লোডেই `NoClassDefFoundError`। **v1.0-এর আগে ঠিক এটাই ঘটেছিল।**
+> - ফ্ল্যাগ `true` কিন্তু `facebook.xml` নেই → SDK-র manifest ওই দুটো string রিসোর্স *বাধ্যতামূলক* করে।
+>
+> `npm run check:android` জোড়াটা মিলিয়ে দেখে — বিল্ডের আগেই ধরা পড়বে।
 
 ## ৪ · বাটন চালু
 
