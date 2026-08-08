@@ -28,6 +28,19 @@
 // — legitimately displays past revenue in ৳. Failing on those would mean either
 // deleting the admin panel or maintaining a pile of indirection that buys no
 // actual policy safety. They are printed as a review list instead.
+//
+// ONE CHECK HERE IS NOT ABOUT PLAY POLICY AT ALL: the admin finance tab. That
+// tab renders the owner's own bKash / Nagad / Rocket and bank ledger, read from
+// a private Google Sheet. It must stay out of the APK for *privacy* reasons —
+// personal financial data has no business inside a shipped app bundle, gate or
+// no gate. It happens to also be a policy risk, because the vocabulary it uses
+// is exactly what a reviewer greps for, so the needles below serve both ends.
+//
+// The finance needles are chosen to appear ONLY inside marker-stripped regions.
+// In particular the pane's element id is not one of them: switchAdminView() is
+// shared code that ships to the APK and legitimately references the id to hide
+// a pane that is absent there. Class names and the endpoint path are used
+// instead, since those exist only in web-only markup, CSS and JS.
 
 const fs = require('fs');
 const path = require('path');
@@ -44,6 +57,12 @@ const FORBIDDEN_ANYWHERE = [
     'PAYMENT_BKASH',
     'PAYMENT_NAGAD',
     'PAYMENT_ROCKET',
+    // The owner's personal ledger. Both needles live only in web-only regions:
+    // fin-balgrid in the finance markup and its stylesheet, /api/finance in the
+    // finance JS. Covers all three layers, including CSS-inlined-into-HTML,
+    // which has no other tripwire.
+    'fin-balgrid',
+    '/api/finance',
 ];
 
 // Purchase-facing language: banned in markup, reviewed elsewhere.
@@ -66,6 +85,10 @@ const FORBIDDEN_DEFINITIONS = [
     'window.openBuyModal',
     'window.submitCoursePurchase',
     'window.selectPayMethod',
+    'window.openFinanceView',
+    'window.loadFinance',
+    'window.finShiftMonth',
+    'window.finLoadMore',
 ];
 
 function walk(d, out = []) {

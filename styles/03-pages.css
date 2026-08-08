@@ -340,3 +340,12 @@
     display: none; align-items: center; gap: 6px;
 }
 .login-required-msg { text-align: center; padding: 20px 0; color: var(--text-sub); font-size: 0.875rem; }
+
+/* The admin finance tab's styles are web-only and deliberately NOT here, where
+   they would belong stylistically. They live at the end of 06-chat-shell.css.
+   Reason: build.js concatenates styles/*.css in filename order and strips
+   markers afterwards, so a marker opened in one file can match a close in a
+   later one — and unlike HTML, marker well-formedness is not validated for CSS.
+   06 is the last file concatenated, so a mistyped closing marker there can only
+   fail to strip (loud — audit:native catches it) instead of swallowing
+   everything down to the next region's close (silent). */

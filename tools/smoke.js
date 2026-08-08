@@ -268,6 +268,12 @@ setTimeout(async () => {
             return r >= 0 && u >= 0 && r < u;
         })());
         check('no purchase modal in the DOM', !d.getElementById('course-buy-modal'));
+        // The finance tab is the owner's personal bKash/Nagad/Rocket ledger. It
+        // must not exist in the APK at all — positive assertions here so a strip
+        // that removed the wrong thing is caught as well as one that removed
+        // nothing (audit-native.js covers the latter).
+        check('no finance pane in the APK', !d.getElementById('admin-finance-pane'));
+        check('finance loader stripped from the APK', typeof window.loadFinance !== 'function');
 
         // There is no window.Capacitor in this harness, so the Firebase auth
         // plugin reads as absent — the state a build without google-services.json
@@ -299,6 +305,13 @@ setTimeout(async () => {
             !d.getElementById('google-signin-btn')?.classList.contains('hidden'));
         check('email sign-in still offered', !!d.getElementById('auth-email')
             && !d.getElementById('auth-login-section')?.classList.contains('hidden'));
+        check('finance pane present on the web', !!d.getElementById('admin-finance-pane'));
+        check('finance pane starts hidden',
+            d.getElementById('admin-finance-pane')?.classList.contains('hidden'));
+        check('admin modal has five tabs on the web',
+            q('#admin-modal .admin-view-btn').length === 5,
+            `${q('#admin-modal .admin-view-btn').length}`);
+        check('finance loader defined on the web', typeof window.loadFinance === 'function');
     }
 
     const before = fatal.length;

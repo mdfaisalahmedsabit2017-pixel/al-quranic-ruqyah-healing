@@ -3008,6 +3008,13 @@ window.switchAdminView = async function(view, btn) {
     btn?.classList.add('active');
     document.getElementById('admin-notice-compose')?.classList.toggle('hidden', view !== 'notices');
     document.getElementById('admin-filter-row')?.classList.toggle('hidden', view !== 'patients');
+    // Leaving the finance view. Deliberately NOT a fifth `else if` branch below:
+    // this function ships in the APK, and a call to loadFinance() there would be
+    // a call to something marker-stripping deleted. The finance entry point is
+    // openFinanceView(), defined inside the #web-only region at end of file.
+    // Optional chaining because the pane is absent from the native build.
+    document.getElementById('admin-finance-pane')?.classList.add('hidden');
+    document.getElementById('admin-patient-list')?.classList.remove('hidden');
     if (view === 'purchases') await loadPurchases();
     else if (view === 'reviews') await loadReviewsAdmin();
     else if (view === 'notices') await loadNoticesAdmin();
@@ -6086,3 +6093,405 @@ Guidelines:
 }
 
 init();
+
+/* #web-only : the owner's personal MFS ledger (bKash / Nagad / Rocket / bank),
+   read from a Google Sheet through /api/finance. Cut from the APK — this is
+   personal financial data, and the vocabulary it renders is what
+   tools/audit-native.js keeps out of a Play bundle.
+
+   WHY THIS BLOCK LIVES AT THE END OF THE FILE, and why that is not arbitrary:
+   build.js validates marker well-formedness for HTML only (assertMarkersWellFormed
+   is called from buildHtml). stripJsMarkers is a bare non-greedy regex with no
+   such check, so a mistyped closing marker mid-file would silently delete
+   everything from here to the NEXT region's closing marker — and the result can
+   still parse. At end of file there is no later closing marker to match, so a
+   mistake means the regex matches nothing, the block ships to the APK, and
+   audit:native fails loudly. Loud beats silent.
+
+   Two rules when editing: (1) the byte sequence of the closing marker must not
+   appear anywhere inside this region, including in template literals — the match
+   is non-greedy and would end early; (2) template literals must not span the
+   marker boundary. */
+
+const FIN_OPERATORS = {
+    bkash:  { label: 'বিকাশ',     icon: '📱', color: '#e2136e' },
+    nagad:  { label: 'নগদ',       icon: '📲', color: '#ee6123' },
+    rocket: { label: 'রকেট',      icon: '🚀', color: '#8c3494' },
+    bank:   { label: 'ব্যাংক',     icon: '🏦', color: '#60a5fa' },
+    cash:   { label: 'নগদ টাকা',  icon: '💵', color: '#8a8a8a' },
+};
+
+const FIN_TYPE = {
+    cash_in:        { icon: '📥', label: 'ক্যাশ ইন' },
+    cash_out:       { icon: '📤', label: 'ক্যাশ আউট' },
+    send_money:     { icon: '➡️', label: 'সেন্ড মানি' },
+    received:       { icon: '⬅️', label: 'টাকা পেয়েছেন' },
+    payment:        { icon: '🛒', label: 'পেমেন্ট' },
+    merchant:       { icon: '🏪', label: 'মার্চেন্ট পেমেন্ট' },
+    recharge:       { icon: '📶', label: 'মোবাইল রিচার্জ' },
+    bill_pay:       { icon: '🧾', label: 'বিল পেমেন্ট' },
+    add_money:      { icon: '💳', label: 'অ্যাড মানি' },
+    salary:         { icon: '💼', label: 'বেতন' },
+    transfer_out:   { icon: '🏦', label: 'ব্যাংক ট্রান্সফার' },
+    interest:       { icon: '📈', label: 'মুনাফা' },
+    cashback:       { icon: '🎁', label: 'ক্যাশব্যাক' },
+    refund:         { icon: '↩️', label: 'ফেরত' },
+    fee:            { icon: '💸', label: 'চার্জ / ফি' },
+    unknown:        { icon: '❓', label: 'শনাক্ত হয়নি' },
+};
+
+const FIN_ERRORS = {
+    login_required:         'সাইন-ইন করতে হবে।',
+    admin_only:             '⛔ এই হিসাব দেখার অনুমতি নেই।',
+    finance_not_configured: '⚠️ হিসাব এখনো সেট করা হয়নি — Vercel-এ SHEET_API_URL ও SHEET_API_TOKEN বসাতে হবে।',
+    sheet_unreachable:      '⚠️ Sheet-এ পৌঁছানো যাচ্ছে না।',
+    sheet_refused:          '⚠️ Sheet রিকোয়েস্ট নাকচ করেছে — সার্ভারের টোকেন ঠিক আছে কি?',
+    sheet_bad_response:     '⚠️ Sheet অপ্রত্যাশিত উত্তর দিয়েছে (Apps Script-এ ত্রুটি?)।',
+    sheet_timeout:          '⚠️ Sheet সময়মতো উত্তর দেয়নি।',
+    auth_unreachable:       '⚠️ লগইন যাচাই করা যায়নি।',
+    too_many_requests:      'একটু পরে আবার চেষ্টা করুন।',
+};
+
+// ৳ with Bengali digits and Bangladeshi grouping (1,23,456 — lakh/crore, not
+// thousands). Intl's bn-BD does produce this grouping but also emits its own
+// digits and currency placement, which fight toBn(); so the grouping is done by
+// hand and toBn() stays the single authority on digits.
+function bdt(n, opts) {
+    const v = Number(n) || 0;
+    const neg = v < 0;
+    const s = String(Math.round(Math.abs(v)));
+    const head = s.length > 3 ? s.slice(0, -3).replace(/\B(?=(\d\d)+$)/g, ',') : '';
+    const grouped = head ? head + ',' + s.slice(-3) : s;
+    const sign = neg ? '−' : ((opts && opts.plus && v > 0) ? '+' : '');
+    return sign + '৳' + toBn(grouped);
+}
+
+function finDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    try {
+        return d.toLocaleString('bn-BD', { day: 'numeric', month: 'short',
+                                           hour: 'numeric', minute: '2-digit' });
+    } catch (e) {
+        return toBn(`${d.getDate()}/${d.getMonth() + 1} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`);
+    }
+}
+
+function finMonthLabel(ym) {
+    const d = new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)) - 1, 1);
+    try { return d.toLocaleString('bn-BD', { month: 'long', year: 'numeric' }); }
+    catch (e) { return toBn(ym); }
+}
+
+// Client-side coalescing. This is the rate limit that actually matters: the
+// realistic failure is a render loop hammering the Apps Script quota, not abuse.
+let finInflight = null;
+let finAbort = null;
+let finLastFetch = 0;
+let finCursor = '';
+let finRows = [];
+
+window.openFinanceView = function(btn) {
+    haptic(10);
+    adminView = 'finance';
+    document.querySelectorAll('.admin-view-btn').forEach(b => b.classList.remove('active'));
+    btn?.classList.add('active');
+    document.getElementById('admin-notice-compose')?.classList.add('hidden');
+    document.getElementById('admin-filter-row')?.classList.add('hidden');
+    document.getElementById('admin-patient-list')?.classList.add('hidden');
+    document.getElementById('admin-finance-pane')?.classList.remove('hidden');
+    if (!document.getElementById('fin-month').options.length) finBuildMonthOptions();
+    return loadFinance();
+};
+
+function finBuildMonthOptions() {
+    const sel = document.getElementById('fin-month');
+    const now = new Date();
+    const opts = [];
+    for (let i = 0; i < 24; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        opts.push(`<option value="${ym}">${esc(finMonthLabel(ym))}</option>`);
+    }
+    sel.innerHTML = opts.join('');
+}
+
+window.finShiftMonth = function(delta) {
+    const sel = document.getElementById('fin-month');
+    const next = sel.selectedIndex - delta;   // index 0 = newest, so subtract
+    if (next < 0 || next >= sel.options.length) return;
+    sel.selectedIndex = next;
+    loadFinance();
+};
+
+window.loadFinance = async function(force) {
+    const status = document.getElementById('fin-status');
+    const month = document.getElementById('fin-month').value;
+    if (!month) return;
+
+    if (!force && Date.now() - finLastFetch < 3000 && finInflight) return finInflight;
+    if (finAbort) finAbort.abort();
+    finAbort = new AbortController();
+    finLastFetch = Date.now();
+    status.textContent = 'লোড হচ্ছে…';
+
+    finInflight = (async () => {
+        try {
+            const data = await finFetch({ path: 'dash', month }, finAbort.signal);
+            finCursor = data.next_cursor || '';
+            finRows = data.data || [];
+            finRender(data);
+            status.textContent = '';
+        } catch (e) {
+            if (e.name === 'AbortError') return;
+            finShowError(e);
+        } finally {
+            finInflight = null;
+        }
+    })();
+    return finInflight;
+};
+
+async function finFetch(params, signal) {
+    if (!currentUser) throw Object.assign(new Error('login_required'), { code: 'login_required' });
+    const token = await currentUser.getIdToken();
+    const qs = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_BASE}/api/finance?${qs}`, {
+        headers: { Authorization: 'Bearer ' + token },
+        cache: 'no-store',
+        signal,
+    });
+    if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw Object.assign(new Error(body.error || ('HTTP ' + res.status)),
+                            { code: body.error || ('http_' + res.status) });
+    }
+    return res.json();
+}
+
+function finShowError(e) {
+    const status = document.getElementById('fin-status');
+    status.textContent = FIN_ERRORS[e.code] || ('⚠️ সমস্যা: ' + e.message);
+    // A missing health object must read as broken, not as fine — see finRenderHealth.
+    finRenderHealth(null);
+}
+
+function finRender(data) {
+    finRenderHealth(data.health);
+    finRenderBalances(data.balances || []);
+    finRenderSummary(data.summary || {}, data.month);
+    finRenderCats(data.categories || []);
+    finRenderTrend(data.months || []);
+    finRenderList(finRows, data.total || 0);
+}
+
+/* Three states, and the fourth matters most: if `health` never arrives — because
+   the Apps Script itself is down — that is RED, not "fine". A dashboard that
+   cannot tell you it is broken is worse than no dashboard, because you will make
+   decisions on stale numbers. */
+function finRenderHealth(h) {
+    const el = document.getElementById('fin-health');
+    el.classList.remove('hidden');
+    if (!h) {
+        el.className = 'fin-health fin-red';
+        el.innerHTML = '<b>🔴 হিসাবের অবস্থা জানা যাচ্ছে না</b>'
+            + '<div>Sheet থেকে health তথ্য আসেনি — নিচের সংখ্যাগুলো পুরনো হতে পারে।</div>';
+        return;
+    }
+    const days = h.days_since_last_sms;
+    const hbHrs = h.hours_since_heartbeat;
+    const lines = [];
+    let level = 'fin-green';
+    let head = '✅ সব ঠিক আছে';
+
+    if (h.gaps_missing_sms > 0) {
+        level = 'fin-red';
+        head = `🔴 ${toBn(h.gaps_missing_sms)}টি সম্ভাব্য হারানো লেনদেন`;
+        lines.push('ব্যালেন্স মিলছে না — Sheet-এর Gaps ট্যাব দেখুন।');
+    }
+    if (days !== null && days > 7) {
+        level = 'fin-red';
+        head = `🔴 ${toBn(Math.floor(days))} দিন ধরে কোনো SMS আসেনি`;
+    } else if (days !== null && days >= 3 && level !== 'fin-red') {
+        level = 'fin-yellow';
+        head = `🟡 ${toBn(Math.floor(days))} দিন ধরে কোনো SMS আসেনি`;
+    }
+    if (hbHrs === null) {
+        if (level === 'fin-green') { level = 'fin-yellow'; head = '🟡 ফোন থেকে হার্টবিট আসেনি'; }
+        lines.push('MFS_Heartbeat ম্যাক্রো বসানো হয়েছে কি?');
+    } else if (hbHrs > 26) {
+        level = 'fin-red';
+        head = '🔴 ক্যাপচার সম্ভবত বন্ধ';
+        lines.push(`শেষ হার্টবিট ${toBn(Math.round(hbHrs))} ঘণ্টা আগে — ফোনে MacroDroid চলছে কি?`);
+    }
+    if (h.unparsed_open_high > 0) {
+        if (level === 'fin-green') level = 'fin-yellow';
+        lines.push(`${toBn(h.unparsed_open_high)}টি টাকার-মতো মেসেজ পার্স হয়নি — SMS ফরম্যাট বদলে থাকতে পারে।`);
+    }
+    if (Number(h.queue_len) > 0) {
+        lines.push(`ফোনের কিউতে ${toBn(h.queue_len)}টি মেসেজ অপেক্ষমাণ।`);
+    }
+    if (level === 'fin-green' && h.last_ingest_at) {
+        lines.push('শেষ লেনদেন: ' + finDate(h.last_ingest_at));
+    }
+
+    el.className = 'fin-health ' + level;
+    el.innerHTML = `<b>${esc(head)}</b>`
+        + lines.map(l => `<div>${esc(l)}</div>`).join('');
+}
+
+function finRenderBalances(bals) {
+    const el = document.getElementById('fin-balances');
+    if (!bals.length) {
+        el.innerHTML = '<p class="fin-empty">কোনো ব্যালেন্স জানা নেই — Accounts ট্যাব ভরা হয়েছে কি?</p>';
+        return;
+    }
+    el.innerHTML = bals.map(b => {
+        const op = FIN_OPERATORS[b.operator] || { label: b.operator, icon: '💠', color: 'var(--text-sub)' };
+        // A stale balance shown confidently is the most dangerous thing this
+        // dashboard can do, so old readings are greyed and badged rather than
+        // presented as fact.
+        const stale = Number(b.stale_hours) > 168;
+        return `<div class="fin-balcard" style="border-left-color:${op.color}">
+            <div class="fin-balop">${op.icon} ${esc(op.label)}${b.account_label ? ' · ' + esc(b.account_label) : ''}</div>
+            <div class="fin-balamt ${stale ? 'fin-stale' : ''}">${esc(bdt(b.balance_after))}</div>
+            <div class="fin-balage">${esc(toBn(Math.round(Number(b.stale_hours))))} ঘণ্টা আগের${stale ? ' ⏳ পুরোনো' : ''}</div>
+        </div>`;
+    }).join('');
+}
+
+function finRenderSummary(s, month) {
+    const net = Number(s.net) || 0;
+    document.getElementById('fin-summary').innerHTML = `
+        <div class="fin-tiles">
+            <div class="fin-tile"><span>↓ আয়</span><b class="fin-in">${esc(bdt(s.total_in))}</b></div>
+            <div class="fin-tile"><span>↑ খরচ</span><b class="fin-out">${esc(bdt(s.total_out))}</b></div>
+            <div class="fin-tile"><span>💸 ফি</span><b class="fin-fee">${esc(bdt(s.total_fee))}</b></div>
+        </div>
+        <div class="fin-netline">
+            <span>নিট: <b class="${net >= 0 ? 'fin-in' : 'fin-out'}">${esc(bdt(net, { plus: true }))}</b></span>
+            <span class="fin-dim">${esc(toBn(s.txn_count || 0))} লেনদেন · ${esc(finMonthLabel(month))}</span>
+        </div>`;
+}
+
+function finRenderCats(cats) {
+    const el = document.getElementById('fin-cats');
+    if (!cats.length) { el.innerHTML = ''; return; }
+    const top = cats.slice(0, 6);
+    const rest = cats.slice(6);
+    if (rest.length) {
+        top.push({ key: 'অন্যান্য', amount: rest.reduce((a, c) => a + Number(c.amount || 0), 0),
+                   txn_count: rest.reduce((a, c) => a + Number(c.txn_count || 0), 0) });
+    }
+    const max = Math.max.apply(null, top.map(c => Number(c.amount) || 0).concat([1]));
+    el.innerHTML = '<p class="fin-h">ক্যাটাগরি</p>' + top.map(c => `
+        <div class="cat-bar-row">
+            <div class="cat-bar-header">
+                <span>${esc(c.key || '—')}</span>
+                <span>${esc(bdt(c.amount))} · ${esc(toBn(c.txn_count || 0))}</span>
+            </div>
+            <div class="cat-bar-track">
+                <div class="cat-bar-fill" style="width:${Math.round((Number(c.amount) / max) * 100)}%"></div>
+            </div>
+        </div>`).join('');
+}
+
+// Inline SVG, no chart dependency — deliberately. node_modules/ is tracked in
+// this repo (8,000+ files), so "just adding a chart library" would produce a
+// diff nobody can review on a public repo.
+function finRenderTrend(months) {
+    const el = document.getElementById('fin-trend');
+    if (months.length < 2) { el.innerHTML = ''; return; }
+    const W = 300, H = 90, pad = 4;
+    const max = Math.max.apply(null,
+        months.map(m => Math.max(Number(m.in) || 0, Number(m.out) || 0)).concat([1]));
+    const x = i => pad + (i * (W - 2 * pad)) / (months.length - 1);
+    const y = v => H - pad - ((Number(v) || 0) / max) * (H - 2 * pad);
+    const line = key => months.map((m, i) => `${x(i).toFixed(1)},${y(m[key]).toFixed(1)}`).join(' ');
+
+    el.innerHTML = '<p class="fin-h">শেষ ' + toBn(months.length) + ' মাস</p>'
+        + `<svg class="fin-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img"
+                aria-label="মাসিক আয় ও খরচের ধারা">
+             <polyline class="fin-line-in" points="${line('in')}"></polyline>
+             <polyline class="fin-line-out" points="${line('out')}"></polyline>
+           </svg>`
+        + `<div class="fin-legend"><span class="fin-in">▬ আয়</span> <span class="fin-out">▬ খরচ</span>
+             <span class="fin-dim">${esc(finMonthLabel(months[0].month))} → ${esc(finMonthLabel(months[months.length - 1].month))}</span>
+           </div>`;
+}
+
+function finRenderList(rows, total) {
+    const el = document.getElementById('fin-list');
+    if (!rows.length) {
+        el.innerHTML = '<p class="fin-empty">এই মাসে কোনো লেনদেন নেই।</p>';
+        return;
+    }
+    // unknown rows sort to the top of their day — they are the ones needing a look
+    const byDay = new Map();
+    rows.forEach(r => {
+        if (!byDay.has(r.date)) byDay.set(r.date, []);
+        byDay.get(r.date).push(r);
+    });
+
+    let html = '<p class="fin-h">লেনদেন</p>';
+    Array.from(byDay.keys()).forEach(day => {
+        const list = byDay.get(day).slice().sort(
+            (a, b) => (a.type === 'unknown' ? -1 : 0) - (b.type === 'unknown' ? -1 : 0));
+        const dayNet = list.reduce((a, r) => a + (Number(r.net) || 0), 0);
+        html += `<div class="fin-daysep"><span>${esc(finDate(list[0].ts).split(',')[0])}</span>
+                 <span class="${dayNet >= 0 ? 'fin-in' : 'fin-out'}">${esc(bdt(dayNet, { plus: true }))}</span></div>`;
+        list.forEach(r => {
+            const op = FIN_OPERATORS[r.operator] || { label: r.operator, icon: '💠', color: 'var(--text-sub)' };
+            const ty = FIN_TYPE[r.type] || FIN_TYPE.unknown;
+            const accent = r.type === 'unknown' ? '#facc15' : op.color;
+            // esc() on EVERY field: counterparty names come from SMS bodies, so
+            // anyone who can text this phone can attempt to inject markup into
+            // the highest-privilege session on the site.
+            const who = [r.counterparty_name, r.counterparty_number].filter(Boolean).map(esc).join(' · ');
+            const bits = [];
+            if (Number(r.fee)) bits.push('ফি ' + bdt(r.fee));
+            if (r.balance_after !== null && r.balance_after !== undefined) bits.push('ব্যালেন্স ' + bdt(r.balance_after));
+            if ((r.flags || []).indexOf('gap_before') >= 0) bits.push('⚠ গ্যাপ');
+            html += `<div class="patient-card fin-row" style="border-left-color:${accent}">
+                <div class="fin-rowtop">
+                    <span>${ty.icon} ${esc(ty.label)} · ${esc(op.label)}</span>
+                    <b class="${(Number(r.net) || 0) >= 0 ? 'fin-in' : 'fin-out'}">${esc(bdt(r.net, { plus: true }))}</b>
+                </div>
+                ${who ? `<div class="fin-rowwho">${who}</div>` : ''}
+                <div class="fin-rowmeta">${esc(finDate(r.ts))}${bits.length ? ' · ' + esc(bits.join(' · ')) : ''}</div>
+            </div>`;
+        });
+    });
+
+    if (finCursor) {
+        // An explicit button, not infinite scroll: the pane already lives inside
+        // a max-height/overflow-y box, and a nested infinite scroller inside a
+        // scrolling modal on a phone is a fight you lose.
+        html += `<button class="patient-action-btn fin-more" onclick="finLoadMore()">আরও ৫০টি দেখুন</button>`;
+    }
+    html += `<p class="fin-dim fin-count">${esc(toBn(rows.length))} / ${esc(toBn(total))}</p>`;
+    el.innerHTML = html;
+}
+
+window.finLoadMore = async function() {
+    if (!finCursor) return;
+    const status = document.getElementById('fin-status');
+    const month = document.getElementById('fin-month').value;
+    status.textContent = 'আরও লোড হচ্ছে…';
+    try {
+        const data = await finFetch({ path: 'txns', from: month + '-01',
+                                     to: finMonthEnd(month), limit: 50, cursor: finCursor });
+        finCursor = data.next_cursor || '';
+        finRows = finRows.concat(data.data || []);
+        finRenderList(finRows, data.total || finRows.length);
+        status.textContent = '';
+    } catch (e) {
+        finShowError(e);
+    }
+};
+
+function finMonthEnd(ym) {
+    const y = Number(ym.slice(0, 4)), m = Number(ym.slice(5, 7));
+    return ym + '-' + String(new Date(y, m, 0).getDate()).padStart(2, '0');
+}
+/* /#web-only */

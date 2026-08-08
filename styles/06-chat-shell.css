@@ -330,3 +330,73 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 @media (min-width: 1600px) {
     .container { max-width: 1140px; }
 }
+
+/* #web-only : admin finance tab. Placed at the very end of the LAST stylesheet
+   build.js concatenates, on purpose — see the note in 03-pages.css. Money out is
+   red, money in is green, fees and warnings yellow. No chart library: charts are
+   inline SVG and CSS bars, because node_modules/ is tracked in this repo and a
+   dependency would be thousands of unreviewable files on a public remote. */
+
+/* Five tabs no longer fit one row on a 360px phone — "💳 Purchases" clips at
+   ~62px. Wrapping here keeps the APK's four-tab layout untouched. */
+#admin-modal .auth-tabs { flex-wrap: wrap; }
+#admin-modal .auth-tab { flex: 1 1 30%; padding: 8px 6px; font-size: 0.74rem; white-space: nowrap; }
+
+.fin-in  { color: var(--green); }
+.fin-out { color: #ff6b6b; }
+.fin-fee { color: #facc15; }
+.fin-dim { color: var(--text-sub); font-size: 0.72rem; }
+.fin-h { font-size: 0.8rem; font-weight: 700; margin: 14px 0 6px; color: var(--text-sub); }
+.fin-empty { text-align: center; color: var(--text-dim); padding: 18px 0; font-size: 0.8rem; }
+.fin-block { margin-top: 4px; }
+
+.fin-health { border-radius: var(--r-md); padding: 10px 12px; margin-bottom: 12px;
+              font-size: 0.78rem; line-height: 1.6; border-left: 3px solid; }
+.fin-health b { display: block; margin-bottom: 2px; }
+.fin-health.fin-green  { background: var(--green-dim); border-left-color: var(--green); }
+.fin-health.fin-yellow { background: rgba(250,204,21,0.10); border-left-color: #facc15; }
+.fin-health.fin-red    { background: rgba(255,107,107,0.10); border-left-color: #ff6b6b; }
+
+.fin-monthbar { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+.fin-monthsel { flex: 1; margin: 0; }
+.fin-navbtn { background: var(--raised); border: 1px solid var(--border); color: var(--text);
+              border-radius: var(--r-md); padding: 8px 12px; cursor: pointer;
+              font-family: inherit; font-size: 0.9rem; line-height: 1; }
+.fin-navbtn:hover { background: var(--overlay); }
+
+.fin-balgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+               gap: 8px; margin-bottom: 12px; }
+.fin-balcard { background: var(--raised); border-radius: var(--r-md);
+               border-left: 3px solid var(--border); padding: 8px 10px; }
+.fin-balop { font-size: 0.72rem; color: var(--text-sub); margin-bottom: 2px; }
+.fin-balamt { font-size: 1.15rem; font-weight: 800; }
+/* A stale balance shown confidently is the most dangerous thing here. */
+.fin-balamt.fin-stale { color: var(--text-sub); }
+.fin-balage { font-size: 0.68rem; color: var(--text-dim); margin-top: 1px; }
+
+.fin-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.fin-tile { background: var(--raised); border-radius: var(--r-md); padding: 8px 10px; text-align: center; }
+.fin-tile span { display: block; font-size: 0.68rem; color: var(--text-sub); margin-bottom: 2px; }
+.fin-tile b { font-size: 0.95rem; }
+.fin-netline { display: flex; justify-content: space-between; align-items: baseline;
+               margin-top: 8px; font-size: 0.8rem; flex-wrap: wrap; gap: 4px; }
+
+.fin-svg { width: 100%; height: 90px; display: block; }
+.fin-svg polyline { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.fin-line-in  { stroke: var(--green); }
+.fin-line-out { stroke: #ff6b6b; }
+.fin-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.7rem; margin-top: 2px; }
+
+.fin-daysep { display: flex; justify-content: space-between; font-size: 0.72rem;
+              color: var(--text-sub); margin: 12px 0 4px; padding-bottom: 3px;
+              border-bottom: 1px solid var(--border); }
+.fin-row { padding: 8px 10px; }
+.fin-rowtop { display: flex; justify-content: space-between; gap: 8px; font-size: 0.8rem; }
+.fin-rowwho { font-size: 0.74rem; color: var(--text-sub); margin-top: 2px; }
+.fin-rowmeta { font-size: 0.68rem; color: var(--text-dim); margin-top: 2px; }
+.fin-more { width: 100%; margin-top: 10px; }
+.fin-count { text-align: center; margin-top: 6px; }
+.fin-hint { font-size: 0.68rem; color: var(--text-dim); text-align: center; margin-top: 12px; }
+.fin-status { font-size: 0.75rem; color: var(--text-dim); margin-top: 8px; line-height: 1.6;
+              text-align: center; }
+/* /#web-only */

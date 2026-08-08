@@ -1223,6 +1223,12 @@
                 <button class="auth-tab admin-view-btn" onclick="switchAdminView('purchases',this)">💳 Purchases</button>
                 <button class="auth-tab admin-view-btn" onclick="switchAdminView('reviews',this)">⭐ Reviews</button>
                 <button class="auth-tab admin-view-btn" onclick="switchAdminView('notices',this)">🔔 নোটিশ</button>
+                <!-- #web-only — the owner's own bKash/Nagad/Rocket ledger. Never in the
+                     APK: it is personal financial data, and the markup carries ৳ and
+                     operator names, which is exactly the vocabulary tools/audit-native.js
+                     exists to keep out of a Play bundle. -->
+                <button class="auth-tab admin-view-btn" onclick="openFinanceView(this)">💰 হিসাব</button>
+                <!-- /#web-only -->
             </div>
 
             <!-- Announcement composer. Hidden unless the নোটিশ view is active. -->
@@ -1253,6 +1259,33 @@
                 <button class="admin-filter-btn" onclick="filterPatients('in-treatment',this)">💚 চিকিৎসা</button>
                 <button class="admin-filter-btn" onclick="filterPatients('done',this)">✓ সম্পন্ন</button>
             </div>
+            <!-- #web-only -->
+            <div id="admin-finance-pane" class="hidden">
+                <!-- Health first, and it renders even when everything is fine: an
+                     indicator that only appears when broken is one you cannot trust
+                     when it is absent. A silently stale ledger is worse than none. -->
+                <div id="fin-health" class="fin-health hidden"></div>
+
+                <div class="fin-monthbar">
+                    <button class="fin-navbtn" onclick="finShiftMonth(-1)" title="আগের মাস">‹</button>
+                    <select id="fin-month" class="form-input fin-monthsel" onchange="loadFinance()"></select>
+                    <button class="fin-navbtn" onclick="finShiftMonth(1)" title="পরের মাস">›</button>
+                    <button class="fin-navbtn" onclick="loadFinance(true)" title="রিফ্রেশ">⟳</button>
+                </div>
+
+                <div id="fin-balances" class="fin-balgrid"></div>
+                <div id="fin-summary" class="fin-summary"></div>
+                <div id="fin-cats" class="fin-block"></div>
+                <div id="fin-trend" class="fin-block"></div>
+                <div id="fin-list" class="fin-block"></div>
+                <!-- Deliberate tripwire: audit-native.js:50 lists ৳ in PURCHASE_LANGUAGE
+                     and :119 makes it a hard failure in any shipped .html. So if these
+                     markers are ever dropped or mistyped, npm run audit:native fails
+                     immediately — no new check code needed. -->
+                <p class="fin-hint">সব হিসাব ৳ (BDT) — উৎস: SMS</p>
+                <p id="fin-status" class="fin-status"></p>
+            </div>
+            <!-- /#web-only -->
             <div id="admin-patient-list"><p style="color:var(--text-dim);text-align:center;padding:24px">Loading...</p></div>
         </div>
     </div>
