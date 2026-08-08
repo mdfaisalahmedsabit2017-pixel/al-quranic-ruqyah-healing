@@ -1,14 +1,15 @@
-// Gated delivery for the paid book ("শেখার শিল্প").
+// Gated delivery for the paid books.
 //
-// The book is sold, so its pages must never live in public/ — anything there is
+// A book is sold, so its pages must never live in public/ — anything there is
 // a free static file on Vercel and one shared link would give the whole book
-// away. Pages live in book_pages/ (bundled with this function via
+// away. Pages live in book_pages*/ (bundled with this function via
 // vercel.json -> functions.includeFiles) and are handed out one at a time,
 // only after the caller proves they are a signed-in user whose purchase the
 // admin has confirmed.
 //
-//   GET /api/book?page=12&token=<firebase id token>   -> image/webp
-//   GET /api/book?meta=1                              -> { pages, preview }
+//   GET /api/book?book=<id>&page=12   (+ Authorization: Bearer <id token>)
+//   GET /api/book?book=<id>&meta=1    -> { pages, preview }
+//   GET /api/book?book=<id>&thumb=1   -> cover, always free
 //
 // Verification uses Firebase's REST endpoints rather than firebase-admin so the
 // project needs no service-account secret: the ID token is checked against
@@ -19,9 +20,17 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-const BOOK_ID     = 'shekhar-shilpo';       // must match the id in app.js BOOKS
-const PREVIEW     = 12;                     // pages anyone may read for free
-const PAGES_DIR   = path.join(__dirname, '..', 'book_pages');
+// id -> where its pages live and how much is free. Ids must match app.js BOOKS.
+//
+// `book` is optional on purpose: installed APKs and any cached page from before
+// the second book existed call /api/book with no book param at all. Defaulting
+// to shekhar-shilpo keeps those clients working exactly as before.
+const BOOKS = {
+    'shekhar-shilpo':  { dir: 'book_pages',       preview: 12 },
+    'yasin-karishma':  { dir: 'book_pages_yasin', preview: 8  },
+};
+const DEFAULT_BOOK = 'shekhar-shilpo';
+
 const PROJECT_ID  = 'al-quranic-ruqyah';
 const API_KEY     = 'AIzaSyBQyGnY8DhqdlTpOIwfZC6FZWqvOmwGDh8';  // public web key
 
@@ -70,19 +79,23 @@ async function verifyToken(idToken) {
 }
 
 // Reads users/<uid> as that user and looks for the book in their unlocked list.
-async function hasPurchased(uid, idToken) {
+async function hasPurchased(uid, idToken, bookId) {
     const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}`
               + `/databases/(default)/documents/users/${uid}`;
     const { status, json } = await getJSON(url, { Authorization: `Bearer ${idToken}` });
     if (status !== 200) return false;
     const arr = json.fields && json.fields.courses && json.fields.courses.arrayValue;
     const values = (arr && arr.values) || [];
-    return values.some((v) => v.stringValue === BOOK_ID);
+    return values.some((v) => v.stringValue === bookId);
 }
 
-function totalPages() {
+function pagesDir(bookId) {
+    return path.join(__dirname, '..', BOOKS[bookId].dir);
+}
+
+function totalPages(bookId) {
     try {
-        return JSON.parse(fs.readFileSync(path.join(PAGES_DIR, 'meta.json'), 'utf8')).pages;
+        return JSON.parse(fs.readFileSync(path.join(pagesDir(bookId), 'meta.json'), 'utf8')).pages;
     } catch (e) {
         return 0;
     }
@@ -95,15 +108,22 @@ module.exports = async (req, res) => {
 
     const q = req.query || {};
 
+    const bookId = q.book || DEFAULT_BOOK;
+    if (!Object.prototype.hasOwnProperty.call(BOOKS, bookId)) {
+        res.status(404).json({ error: 'unknown_book' });
+        return;
+    }
+    const PREVIEW = BOOKS[bookId].preview;
+
     if (q.meta) {
         res.setHeader('Cache-Control', 'public, max-age=3600');
-        res.status(200).json({ pages: totalPages(), preview: PREVIEW });
+        res.status(200).json({ pages: totalPages(bookId), preview: PREVIEW });
         return;
     }
 
     // Store-card thumbnail — the cover is the shop window, so it stays free.
     if (q.thumb) {
-        const cover = path.join(PAGES_DIR, 'cover.webp');
+        const cover = path.join(pagesDir(bookId), 'cover.webp');
         if (!fs.existsSync(cover)) { res.status(404).end(); return; }
         const buf = fs.readFileSync(cover);
         res.setHeader('Content-Type', 'image/webp');
@@ -114,7 +134,7 @@ module.exports = async (req, res) => {
     }
 
     const page = parseInt(q.page, 10);
-    const total = totalPages();
+    const total = totalPages(bookId);
     if (!Number.isInteger(page) || page < 1 || page > total) {
         res.status(400).json({ error: 'Invalid page' });
         return;
@@ -127,13 +147,13 @@ module.exports = async (req, res) => {
             res.status(401).json({ error: 'login_required' });
             return;
         }
-        if (!(await hasPurchased(uid, token))) {
+        if (!(await hasPurchased(uid, token, bookId))) {
             res.status(403).json({ error: 'purchase_required' });
             return;
         }
     }
 
-    const file = path.join(PAGES_DIR, `p${String(page).padStart(4, '0')}.webp`);
+    const file = path.join(pagesDir(bookId), `p${String(page).padStart(4, '0')}.webp`);
     if (!fs.existsSync(file)) { res.status(404).json({ error: 'Page not found' }); return; }
 
     const buf = fs.readFileSync(file);

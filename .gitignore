@@ -19,11 +19,20 @@ www/
 # but they must never ship or be deployed again.
 pdf_archive/
 
-# The paid book's page images. THIS REPOSITORY IS PUBLIC — committing these
+# The paid books' page images. THIS REPOSITORY IS PUBLIC — committing these
 # would hand out the whole book for free and make the /api/book purchase gate
 # pointless. They reach production through the Vercel function's includeFiles,
 # not through git.
+#
+# The consequence, learned the hard way: includeFiles can only bundle files that
+# are present in the deployment source, and a git-integration deploy's source IS
+# the repository — so a `git push` deploy ships the function with no pages in it
+# at all. /api/book?meta=1 then answers {"pages":0} and every buyer gets an empty
+# reader, with nothing in the build log to say so. That is exactly what happened
+# to শেখার শিল্প. Deploy with `vercel --prod` from a working copy, never from
+# git; vercel.json sets git.deploymentEnabled=false so a push cannot undo it.
 book_pages/
+book_pages_yasin/
 
 # tools/ now holds Python helpers (sync_guides.py, watermark_pdfs.py) that are
 # run from the repo root, so their bytecode lands here.

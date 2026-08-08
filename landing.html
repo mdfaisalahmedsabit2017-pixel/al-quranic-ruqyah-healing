@@ -329,15 +329,15 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
 <section id="book">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">নতুন প্রকাশ</span>
-      <h2>শেখার শিল্প</h2>
-      <p class="sec-sub">পড়েও মনে থাকে না? পড়তে বসলেই মন উড়ে যায়? সমস্যাটা বুদ্ধিতে নয় — পদ্ধতিতে।</p>
+      <span class="eyebrow">আমাদের প্রকাশনা</span>
+      <h2>বইসমূহ</h2>
+      <p class="sec-sub">কিনলেই সাথে সাথে অ্যাপে পড়া শুরু — প্রতিটি বইয়ের কিছু পাতা বিনামূল্যে।</p>
     </div>
     <div class="prod">
       <div class="prod-cover">
         <!-- if the cover can't load, collapse the grid too — otherwise the text
              is left stranded in the narrow 270px cover column -->
-        <img src="/api/book?thumb=1" alt="শেখার শিল্প বইয়ের মলাট" loading="lazy"
+        <img src="/api/book?book=shekhar-shilpo&thumb=1" alt="শেখার শিল্প বইয়ের মলাট" loading="lazy"
              onerror="var c=this.closest('.prod-cover');c.style.display='none';c.closest('.prod').style.gridTemplateColumns='1fr'">
       </div>
       <div>
@@ -365,6 +365,41 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
           <a class="btn btn-g" href="/app.html#books-section">
             <svg class="ico" viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>
             প্রথম ১২ পাতা ফ্রি পড়ুন
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="prod" style="margin-top:26px">
+      <div class="prod-cover">
+        <img src="/api/book?book=yasin-karishma&thumb=1" alt="সূরা ইয়াসীনের কারিশমা বইয়ের মলাট" loading="lazy"
+             onerror="var c=this.closest('.prod-cover');c.style.display='none';c.closest('.prod').style.gridTemplateColumns='1fr'">
+      </div>
+      <div>
+        <span class="prod-tag">রুকইয়াহ ও আমল</span>
+        <h3>সূরা ইয়াসীনের কারিশমা</h3>
+        <p class="prod-sub">রাকী ফয়সাল আহমেদ সাবিত · ৫২ পাতা · বাংলা</p>
+        <ul>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>১৩টি ফজিলত-বর্ণনা, প্রতিটির সূত্রসহ</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>২৬টি আমল — সমস্যা ধরে ধরে সাজানো</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রতিটি আমলে রাকীর সম্পাদকীয় টীকা</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>কোনটি সুন্নাহসম্মত, কোনটিতে ঝুঁকি — স্পষ্ট ব্যাজ</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>যেসব আমলের পদ্ধতিই শরীয়তবিরোধী — কেন রাখা হয়নি</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>রুকইয়াহ প্র্যাকটিসে ইয়াসীনের ব্যবহার</li>
+        </ul>
+        <div class="price-row">
+          <span class="price">৳১০০</span>
+          <span class="price-old">৳২৫০</span>
+          <span class="price-off">৬০% ছাড়</span>
+        </div>
+        <div class="prod-cta">
+          <a class="btn btn-p" href="/app.html#books-section">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M2 3h2.2l2.1 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.3L20 7H5.3"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+            কিনুন — ৳১০০
+          </a>
+          <a class="btn btn-g" href="/app.html#books-section">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+            প্রথম ৮ পাতা ফ্রি পড়ুন
           </a>
         </div>
       </div>
@@ -460,7 +495,7 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
       </details>
       <details>
         <summary>বই না কিনে আগে দেখা যাবে?</summary>
-        <p>হ্যাঁ। প্রথম ১২ পাতা — মলাট, ভূমিকা, লেখক পরিচিতি ও সূচিপত্র — যে কেউ ফ্রিতে পড়তে পারবেন, লগইন ছাড়াই।</p>
+        <p>হ্যাঁ। প্রতিটি বইয়ের শুরুর কয়েকটি পাতা — মলাট, ভূমিকা ও সূচিপত্র — যে কেউ ফ্রিতে পড়তে পারবেন, লগইন ছাড়াই। “শেখার শিল্প”-এ প্রথম ১২ পাতা, “সূরা ইয়াসীনের কারিশমা”-য় প্রথম ৮ পাতা।</p>
       </details>
       <details>
         <summary>টাকা পাঠানোর কতক্ষণ পর বই পাব?</summary>

@@ -1779,6 +1779,15 @@ const BOOKS = [
         tags: ['৩১৮ পাতা', 'বাংলা', 'ইলম ও রুকইয়াহ অংশসহ'],
         price: 200, originalPrice: 500,
     },
+    {
+        id: 'yasin-karishma',
+        title: 'সূরা ইয়াসীনের কারিশমা',
+        subtitle: 'কুরআনের হৃদয় — ফজিলত, ঘটনা ও ২৬টি পরীক্ষিত আমল',
+        author: 'রাকী ফয়সাল আহমেদ সাবিত',
+        desc: 'ঘরে ঘরে পড়া হয় সূরা ইয়াসীন, কিন্তু কোন আমল হাদিসভিত্তিক আর কোনটির পদ্ধতিতে আকীদার ঝুঁকি — সেটা কেউ বলে দেয় না। ২৬টি আমল, প্রতিটির নিচে একজন রাকীর সম্পাদকীয় টীকা ও নিরাপদ বিকল্প।',
+        tags: ['৫২ পাতা', 'বাংলা', 'প্রতিটি আমলে টীকা'],
+        price: 100, originalPrice: 250,
+    },
 ];
 
 // Inline line-icons, so buttons can carry an icon that inherits the text colour
@@ -1855,7 +1864,7 @@ function renderBooks() {
         return `
         <div class="book-card">
             <div class="book-cover">
-                <img src="${API_BASE}/api/book?thumb=1" alt="${b.title}" loading="lazy"
+                <img src="${API_BASE}/api/book?book=${b.id}&thumb=1" alt="${b.title}" loading="lazy"
                      onerror="this.parentElement.style.display='none'">
             </div>
             <div class="book-info">
@@ -2573,6 +2582,9 @@ let readerPage = 1;
 let readerTotal = 0;
 let readerPreview = 12;
 let readerReqId = 0;      // guards against a slow page landing after a newer one
+// Page count and preview size differ per book, so the meta cache is keyed by id.
+// A single shared readerTotal would show the second book the first one's length.
+const readerMeta = {};
 
 async function readerToken() {
     try {
@@ -2590,14 +2602,15 @@ window.openBookReader = async function(bookId, startPage) {
     document.getElementById('book-reader').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 
-    if (!readerTotal) {
+    if (!readerMeta[bookId]) {
         try {
-            const r = await fetch(`${API_BASE}/api/book?meta=1`);
+            const r = await fetch(`${API_BASE}/api/book?book=${encodeURIComponent(bookId)}&meta=1`);
             const m = await r.json();
-            readerTotal = m.pages || 0;
-            readerPreview = m.preview ?? 12;
-        } catch (e) { readerTotal = 0; }
+            readerMeta[bookId] = { pages: m.pages || 0, preview: m.preview ?? 12 };
+        } catch (e) { readerMeta[bookId] = { pages: 0, preview: 12 }; }
     }
+    readerTotal = readerMeta[bookId].pages;
+    readerPreview = readerMeta[bookId].preview;
     readerPage = startPage || Number(localStorage.getItem(`bookmark:${bookId}`)) || 1;
     if (readerPage > readerTotal) readerPage = 1;
     await showReaderPage();
@@ -2619,9 +2632,10 @@ async function showReaderPage() {
     try {
         // token travels as a header, not a query param, so it stays out of
         // access logs and browser history
-        const res = await fetch(`${API_BASE}/api/book?page=${readerPage}`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
+        const bookId = readerBook ? readerBook.id : '';
+        const res = await fetch(
+            `${API_BASE}/api/book?book=${encodeURIComponent(bookId)}&page=${readerPage}`,
+            { headers: token ? { Authorization: `Bearer ${token}` } : {} });
         if (myReq !== readerReqId) return;             // a newer page won the race
         if (!res.ok) {
             const err = await res.json().catch(() => ({}));

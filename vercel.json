@@ -1,6 +1,7 @@
 {
   "buildCommand": "node build.js --target=web",
   "outputDirectory": "public",
+  "git": { "deploymentEnabled": { "master": false } },
   "rewrites": [
     { "source": "/app", "destination": "/app.html" }
   ],
@@ -36,7 +37,7 @@
   ],
   "functions": {
     "api/book.js": {
-      "includeFiles": "book_pages/**",
+      "includeFiles": "{book_pages,book_pages_yasin}/**",
       "maxDuration": 20
     }
   }
