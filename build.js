@@ -363,13 +363,70 @@ function dirSize(dir) {
     return total;
 }
 
-const sizeMb = dirSize(distDir) / (1024 * 1024);
-console.log(`✅ Build completed — ${outName}/ is ${sizeMb.toFixed(1)} MB`);
+const escHtml = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
-// Play's ceiling is 200 MB for an AAB and the whole point of the native target
-// is to stay nowhere near it. Fail loudly rather than discover this at upload.
-if (isNative && sizeMb > 20) {
-    console.error(`\n❌ native/ is ${sizeMb.toFixed(1)} MB — expected well under 20 MB.`);
-    console.error('   Something large is being copied into the APK bundle again.');
-    process.exit(1);
+// The landing page's reviews are baked in, not fetched: see tools/export_reviews.js
+// for why. This fills the two placeholders left in landing.html — the visible
+// section, and the aggregateRating on each product in the structured data.
+function injectReviews(data) {
+    const file = path.join(distDir, 'index.html');
+    let html = fs.readFileSync(file, 'utf8');
+
+    // A rating Google shows in search results has to be a rating a visitor can
+    // see on the page. Where there is no review there is no markup — inventing
+    // one is both a lie and a manual action waiting to happen.
+    html = html.replace(/,\s*"aggregateRating":"@@RATING:([a-z-]+)@@"/g, (_, target) => {
+        const t = data.targets && data.targets[target];
+        if (!t || !t.count) return '';
+        return `,"aggregateRating":{"@type":"AggregateRating","ratingValue":"${t.avg}",`
+             + `"reviewCount":"${t.count}","bestRating":"5","worstRating":"1"}`;
+    });
+
+    const items = (data.items || []).slice(0, 6);
+    if (!items.length) {
+        html = html.replace('<!--REVIEWS_SECTION-->', '');
+    } else {
+        const stars = (n) => '★'.repeat(n) + '☆'.repeat(5 - n);
+        const cards = items.map((r) => `
+      <figure class="rev">
+        <div class="rev-stars" aria-label="${r.rating} / ৫">${stars(r.rating)}</div>
+        <blockquote>${escHtml(r.review)}</blockquote>
+        <figcaption>${escHtml(r.name)}</figcaption>
+      </figure>`).join('');
+        html = html.replace('<!--REVIEWS_SECTION-->', `
+<section id="reviews">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">যাঁরা ব্যবহার করেছেন</span>
+      <h2>তাঁরা যা বলেছেন</h2>
+      <p class="sec-sub">সবগুলোই অ্যাপে লগইন করা ব্যবহারকারীদের লেখা, হুবহু।</p>
+    </div>
+    <div class="rev-grid">${cards}
+    </div>
+  </div>
+</section>`);
+    }
+
+    fs.writeFileSync(file, html);
+    console.log(`Reviews: ${items.length} shown on the landing page, `
+              + `${Object.keys(data.targets || {}).length} product rating(s) in structured data`);
 }
+
+(async () => {
+    if (!isNative) {
+        injectReviews(await require('./tools/export_reviews').exportReviews());
+    }
+
+    const sizeMb = dirSize(distDir) / (1024 * 1024);
+    console.log(`✅ Build completed — ${outName}/ is ${sizeMb.toFixed(1)} MB`);
+
+    // Play's ceiling is 200 MB for an AAB and the whole point of the native target
+    // is to stay nowhere near it. Fail loudly rather than discover this at upload.
+    if (isNative && sizeMb > 20) {
+        console.error(`\n❌ native/ is ${sizeMb.toFixed(1)} MB — expected well under 20 MB.`);
+        console.error('   Something large is being copied into the APK bundle again.');
+        process.exit(1);
+    }
+})();

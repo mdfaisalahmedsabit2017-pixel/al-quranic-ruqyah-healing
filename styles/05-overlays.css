@@ -316,6 +316,17 @@ body.player-mini #main-content { padding-bottom: 68px; }
 .book-btn-ghost { width: 100%; padding: 9px; margin-top: 6px; border-radius: var(--r-md); background: transparent; color: var(--text-sub); font-weight: 700; font-size: 0.78rem; border: 1px solid var(--border-md); cursor: pointer; font-family: inherit; }
 .book-btn-ghost:hover { color: var(--text); border-color: var(--border-hi); }
 
+/* ── Live-class membership card ── */
+.member-card { background: rgba(0,229,153,0.06); border: 1px solid rgba(0,229,153,0.22);
+               border-radius: var(--r-md); padding: 12px 13px; }
+.member-status { font-size: 0.82rem; font-weight: 700; margin-bottom: 9px; }
+.member-links { display: grid; gap: 6px; }
+.member-link { display: block; padding: 9px 11px; border-radius: var(--r-sm);
+               background: var(--surface); border: 1px solid var(--border-md);
+               color: var(--text); font-size: 0.8rem; font-weight: 700;
+               text-decoration: none; }
+.member-link:hover { border-color: var(--green); color: var(--green); }
+
 /* ── Reviews & rating ── */
 .rv-label { font-size: 0.76rem; font-weight: 700; color: var(--text-sub); margin: 12px 0 6px; }
 .rv-stars { display: flex; gap: 6px; }

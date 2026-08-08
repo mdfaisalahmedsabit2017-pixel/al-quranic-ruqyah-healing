@@ -311,8 +311,9 @@
                 <p class="goal-body">সঠিক রুকিয়াহ চর্চা ছড়িয়ে দেওয়া এবং মানুষকে শিরক ও কুসংস্কারমুক্ত জীবন গড়তে সহায়তা করা। আধুনিক প্রযুক্তির মাধ্যমে রুকিয়াহর রিসোর্সগুলোকে সবার হাতের কাছে পৌঁছে দিচ্ছি।</p>
             </div>
 
-            <!-- Reviews (third-party tracker, blank offline — the enclosing
-                 web-only region already keeps it out of the APK) -->
+            <!-- Reviews. The wall is filled by renderReviewWall() from Firestore;
+                 the Facebook embed below it is a third-party tracker and blank
+                 offline — the enclosing web-only region keeps that out of the APK. -->
             <div style="margin-bottom:24px">
                 <div class="section-hdr">
                     <div class="section-hdr-bar"></div>
@@ -365,6 +366,18 @@
                 </div>
             </div>
             <!-- /#web-only -->
+
+            <!-- What people have said, and the way to say something. Deliberately
+                 outside the web-only region above: the signed-in app users are
+                 the ones with something to review, and the block sells nothing —
+                 no price, no buy button — so it passes the native audit. -->
+            <div style="margin-bottom:24px">
+                <div class="section-hdr">
+                    <div class="section-hdr-bar"></div>
+                    <p class="section-hdr-title">💬 সবার মতামত</p>
+                </div>
+                <div id="review-wall"></div>
+            </div>
 
             <!-- Latest blog posts (hidden until the first post loads) -->
             <div class="home-blog hidden" style="margin-bottom:8px">
@@ -985,13 +998,15 @@
         </div>
     </div>
 
-    <!-- ── BOOK REVIEW MODAL ─────────────────────────────── -->
+    <!-- ── REVIEW MODAL ──────────────────────────────────── -->
+    <!-- Serves books, courses and the general targets alike; openReviewModal()
+         sets the heading and the prompt from the target. -->
     <div id="review-modal" class="modal-overlay hidden">
         <div class="modal-box">
             <button onclick="closeReviewModal()" class="modal-close-btn">✕</button>
-            <p class="modal-title" id="review-modal-title">রিভিউ দিন</p>
+            <p class="modal-title" id="review-modal-title">মতামত দিন</p>
             <p style="font-size:0.8rem;color:var(--text-sub);margin-bottom:14px">
-                আপনার মতামত অন্য পাঠকদের সিদ্ধান্ত নিতে সাহায্য করবে।
+                আপনার মতামত অন্যদের সিদ্ধান্ত নিতে সাহায্য করবে।
             </p>
 
             <div id="review-form">
@@ -1001,7 +1016,8 @@
 
                 <p class="rv-label">আপনার রিভিউ</p>
                 <textarea id="rv-text" class="rv-area" rows="4"
-                          placeholder="বইটি আপনার কেমন লাগল? কোন অংশটি সবচেয়ে কাজে দিল?"></textarea>
+                          placeholder="আপনার কেমন লাগল? কোন অংশটি সবচেয়ে কাজে দিল?"></textarea>
+                <p class="rv-hint">এটি আপনার নামসহ ওয়েবসাইটে সবার সামনে দেখানো হবে।</p>
 
                 <p class="rv-label">কীভাবে আরও ভালো করা যায়?</p>
                 <textarea id="rv-improve" class="rv-area" rows="3"

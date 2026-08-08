@@ -38,7 +38,27 @@
  {"@type":"Book","name":"শেখার শিল্প","author":{"@type":"Person","name":"রাকী ফয়সাল আহমেদ সাবিত"},
   "inLanguage":"bn","numberOfPages":318,
   "url":"https://alquranicruqyahhealing.com/app.html#books-section",
-  "offers":{"@type":"Offer","price":"200","priceCurrency":"BDT","availability":"https://schema.org/InStock"}}
+  "offers":{"@type":"Offer","price":"200","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
+  "aggregateRating":"@@RATING:shekhar-shilpo@@"},
+ {"@type":"Book","name":"সূরা ইয়াসীনের কারিশমা","author":{"@type":"Person","name":"রাকী ফয়সাল আহমেদ সাবিত"},
+  "inLanguage":"bn","numberOfPages":52,
+  "url":"https://alquranicruqyahhealing.com/app.html#books-section",
+  "offers":{"@type":"Offer","price":"100","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
+  "aggregateRating":"@@RATING:yasin-karishma@@"},
+ {"@type":"Course","name":"মাসিক লাইভ রুকইয়াহ কোর্স",
+  "description":"প্রতি মাসে কমপক্ষে ১২টি লাইভ সেশন — আয়াতের তাফসীর ও রুকইয়াহয় তার ব্যবহার, তিলাওয়াত ও প্রশ্নোত্তর।",
+  "inLanguage":"bn","provider":{"@id":"https://alquranicruqyahhealing.com/#org"},
+  "url":"https://alquranicruqyahhealing.com/#live-class",
+  "offers":{"@type":"Offer","price":"490","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
+  "hasCourseInstance":{"@type":"CourseInstance","courseMode":"online",
+   "courseWorkload":"PT12H","inLanguage":"bn"},
+  "aggregateRating":"@@RATING:live-class@@"},
+ {"@type":"Service","name":"রুকইয়াহ ডায়াগনোসিস ও গাইডলাইন",
+  "description":"২৫০+ প্রশ্নভিত্তিক মূল্যায়নের মাধ্যমে ব্যক্তিগতকৃত রুকইয়াহ পরিকল্পনা ও ৪৫ দিনের ফলোআপ।",
+  "provider":{"@id":"https://alquranicruqyahhealing.com/#org"},"areaServed":"BD",
+  "url":"https://alquranicruqyahhealing.com/#course",
+  "offers":{"@type":"Offer","price":"300","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
+  "aggregateRating":"@@RATING:diagnosis-guideline@@"}
 ]}
 </script>
 <script>
@@ -180,6 +200,19 @@ h2{font-size:clamp(1.5rem,4.2vw,2.15rem);font-weight:700;letter-spacing:-.02em;l
 .step h3{font-size:.98rem;font-weight:700;margin:8px 0 7px}
 .step p{font-size:.86rem;color:var(--sub)}
 
+.guarantee{background:var(--green-dim);border:1px solid rgba(0,229,153,.22);border-radius:var(--r-md);
+  padding:14px 16px;font-size:.87rem;line-height:1.7;margin-bottom:18px}
+.guarantee-note{display:block;margin-top:7px;color:var(--sub);font-size:.8rem}
+
+/* ── Reviews (section injected by build.js from reviews.json) ── */
+.rev-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media(min-width:700px){.rev-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1000px){.rev-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.rev{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px}
+.rev-stars{color:#facc15;letter-spacing:3px;font-size:.9rem;margin-bottom:10px}
+.rev blockquote{font-size:.9rem;line-height:1.7;color:var(--sub)}
+.rev figcaption{margin-top:12px;font-size:.82rem;font-weight:700}
+
 /* ── About ── */
 .about{display:grid;grid-template-columns:minmax(0,1fr);gap:26px;align-items:center;
   background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:30px}
@@ -238,7 +271,8 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
       <a href="/guides/">গাইড</a>
       <a href="/blog/">ব্লগ</a>
       <a href="#book">বই</a>
-      <a href="#course">কোর্স</a>
+      <a href="#live-class">লাইভ কোর্স</a>
+      <a href="#course">ডায়াগনোসিস</a>
       <a href="#about">পরিচিতি</a>
       <a href="#faq">প্রশ্নোত্তর</a>
     </div>
@@ -407,6 +441,46 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
   </div>
 </section>
 
+<section id="live-class">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">মাসিক সদস্যপদ</span>
+      <h2>লাইভ রুকইয়াহ কোর্স</h2>
+      <p class="sec-sub">রাকীর কাছে বারবার যাওয়ার বদলে নিজেই শিখে নিন — যাতে নিজের ও পরিবারের রুকইয়াহ নিজেই করতে পারেন।</p>
+    </div>
+    <div class="prod" style="grid-template-columns:minmax(0,1fr)">
+      <div>
+        <span class="prod-tag">প্রতি মাসে কমপক্ষে ১২টি লাইভ সেশন</span>
+        <h3>শেখা, তিলাওয়াত আর প্রশ্নোত্তর — প্রতি সেশনে</h3>
+        <p class="prod-sub">প্রতিটি সেশনে আয়াতের তাফসীর ও রুকইয়াহয় তার ব্যবহার, তারপর তিলাওয়াত ও প্রশ্নোত্তর</p>
+        <ul>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>কমপক্ষে ১২টি লাইভ সেশন</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রতিটি সেশনের রেকর্ডেড ভিডিও</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রতিটি সেশনের আলাদা নোট</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>রাকীর সাথে গ্রুপে কনসাল্ট</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>ভাই ও বোনদের ভিন্ন গ্রুপ</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>আলাদা সমস্যায় আলাদা সেশন</li>
+        </ul>
+        <p class="guarantee">
+          <strong>৩ সেশনের গ্যারান্টি —</strong> প্রথম ৩টি লাইভ সেশনে অংশ নেওয়ার পরও যদি মনে হয়
+          কোর্সটি আপনার কাজে আসছে না, চলতি মাস শেষ হওয়ার আগে জানালে পুরো হাদিয়া ফেরত।
+          শর্ত একটাই — অন্তত ৩টি সেশনে উপস্থিত থাকতে হবে।
+          <span class="guarantee-note">শিফা আল্লাহর হাতে, তাই আরোগ্যের নিশ্চয়তা কেউ দিতে পারে না।
+          এই গ্যারান্টি কোর্সটি আপনার উপযোগী কি না, সেটুকু নিয়েই।</span>
+        </p>
+        <div class="price-row">
+          <span class="price">৳৪৯০</span>
+          <span class="price-old">৳৭০০</span>
+          <span class="price-off">পুরো মাস</span>
+        </div>
+        <div class="prod-cta">
+          <a class="btn btn-p" href="/app.html#courses-section">কোর্সে যুক্ত হোন</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="course">
   <div class="wrap">
     <div class="sec-head">
@@ -439,6 +513,11 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
     </div>
   </div>
 </section>
+
+<!-- Reviews. build.js replaces this with the section rendered from reviews.json,
+     or with nothing at all when there are none — an empty "মতামত" heading over
+     blank space says more against us than no section does. -->
+<!--REVIEWS_SECTION-->
 
 <section id="how">
   <div class="wrap">

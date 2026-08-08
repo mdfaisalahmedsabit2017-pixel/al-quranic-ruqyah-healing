@@ -154,7 +154,7 @@ async function init() {
         renderDailySection();
         renderCourses();
         renderBooks();
-        refreshBookRatings();     // fills in the star rating once Firestore answers
+        refreshReviews();         // fills in ratings and the review wall once Firestore answers
         updatePlayerModeButtons();
         initOnboarding();
         initPhoneAuth();
@@ -1028,8 +1028,19 @@ function watchUnlocks(user) {
     unlockUnsub = db.collection('users').doc(user.uid).onSnapshot((doc) => {
         if (!doc.exists) return;
         const before = ownedIds();
+        const memberBefore = MEMBERSHIPS.filter(id => membershipActive(id));
         userProfile = doc.data();
         applyPersonalization();
+        // A membership is not in `courses`, so the unlock notice below never sees
+        // it. Announce it separately, or confirming a ৳৪৯০ payment changes the
+        // card under the buyer with nothing said.
+        if (!first) {
+            MEMBERSHIPS.filter(id => membershipActive(id) && !memberBefore.includes(id))
+                .forEach(id => {
+                    const item = ALL_PRODUCTS().find(p => p.id === id);
+                    showToast(`✅ ${item ? item.title : id} — সদস্যপদ চালু হয়েছে`);
+                });
+        }
         const now = ownedIds();
         const fresh = [...now].filter(id => !before.has(id));
         const lost  = [...before].filter(id => !now.has(id));
@@ -1759,6 +1770,34 @@ const COURSES = [
         formLink: 'https://forms.gle/Wo89U8m5HWjt824e6',
         fbLink: 'https://www.facebook.com/al.quranic.ruqyah.healing1',
     },
+    {
+        // Sold only through Messenger until now — someone had to write the word
+        // "Session", wait for a reply, fill a form, then pay. Every step lost
+        // people, and all of them at hours when nobody was answering.
+        id: 'live-class',
+        emoji: 'book',
+        title: 'মাসিক লাইভ রুকইয়াহ কোর্স',
+        desc: 'প্রতি মাসে কমপক্ষে ১২টি লাইভ সেশন — আয়াতের তাফসীর ও রুকইয়াহয় তার ব্যবহার, তিলাওয়াত, আর প্রশ্নোত্তর। উদ্দেশ্য একটাই: আপনি যেন নিজের ও পরিবারের রুকইয়াহ নিজেই করতে পারেন।',
+        price: 490, originalPrice: 700,
+        featuresLabel: 'কোর্সে যা পাচ্ছেন',
+        ctaLabel: 'কোর্সে যুক্ত হোন',
+        features: [
+            'কমপক্ষে ১২টি লাইভ সেশন',
+            'প্রতিটি সেশনের রেকর্ডেড ভিডিও',
+            'প্রতিটি সেশনের আলাদা নোট',
+            'রাকীর সাথে গ্রুপে কনসাল্ট',
+            'আলাদা টেলিগ্রাম গ্রুপ',
+            'ভাই ও বোনদের ভিন্ন গ্রুপ',
+            'আলাদা সমস্যায় আলাদা সেশন',
+            'প্রতি সেশনে প্রশ্নোত্তর পর্ব',
+        ],
+        note: '<strong>৩ সেশনের গ্যারান্টি:</strong> প্রথম ৩টি লাইভ সেশনে অংশ নেওয়ার পরও যদি মনে হয় কোর্সটি আপনার কাজে আসছে না, চলতি মাস শেষ হওয়ার আগে জানালে পুরো হাদিয়া ফেরত দেওয়া হবে — কোনো প্রশ্ন করা হবে না। <span style="color:var(--text-dim)">শর্ত একটাই: অন্তত ৩টি সেশনে উপস্থিত থাকতে হবে। শিফা আল্লাহর হাতে, তাই আরোগ্যের নিশ্চয়তা কেউ দিতে পারে না — এই গ্যারান্টি কোর্সটি আপনার উপযোগী কি না, সেটুকু নিয়েই।</span>',
+        badge: 'মাসিক সদস্যপদ', badgeIcon: 'star', badgeColor: 'var(--green)',
+        // Rendered in place of the plain "কেনা হয়েছে" button once the membership
+        // is live. The Telegram links are NOT here — they come from
+        // /api/membership, which checks the expiry first. See that file.
+        ownedRender: () => memberCardMarkup('live-class'),
+    },
 ];
 
 // In the Capacitor/APK build the page is served from a local web server, so a
@@ -1808,6 +1847,38 @@ const ownedIds = () => {
     const remote = currentUser ? (userProfile?.courses || []) : [];
     return new Set([...local, ...remote]);
 };
+
+// Everything else here is bought once and kept. The live class is a monthly
+// subscription, and `courses` has no room for an end date — being in that array
+// is permanent by construction. So a membership is a separate field carrying an
+// expiry, and nothing reads it as ownership:
+//
+//     users/<uid>.memberships['live-class'].until = <ms since epoch>
+//
+// Renewing extends from whichever is later, now or the current expiry, so paying
+// early adds to the membership instead of throwing away the remaining days.
+// MEMBERSHIP_DAYS is duplicated in api/membership.js only as the id; the date
+// arithmetic happens here, on confirmation.
+const MEMBERSHIP_DAYS = 30;
+const MEMBERSHIPS = ['live-class'];
+const isMembership = (id) => MEMBERSHIPS.includes(id);
+
+function membershipUntil(id) {
+    const m = userProfile?.memberships?.[id];
+    const until = m && typeof m.until === 'number' ? m.until : 0;
+    return until;
+}
+
+const membershipActive = (id) => membershipUntil(id) > Date.now();
+
+function membershipDaysLeft(id) {
+    const left = membershipUntil(id) - Date.now();
+    return left > 0 ? Math.ceil(left / 86400000) : 0;
+}
+
+// Owned means "may use it now": a lapsed member is not an owner, and the card
+// goes back to offering renewal rather than pretending they still have access.
+const hasProduct = (id) => (isMembership(id) ? membershipActive(id) : ownedIds().has(id));
 
 let currentBuyCourse = null;
 let currentPayMethod = 'bkash';
@@ -1873,6 +1944,7 @@ function renderBooks() {
                 ${ratingMarkup(b.id)}
                 <p class="book-desc">${b.desc}</p>
                 <div class="book-meta">${b.tags.map(t => `<span class="book-tag">${t}</span>`).join('')}</div>
+                ${reviewListMarkup(b.id, 2)}
                 ${IS_NATIVE ? '' : `
                 <div class="course-price-row" style="margin-bottom:8px">
                     <span class="course-price">৳${b.price}</span>
@@ -1902,12 +1974,8 @@ function renderCourses() {
     // reachable there through the contact card, which books an appointment
     // rather than taking a payment.
     if (IS_NATIVE) { el.innerHTML = ''; return; }
-    const purchased = JSON.parse(localStorage.getItem('purchasedCourses') || '[]');
-    const userCourses = currentUser ? (userProfile?.courses || []) : [];
-    const allPurchased = [...new Set([...purchased, ...userCourses])];
-
     el.innerHTML = COURSES.map(c => {
-        const owned = allPurchased.includes(c.id);
+        const owned = hasProduct(c.id);
         const disc = Math.round((1 - c.price / c.originalPrice) * 100);
         return `
         <div class="course-card">
@@ -1918,22 +1986,87 @@ function renderCourses() {
                 <p class="course-desc">${c.desc}</p>
             </div>
             <div class="course-body">
-                <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:8px">রিপোর্টে যা থাকবে</p>
+                <p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:8px">${c.featuresLabel || 'রিপোর্টে যা থাকবে'}</p>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:14px">
                     ${c.features.map(f => `<div style="display:flex;align-items:center;gap:5px;font-size:0.75rem;color:var(--text-sub)"><span style="color:var(--green);font-size:0.6rem">●</span>${f}</div>`).join('')}
                 </div>
+                ${c.note ? `<p style="font-size:0.75rem;color:var(--text-sub);line-height:1.6;margin-bottom:12px;padding:9px 11px;background:rgba(0,229,153,0.05);border-radius:10px">${c.note}</p>` : ''}
+                ${ratingMarkup(c.id)}
+                ${reviewListMarkup(c.id, 2)}
                 <div class="course-price-row">
                     <span class="course-price">৳${c.price}</span>
                     <span class="course-original">৳${c.originalPrice}</span>
                     <span class="course-discount">${disc}% ছাড়</span>
                 </div>
                 ${owned
-                    ? `<button class="course-buy-btn purchased" disabled>✅ কেনা হয়েছে — ফর্ম পূরণ করুন</button>`
-                    : `<button class="course-buy-btn" onclick="openBuyModal('${c.id}')">${ico('steth')} ডায়াগনোসিস শুরু করুন → মাত্র ৳${c.price}</button>`
+                    ? (c.ownedRender ? c.ownedRender() : `<button class="course-buy-btn purchased" disabled>✅ কেনা হয়েছে — ফর্ম পূরণ করুন</button>`)
+                      + `<button class="book-btn-ghost" onclick="openReviewModal('${c.id}')">${ico('star')} রিভিউ ও রেটিং দিন</button>`
+                    : `<button class="course-buy-btn" onclick="openBuyModal('${c.id}')">${ico(c.emoji)} ${c.ctaLabel || 'ডায়াগনোসিস শুরু করুন'} → মাত্র ৳${c.price}</button>`
                 }
             </div>
         </div>`;
     }).join('');
+
+    // Any membership card just written to the DOM starts with a placeholder
+    // where its group links go; this fills them in from the gated endpoint.
+    COURSES.filter(c => isMembership(c.id) && hasProduct(c.id))
+           .forEach(c => loadMemberLinks(c.id));
+}
+
+// The member's own panel on the course card: how long is left, where to go, and
+// how to renew. The group links are deliberately absent from this markup — it
+// asks /api/membership for them, which re-checks the expiry server-side. Putting
+// them in app.js would publish them, since app.js is a public file.
+function memberCardMarkup(id) {
+    const days = membershipDaysLeft(id);
+    const soon = days <= 5;
+    return `
+        <div id="member-${id}" class="member-card">
+            <p class="member-status">
+                ✅ সদস্যপদ চালু —
+                <span style="color:${soon ? '#facc15' : 'var(--green)'}">আর ${toBn(days)} দিন বাকি</span>
+            </p>
+            <div id="member-links-${id}" class="member-links">
+                <p style="font-size:0.78rem;color:var(--text-dim)">গ্রুপের লিংক আনা হচ্ছে…</p>
+            </div>
+            ${soon ? `<button class="course-buy-btn" onclick="openBuyModal('${id}')">
+                সদস্যপদ নবায়ন করুন → ৳${COURSES.find(c => c.id === id).price}</button>` : ''}
+        </div>`;
+}
+
+// Fetched rather than rendered inline, and re-fetched on every render, because
+// the answer depends on a server-side expiry check that the client cannot do
+// honestly — userProfile could be edited in the console, /api/membership cannot.
+async function loadMemberLinks(id) {
+    const box = document.getElementById(`member-links-${id}`);
+    if (!box || !currentUser) return;
+    const say = (html) => { box.innerHTML = html; };
+    try {
+        const token = await currentUser.getIdToken();
+        const res = await fetch(`${API_BASE}/api/membership`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (!res.ok || !data.active) {
+            say('<p style="font-size:0.78rem;color:#facc15">সদস্যপদের মেয়াদ শেষ — নবায়ন করলে গ্রুপের লিংক আবার দেখা যাবে।</p>');
+            return;
+        }
+        if (!data.links) {
+            say('<p style="font-size:0.78rem;color:var(--text-dim)">গ্রুপের লিংক এখনো যুক্ত করা হয়নি। রাকীর সাথে যোগাযোগ করুন।</p>');
+            return;
+        }
+        const link = (url, label) =>
+            `<a class="member-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer"
+                onclick="openExternal(this.href);return false">${label}</a>`;
+        say(
+            link(data.links.session, '📢 সেশন চ্যানেল')
+            + link(data.links.sisters, '👩 বোনদের গ্রুপ')
+            + link(data.links.brothers, '👨 ভাইদের গ্রুপ')
+            + (data.form ? link(data.form, '📝 পরিচয়-ফর্ম পূরণ করুন') : '')
+        );
+    } catch (e) {
+        say(`<p style="font-size:0.78rem;color:#ff6b6b">লিংক আনা গেল না: ${esc(e.message)}</p>`);
+    }
 }
 
 /* #web-only — the purchase flow: modal, payment-method picker, TrxID
@@ -2437,15 +2570,42 @@ window.shareBlogPost = function() {
 };
 
 // ══════════════════════════════════════════════════════════
-// BOOK REVIEWS & RATING
+// REVIEWS & RATING
 // ══════════════════════════════════════════════════════════
-// Only someone who owns the book may review it, so the score on the store card
-// reflects actual readers rather than drive-by ratings.
+// A review is written against a `target`: a product id for books and courses, a
+// plain slug for anything else. It used to be a bookId, which quietly decided
+// who was allowed to have an opinion — the people best placed to judge the live
+// class or the consultation never appear in anyone's `courses` array, and the
+// site itself is in no array at all, so none of them could say anything.
+//
+// Books stay owner-only: a score printed on a store card has to come from
+// someone who actually read the book. Every other target is open to any
+// signed-in user. Login is required throughout — it is the only thing standing
+// in for the rate limiting this codebase does not have, and it means an abusive
+// account can be dealt with rather than merely deleted from.
 const STAR_WORDS = ['', 'একদম ভালো লাগেনি', 'মোটামুটি', 'ভালো', 'খুব ভালো', 'অসাধারণ'];
 
-let reviewBookId = null;
+// Targets that are not products. Product ids resolve through ALL_PRODUCTS().
+const REVIEW_TARGETS = [
+    { id: 'ruqyah-service', title: 'রুকইয়াহ পরামর্শ ও সেবা',
+      prompt: 'সেবা নিয়ে আপনার অভিজ্ঞতা কেমন ছিল? কী উপকার হয়েছে?' },
+    { id: 'site', title: 'ওয়েবসাইট ও অ্যাপ',
+      prompt: 'সাইট বা অ্যাপ ব্যবহার করে কেমন লাগল? কোন জিনিসটা কাজে দিল?' },
+];
+
+function reviewTargetInfo(id) {
+    const p = ALL_PRODUCTS().find(x => x.id === id);
+    if (p) {
+        return { id, title: p.title, prompt: 'আপনার কেমন লাগল? কোন অংশটি সবচেয়ে কাজে দিল?' };
+    }
+    return REVIEW_TARGETS.find(x => x.id === id) || null;
+}
+
+const isBookTarget = (id) => BOOKS.some(b => b.id === id);
+
+let reviewTarget = null;
 let reviewRating = 0;
-const reviewStats = {};      // bookId -> { avg, count, items }
+const reviewStats = {};      // target -> { avg, count, items }
 
 function starSvg(filled) {
     return `<svg viewBox="0 0 24 24" class="${filled ? '' : 'off'}" aria-hidden="true">`
@@ -2464,45 +2624,120 @@ function ratingMarkup(bookId) {
     </div>`;
 }
 
-async function loadReviews(bookId) {
-    if (!db) return null;
+// One read for every target, rather than the one-query-per-book this used to do:
+// the number of queries grew with the catalogue, and the review wall needs all
+// of them together anyway. The limit is a guard against an unbounded read, not a
+// display cap — reviews are counted in tens.
+async function loadAllReviews() {
+    if (!db) return false;
     try {
-        const snap = await db.collection('reviews').where('bookId', '==', bookId).get();
-        const items = snap.docs.map(d => d.data()).filter(r => typeof r.rating === 'number');
-        const count = items.length;
-        const avg = count ? items.reduce((s, r) => s + r.rating, 0) / count : 0;
-        // newest first; createdAt is briefly null right after a local write
-        items.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-        reviewStats[bookId] = { avg, count, items };
-        return reviewStats[bookId];
+        const snap = await db.collection('reviews')
+            .orderBy('createdAt', 'desc').limit(500).get();
+        Object.keys(reviewStats).forEach(k => delete reviewStats[k]);
+        snap.docs.forEach(d => {
+            const r = d.data();
+            if (typeof r.rating !== 'number') return;
+            // Documents written before targets existed carry only bookId.
+            const t = r.target || r.bookId;
+            if (!t) return;
+            if (!reviewStats[t]) reviewStats[t] = { count: 0, sum: 0, items: [] };
+            const s = reviewStats[t];
+            s.count++;
+            s.sum += r.rating;
+            s.items.push(r);
+        });
+        Object.values(reviewStats).forEach(s => { s.avg = s.sum / s.count; });
+        return true;
     } catch (e) {
+        // Almost always the Firestore rules: without a public read on `reviews`
+        // this throws and every rating silently disappears from the cards.
         console.warn('Review load error:', e);
-        return null;
+        return false;
     }
 }
 
-async function refreshBookRatings() {
-    let any = false;
-    for (const b of BOOKS) {
-        if (await loadReviews(b.id)) any = true;
-    }
-    if (any) renderBooks();
+async function refreshReviews() {
+    const ok = await loadAllReviews();
+    // The wall is drawn either way. Its empty state invites the first review and
+    // carries the buttons for leaving one; bailing out early instead leaves a
+    // "সবার মতামত" heading standing over nothing, which is how this looked while
+    // the Firestore rules denied the read.
+    renderReviewWall();
+    if (!ok) return;
+    renderBooks();
+    renderCourses();
 }
 
-window.openReviewModal = function(bookId) {
+// The reviews shown under a card. Ratings without written text are counted in
+// the average but have nothing to display, so they are skipped here.
+function reviewListMarkup(target, limit) {
+    const s = reviewStats[target];
+    if (!s) return '';
+    const shown = s.items.filter(r => r.review).slice(0, limit);
+    if (!shown.length) return '';
+    return `<div class="rv-list">` + shown.map(r => `
+        <div class="rv-item">
+            <div class="rv-item-top">
+                <span class="rating-stars">${[1, 2, 3, 4, 5].map(n => starSvg(n <= r.rating)).join('')}</span>
+                <span class="rv-item-name">${esc(r.name || 'একজন পাঠক')}</span>
+            </div>
+            <p class="rv-item-text">${esc(r.review)}</p>
+        </div>`).join('') + `</div>`;
+}
+
+// Everything anyone has written, newest first, labelled with what it is about.
+function renderReviewWall() {
+    const el = document.getElementById('review-wall');
+    if (!el) return;
+
+    const all = [];
+    Object.keys(reviewStats).forEach(t => {
+        const info = reviewTargetInfo(t);
+        reviewStats[t].items.forEach(r => {
+            if (r.review) all.push({ r, label: info ? info.title : t });
+        });
+    });
+    all.sort((a, b) => (b.r.createdAt?.seconds || 0) - (a.r.createdAt?.seconds || 0));
+
+    const buttons = REVIEW_TARGETS.map(t =>
+        `<button class="book-btn-ghost" onclick="openReviewModal('${t.id}')">${ico('star')} ${t.title} নিয়ে মতামত</button>`
+    ).join('');
+
+    if (!all.length) {
+        el.innerHTML = `<p style="font-size:0.82rem;color:var(--text-dim);text-align:center;padding:6px 0 12px">
+            এখনো কেউ মতামত দেননি — আপনিই প্রথম হতে পারেন।</p>${buttons}`;
+        return;
+    }
+
+    el.innerHTML = `<div class="rv-list">` + all.slice(0, 8).map(({ r, label }) => `
+        <div class="rv-item">
+            <div class="rv-item-top">
+                <span class="rating-stars">${[1, 2, 3, 4, 5].map(n => starSvg(n <= r.rating)).join('')}</span>
+                <span class="rv-item-name">${esc(r.name || 'একজন পাঠক')}</span>
+                <span class="book-tag" style="margin-left:auto">${esc(label)}</span>
+            </div>
+            <p class="rv-item-text">${esc(r.review)}</p>
+        </div>`).join('') + `</div>` + buttons;
+}
+
+window.openReviewModal = function(target) {
     haptic(10);
     if (!currentUser) {
-        showToast('রিভিউ দিতে আগে Login করুন');
+        showToast('মতামত দিতে আগে Login করুন');
         setTimeout(openLoginModal, 600);
         return;
     }
-    if (!ownedIds().has(bookId)) { showToast('বইটি কেনার পর রিভিউ দিতে পারবেন'); return; }
-    const b = BOOKS.find(x => x.id === bookId);
-    if (!b) return;
+    if (isBookTarget(target) && !ownedIds().has(target)) {
+        showToast('বইটি কেনার পর রিভিউ দিতে পারবেন');
+        return;
+    }
+    const info = reviewTargetInfo(target);
+    if (!info) return;
 
-    reviewBookId = bookId;
+    reviewTarget = target;
     reviewRating = 0;
-    document.getElementById('review-modal-title').textContent = `“${b.title}” — রিভিউ দিন`;
+    document.getElementById('review-modal-title').textContent = `${info.title} — মতামত দিন`;
+    document.getElementById('rv-text').placeholder = info.prompt;
     document.getElementById('rv-text').value = '';
     document.getElementById('rv-improve').value = '';
     document.getElementById('rv-error').textContent = '';
@@ -2517,7 +2752,7 @@ window.openReviewModal = function(bookId) {
 window.closeReviewModal = function() {
     document.getElementById('review-modal').classList.add('hidden');
     document.body.style.overflow = 'auto';
-    reviewBookId = null;
+    reviewTarget = null;
 };
 
 function renderStarPicker() {
@@ -2541,12 +2776,12 @@ window.setReviewRating = function(n) {
 window.submitReview = async function() {
     const err = document.getElementById('rv-error');
     if (!reviewRating) { err.textContent = '⚠️ আগে রেটিং দিন'; return; }
-    if (!reviewBookId || !currentUser || !db) return;
+    if (!reviewTarget || !currentUser || !db) return;
 
     const btn = document.getElementById('rv-submit');
     btn.disabled = true;
     const doc = {
-        bookId: reviewBookId,
+        target: reviewTarget,
         uid: currentUser.uid,
         name: userProfile?.name || currentUser.displayName || 'একজন পাঠক',
         rating: reviewRating,
@@ -2554,16 +2789,18 @@ window.submitReview = async function() {
         improve: document.getElementById('rv-improve').value.trim().slice(0, 1200),
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
+    // Kept for book targets so documents written before and after this change
+    // read the same way to anything that still looks for bookId.
+    if (isBookTarget(reviewTarget)) doc.bookId = reviewTarget;
 
     try {
-        // doc id = uid_bookId, so re-submitting edits the earlier review instead
-        // of letting one reader stack up several ratings
-        await db.collection('reviews').doc(`${currentUser.uid}_${reviewBookId}`).set(doc);
+        // doc id = uid_target, so re-submitting edits the earlier review instead
+        // of letting one person stack up several ratings on the same thing
+        await db.collection('reviews').doc(`${currentUser.uid}_${reviewTarget}`).set(doc);
         document.getElementById('review-form').classList.add('hidden');
         document.getElementById('review-done').classList.remove('hidden');
         haptic(20);
-        await loadReviews(reviewBookId);
-        renderBooks();
+        await refreshReviews();
     } catch (e) {
         err.textContent = 'সংরক্ষণ করা গেল না: ' + e.message;
     } finally {
@@ -3143,7 +3380,7 @@ async function loadReviewsAdmin() {
     listEl.innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:16px">Loading...</p>';
     try {
         const snap = await db.collection('reviews').get();
-        const rows = snap.docs.map(d => d.data())
+        const rows = snap.docs.map(d => ({ id: d.id, ...d.data() }))
             .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
         if (!rows.length) {
             listEl.innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:24px">এখনো কোনো রিভিউ নেই</p>';
@@ -3161,6 +3398,7 @@ async function loadReviewsAdmin() {
             const when = r.createdAt?.seconds
                 ? new Date(r.createdAt.seconds * 1000).toLocaleDateString('bn-BD')
                 : '—';
+            const about = r.target || r.bookId || '—';
             return `<div class="patient-card" style="border-left-color:${(r.rating || 0) >= 4 ? 'var(--green)' : '#facc15'}">
                 <div class="patient-card-header">
                     <div>
@@ -3169,16 +3407,37 @@ async function loadReviewsAdmin() {
                     </div>
                     <span class="status-badge" style="background:rgba(255,255,255,0.06)">${when}</span>
                 </div>
+                <p class="patient-meta-row">${esc(about)}</p>
                 ${r.review ? `<p style="font-size:0.83rem;color:var(--text-sub);margin-top:6px">${esc(r.review)}</p>` : ''}
                 ${r.improve ? `<p style="font-size:0.82rem;color:#facc15;margin-top:8px;padding:9px 11px;
                     background:rgba(250,204,21,0.06);border-radius:10px">
                     💡 <strong>উন্নতির পরামর্শ:</strong> ${esc(r.improve)}</p>` : ''}
+                <div class="patient-card-actions">
+                    <button onclick="deleteReview('${esc(r.id)}')" class="patient-action-btn" style="color:#ff6b6b">🗑 মুছে ফেলুন</button>
+                </div>
             </div>`;
         }).join('');
     } catch (e) {
         listEl.innerHTML = `<p style="color:#ff6b6b;text-align:center;padding:16px;font-size:0.82rem">${esc(e.message)}</p>`;
     }
 }
+
+// Reviews publish the moment they are submitted — no queue, no approval. That is
+// the owner's decision, and it is the right one for volume, but it means the only
+// remedy for something abusive or defamatory is removal after the fact. Without
+// this button there is no remedy at all short of the Firebase console.
+window.deleteReview = async function(reviewId) {
+    if (!db || !reviewId) return;
+    if (!confirm('রিভিউটি স্থায়ীভাবে মুছে যাবে। নিশ্চিত?')) return;
+    try {
+        await db.collection('reviews').doc(reviewId).delete();
+        showToast('রিভিউ মুছে ফেলা হয়েছে');
+        await loadReviewsAdmin();
+        await refreshReviews();
+    } catch (e) {
+        showToast('মুছতে সমস্যা: ' + e.message);
+    }
+};
 
 // Reader-supplied text goes into innerHTML, so it must not be able to carry markup.
 function esc(s) {
@@ -3235,6 +3494,8 @@ async function loadPurchases() {
                     <span class="status-badge" style="background:rgba(255,255,255,0.06);color:${sbColor}">${sbLabel}</span>
                 </div>
                 <p style="font-size:0.72rem;color:var(--text-dim)">⏰ ${p.submittedAt || '—'}</p>
+                ${isMembership(p.courseId) ? `<p style="font-size:0.72rem;color:#facc15">
+                    🔁 মাসিক সদস্যপদ — Confirm করলে ${toBn(MEMBERSHIP_DAYS)} দিন যোগ হবে (মেয়াদ বাকি থাকলে তার পর থেকে)</p>` : ''}
                 <div class="patient-actions" style="margin-top:8px">
                     <button onclick="confirmPurchase('${p.id}','${p.uid}','${p.courseId}')" class="patient-action-btn" style="color:var(--green)">✅ Confirm</button>
                     <button onclick="rejectPurchase('${p.id}')" class="patient-action-btn" style="color:#ff6b6b">❌ Reject</button>
@@ -3278,25 +3539,50 @@ window.confirmPurchase = async function(purchaseId, userId, courseId) {
         // Unlock for the buyer. set+merge rather than update(): early Google
         // sign-ins never wrote a users/<uid> doc, and update() throws on a
         // missing document — which used to fail the unlock silently.
-        await db.collection('users').doc(userId).set({
-            courses: firebase.firestore.FieldValue.arrayUnion(courseId),
-        }, { merge: true });
+        if (isMembership(courseId)) {
+            await extendMembership(userId, courseId);
+        } else {
+            await db.collection('users').doc(userId).set({
+                courses: firebase.firestore.FieldValue.arrayUnion(courseId),
+            }, { merge: true });
+        }
         showToast('✅ Payment confirmed & unlocked for the buyer!');
         await loadPurchases();
     } catch(e) { showToast('Error: ' + e.message); }
 };
+
+// A month is added to whichever is later: today, or the expiry they already
+// have. Someone who renews a week early keeps that week — the alternative
+// silently charges them for days they had already paid for, and teaches members
+// to renew late.
+async function extendMembership(userId, id, days = MEMBERSHIP_DAYS) {
+    const snap = await db.collection('users').doc(userId).get();
+    const current = snap.exists ? (snap.data().memberships?.[id]?.until || 0) : 0;
+    const from = Math.max(Date.now(), current);
+    const until = from + days * 86400000;
+    await db.collection('users').doc(userId).set({
+        memberships: { [id]: { until } },
+    }, { merge: true });
+    return until;
+}
 
 window.rejectPurchase = async function(purchaseId) {
     haptic(10);
     if (!db) return;
     const p = allPurchases.find(x => x.id === purchaseId);
     // A book unlocks itself on submit, so rejecting one has to take the access
-    // back — otherwise an invented TrxID keeps the book for good.
-    const revoke = !!(p && p.status === 'auto' && p.uid && p.courseId);
+    // back — otherwise an invented TrxID keeps the book for good. A membership
+    // that was already confirmed has to be taken back for the same reason; it is
+    // ended rather than shortened, since the payment behind it did not exist.
+    const revoke = !!(p && ['auto', 'confirmed'].includes(p.status) && p.uid && p.courseId);
     if (revoke && !confirm(`❌ Reject করলে "${p.courseTitle || p.courseId}" ${p.name || p.email}-এর অ্যাকাউন্ট থেকে লক হয়ে যাবে।\n\nTrxID: ${p.txid}\n\nএগিয়ে যাবেন?`)) return;
     try {
         await db.collection('purchases').doc(purchaseId).update({ status: 'rejected' });
-        if (revoke) {
+        if (revoke && isMembership(p.courseId)) {
+            await db.collection('users').doc(p.uid).set({
+                memberships: { [p.courseId]: { until: 0 } },
+            }, { merge: true });
+        } else if (revoke) {
             await db.collection('users').doc(p.uid).set({
                 courses: firebase.firestore.FieldValue.arrayRemove(p.courseId),
             }, { merge: true });
