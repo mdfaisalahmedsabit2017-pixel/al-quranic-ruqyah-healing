@@ -1827,6 +1827,9 @@ const BOOKS = [
         desc: 'ঘরে ঘরে পড়া হয় সূরা ইয়াসীন, কিন্তু কোন আমল হাদিসভিত্তিক আর কোনটির পদ্ধতিতে আকীদার ঝুঁকি — সেটা কেউ বলে দেয় না। ২৬টি আমল, প্রতিটির নিচে একজন রাকীর সম্পাদকীয় টীকা ও নিরাপদ বিকল্প।',
         tags: ['৫২ পাতা', 'বাংলা', 'প্রতিটি আমলে টীকা'],
         price: 100, originalPrice: 250,
+        // Has a text edition as well as page images — see showReaderHtml().
+        // শেখার শিল্প has none: it exists only as scanned pages.
+        html: true,
     },
 ];
 
@@ -2831,6 +2834,13 @@ async function readerToken() {
     } catch (e) { return ''; }
 }
 
+// A book with a text edition opens as text. The page images stay — they are the
+// only form শেখার শিল্প has, and some readers want the printed page — but for
+// anyone reading on a phone, and for anyone reading while ill, an image of a
+// page is the worst of the two: no reflow, no font size, no dark mode, no
+// search, and nothing a screen reader can say out loud.
+let readerMode = 'text';        // 'text' | 'image'
+
 window.openBookReader = async function(bookId, startPage) {
     haptic(10);
     readerBook = BOOKS.find(b => b.id === bookId);
@@ -2839,6 +2849,12 @@ window.openBookReader = async function(bookId, startPage) {
     document.getElementById('reader-title').textContent = readerBook.title;
     document.getElementById('book-reader').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
+
+    document.getElementById('reader-mode-btn').classList.toggle('hidden', !readerBook.html);
+    readerMode = readerBook.html
+        ? (localStorage.getItem(`readerMode:${bookId}`) || 'text')
+        : 'image';
+    if (readerMode === 'text') { await showReaderHtml(); return; }
 
     if (!readerMeta[bookId]) {
         try {
@@ -2860,10 +2876,108 @@ window.closeBookReader = function() {
     if (readerBook) localStorage.setItem(`bookmark:${readerBook.id}`, String(readerPage));
 };
 
+window.toggleReaderMode = async function() {
+    if (!readerBook || !readerBook.html) return;
+    haptic(8);
+    readerMode = readerMode === 'text' ? 'image' : 'text';
+    localStorage.setItem(`readerMode:${readerBook.id}`, readerMode);
+    if (readerMode === 'text') { await showReaderHtml(); return; }
+    if (!readerMeta[readerBook.id]) await loadReaderMeta(readerBook.id);
+    readerTotal = readerMeta[readerBook.id].pages;
+    readerPreview = readerMeta[readerBook.id].preview;
+    readerPage = Number(localStorage.getItem(`bookmark:${readerBook.id}`)) || 1;
+    if (readerPage > readerTotal) readerPage = 1;
+    await showReaderPage();
+};
+
+async function loadReaderMeta(bookId) {
+    if (readerMeta[bookId]) return readerMeta[bookId];
+    try {
+        const r = await fetch(`${API_BASE}/api/book?book=${encodeURIComponent(bookId)}&meta=1`);
+        const m = await r.json();
+        readerMeta[bookId] = { pages: m.pages || 0, preview: m.preview ?? 12 };
+    } catch (e) { readerMeta[bookId] = { pages: 0, preview: 12 }; }
+    return readerMeta[bookId];
+}
+
+// The text edition arrives as a whole document and goes into an iframe rather
+// than the page: the book carries 400 lines of its own CSS, its own colour
+// tokens and its own dark mode, and letting that meet the app's stylesheet
+// would wreck both. srcdoc keeps the parent's base URL, so the /fonts/ the book
+// asks for are the ones the site already serves and the browser already has.
+async function showReaderHtml() {
+    const stage = document.getElementById('reader-stage');
+    const myReq = ++readerReqId;
+    stage.innerHTML = '<p style="color:var(--text-dim);padding:40px;font-size:0.85rem">লোড হচ্ছে…</p>';
+
+    document.getElementById('reader-foot').classList.add('hidden');
+    document.getElementById('reader-jump-btn').classList.add('hidden');
+    document.getElementById('reader-mode-btn').textContent = '🖼';
+    document.getElementById('reader-mode-btn').title = 'ছবি হিসেবে পড়ুন';
+
+    const token = await readerToken();
+    try {
+        const res = await fetch(
+            `${API_BASE}/api/book?book=${encodeURIComponent(readerBook.id)}&html=1`,
+            { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        if (myReq !== readerReqId) return;
+        if (!res.ok) { showReaderGate((await res.json().catch(() => ({}))).error); return; }
+        const html = await res.text();
+        if (myReq !== readerReqId) return;
+
+        // The server says whether it sent the whole book or the free part; the
+        // client does not get to decide, and the chip has to tell the truth.
+        const full = res.headers.get('X-Book-Full') === '1';
+        document.getElementById('reader-preview-chip').classList.toggle('hidden', full);
+
+        const frame = document.createElement('iframe');
+        frame.className = 'reader-frame';
+        frame.setAttribute('title', readerBook.title);
+        // No allow-same-origin: the book is content, and it never needs to reach
+        // back into the app, its storage or its Firebase session.
+        frame.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox');
+        frame.srcdoc = html;
+        stage.innerHTML = '';
+        stage.appendChild(frame);
+
+        if (!full) {
+            const gate = document.createElement('div');
+            gate.className = 'reader-msg';
+            gate.innerHTML = IS_NATIVE
+                ? `<h3>🔒 ফ্রি অংশ শেষ</h3>
+                   <p>বাকিটা আপনার অ্যাকাউন্টে যুক্ত হলে এখানেই খুলে যাবে।</p>
+                   ${currentUser ? '' : `<button class="book-btn" onclick="closeBookReader();openLoginModal()">Login করুন</button>`}`
+                : `<h3>🔒 ফ্রি অংশ শেষ</h3>
+                   <p>পুরো বইটি পড়তে বইটি সংগ্রহ করুন — ২৬টি আমল, প্রতিটির নিচে রাকীর টীকা।</p>
+                   <button class="book-btn" onclick="closeBookReader();openBuyModal('${readerBook.id}')">${ico('cart')} কিনুন → ৳${toBn(readerBook.price)}</button>`;
+            stage.appendChild(gate);
+        } else if (ownedIds().has(readerBook.id)) {
+            const end = document.createElement('div');
+            end.className = 'reader-msg';
+            end.innerHTML = `<h3>পড়া শেষ হলে 🌿</h3>
+                <p>আপনার মতামত অন্য পাঠকদের সাহায্য করবে।</p>
+                <button class="book-btn" onclick="closeBookReader();openReviewModal('${readerBook.id}')">
+                    রিভিউ ও রেটিং দিন
+                </button>`;
+            stage.appendChild(end);
+        }
+    } catch (e) {
+        if (myReq === readerReqId) {
+            stage.innerHTML = '<div class="reader-msg"><h3>লোড করা গেল না</h3>'
+                + '<p>ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।</p></div>';
+        }
+    }
+}
+
 async function showReaderPage() {
     const stage = document.getElementById('reader-stage');
     const myReq = ++readerReqId;
     stage.innerHTML = '<p style="color:var(--text-dim);padding:40px;font-size:0.85rem">লোড হচ্ছে…</p>';
+    document.getElementById('reader-foot').classList.remove('hidden');
+    document.getElementById('reader-jump-btn').classList.remove('hidden');
+    const modeBtn = document.getElementById('reader-mode-btn');
+    modeBtn.textContent = '🔤';
+    modeBtn.title = 'লেখা হিসেবে পড়ুন';
     updateReaderChrome();
 
     const token = await readerToken();

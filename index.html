@@ -988,10 +988,13 @@
             <button onclick="closeBookReader()" class="reader-icon-btn" aria-label="বন্ধ করুন">✕</button>
             <span class="reader-bar-title" id="reader-title"></span>
             <span id="reader-preview-chip" class="reader-preview-chip hidden">প্রিভিউ</span>
-            <button onclick="promptReaderJump()" class="reader-icon-btn" aria-label="পাতায় যান">⤳</button>
+            <!-- Only for books that have a text edition; toggleReaderMode() shows it. -->
+            <button onclick="toggleReaderMode()" class="reader-icon-btn hidden" id="reader-mode-btn"
+                    aria-label="পড়ার ধরন বদলান" title="লেখা / ছবি">🔤</button>
+            <button onclick="promptReaderJump()" class="reader-icon-btn" id="reader-jump-btn" aria-label="পাতায় যান">⤳</button>
         </div>
         <div class="reader-stage" id="reader-stage"></div>
-        <div class="reader-foot">
+        <div class="reader-foot" id="reader-foot">
             <button onclick="readerGo(-1)" class="reader-nav-btn" id="reader-prev">‹ আগের</button>
             <span class="reader-pageno" id="reader-pageno"></span>
             <button onclick="readerGo(1)" class="reader-nav-btn" id="reader-next">পরের ›</button>

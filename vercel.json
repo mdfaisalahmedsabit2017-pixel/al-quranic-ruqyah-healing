@@ -37,7 +37,7 @@
   ],
   "functions": {
     "api/book.js": {
-      "includeFiles": "{book_pages,book_pages_yasin}/**",
+      "includeFiles": "{book_pages,book_pages_yasin,book_html_yasin}/**",
       "maxDuration": 20
     }
   }

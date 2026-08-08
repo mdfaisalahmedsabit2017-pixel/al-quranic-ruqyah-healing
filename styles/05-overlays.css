@@ -316,6 +316,12 @@ body.player-mini #main-content { padding-bottom: 68px; }
 .book-btn-ghost { width: 100%; padding: 9px; margin-top: 6px; border-radius: var(--r-md); background: transparent; color: var(--text-sub); font-weight: 700; font-size: 0.78rem; border: 1px solid var(--border-md); cursor: pointer; font-family: inherit; }
 .book-btn-ghost:hover { color: var(--text); border-color: var(--border-hi); }
 
+/* The text edition. It is a whole document with its own stylesheet, so it gets
+   an iframe rather than a div — and the iframe scrolls itself, which is why the
+   stage does not need to. */
+.reader-frame { width: 100%; height: 100%; min-height: 70vh; border: 0;
+                display: block; background: #faf7ef; }
+
 /* ── Live-class membership card ── */
 .member-card { background: rgba(0,229,153,0.06); border: 1px solid rgba(0,229,153,0.22);
                border-radius: var(--r-md); padding: 12px 13px; }

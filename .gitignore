@@ -33,6 +33,7 @@ pdf_archive/
 # git; vercel.json sets git.deploymentEnabled=false so a push cannot undo it.
 book_pages/
 book_pages_yasin/
+book_html_yasin/
 
 # tools/ now holds Python helpers (sync_guides.py, watermark_pdfs.py) that are
 # run from the repo root, so their bytecode lands here.

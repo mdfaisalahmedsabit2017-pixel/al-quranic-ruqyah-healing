@@ -25,9 +25,14 @@ const https = require('https');
 // `book` is optional on purpose: installed APKs and any cached page from before
 // the second book existed call /api/book with no book param at all. Defaulting
 // to shekhar-shilpo keeps those clients working exactly as before.
+// `htmlDir`, where present, holds a text edition of the same book: full.html for
+// buyers and preview.html for everyone. Page images cannot be resized, reflowed,
+// searched, read in the dark or read aloud, which is a poor way to hand someone
+// a book they are consulting because they are unwell. Only books typeset from
+// source have one; শেখার শিল্প exists as scanned pages and has none.
 const BOOKS = {
     'shekhar-shilpo':  { dir: 'book_pages',       preview: 12 },
-    'yasin-karishma':  { dir: 'book_pages_yasin', preview: 8  },
+    'yasin-karishma':  { dir: 'book_pages_yasin', preview: 8, htmlDir: 'book_html_yasin' },
 };
 const DEFAULT_BOOK = 'shekhar-shilpo';
 
@@ -117,7 +122,39 @@ module.exports = async (req, res) => {
 
     if (q.meta) {
         res.setHeader('Cache-Control', 'public, max-age=3600');
-        res.status(200).json({ pages: totalPages(bookId), preview: PREVIEW });
+        res.status(200).json({
+            pages: totalPages(bookId),
+            preview: PREVIEW,
+            html: !!BOOKS[bookId].htmlDir,
+        });
+        return;
+    }
+
+    // The text edition. Unlike the page images this is one document, so the
+    // decision is not per page but per reader: a buyer gets the whole book, and
+    // everyone else gets the free part — which is a separate file, not the same
+    // file truncated, so there is nothing in the response to un-hide.
+    if (q.html) {
+        const htmlDir = BOOKS[bookId].htmlDir;
+        if (!htmlDir) { res.status(404).json({ error: 'no_text_edition' }); return; }
+
+        const token = q.token || (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+        let full = false;
+        if (token) {
+            const uid = await verifyToken(token);
+            full = !!uid && await hasPurchased(uid, token, bookId);
+        }
+
+        const file = path.join(__dirname, '..', htmlDir, full ? 'full.html' : 'preview.html');
+        if (!fs.existsSync(file)) { res.status(404).json({ error: 'not_found' }); return; }
+
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        // X-Book-Full so the reader can label the preview honestly without
+        // guessing from the length of what it got.
+        res.setHeader('X-Book-Full', full ? '1' : '0');
+        res.setHeader('Access-Control-Expose-Headers', 'X-Book-Full');
+        res.setHeader('Cache-Control', full ? 'private, no-store' : 'public, max-age=3600');
+        res.status(200).send(fs.readFileSync(file, 'utf8'));
         return;
     }
 
