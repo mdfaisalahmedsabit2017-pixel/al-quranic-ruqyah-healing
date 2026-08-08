@@ -2187,8 +2187,11 @@ window.submitCoursePurchase = async function() {
     }
 
     const kind = isBook ? 'বই' : 'কোর্স';
-    const waMsg = `💳 *নতুন ${kind} পেমেন্ট ${unlocked ? 'পেয়েছি (অটো-আনলক হয়েছে)' : 'অনুরোধ'}*\n\n${isBook ? '📖' : '📚'} *${kind}:* ${purchase.courseTitle}\n💰 *পরিমাণ:* ৳${purchase.price}\n📱 *${currentPayMethod.toUpperCase()} TrxID:* ${txid}\n👤 *User:* ${purchase.name || purchase.email}\n📞 *ফোন:* ${purchase.phone || '—'}\n⏰ *সময়:* ${purchase.submittedAt}${unlocked ? '\n\n⚠️ bKash স্টেটমেন্ট মিলিয়ে দেখুন — না মিললে Admin panel থেকে Reject করলে বইটি আবার লক হয়ে যাবে।' : ''}`;
-    setTimeout(() => openExternal(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMsg)}`), 500);
+    const payMsg = `💳 নতুন ${kind} পেমেন্ট ${unlocked ? '(অটো-আনলক হয়েছে)' : 'অনুরোধ'}\n\n${isBook ? '📖' : '📚'} ${kind}: ${purchase.courseTitle}\n💰 পরিমাণ: ৳${purchase.price}\n📱 ${currentPayMethod.toUpperCase()} TrxID: ${txid}\n👤 User: ${purchase.name || purchase.email}\n📞 ফোন: ${purchase.phone || '—'}\n⏰ সময়: ${purchase.submittedAt}`;
+    // The purchase row is already in Firestore and shows on the dashboard, so
+    // this is only to tell him it is there. Delayed so the toast is readable
+    // before the browser leaves for Facebook.
+    setTimeout(() => contactAdmin(payMsg, '📋 পেমেন্টের তথ্য কপি হয়েছে — মেসেজে পেস্ট করে পাঠান'), 500);
 
     if (btn) { btn.disabled = false; if (btn.dataset.label) btn.textContent = btn.dataset.label; }
 
@@ -3096,7 +3099,31 @@ document.addEventListener('keydown', (e) => {
 // PATIENT SYSTEM
 // ══════════════════════════════════════════════════════════
 const ADMIN_EMAIL    = 'crackdmcbuet@gmail.com';
-const ADMIN_WA       = '8801886608999';
+// Where a reader reaches the raqi. Facebook rather than WhatsApp, because that
+// is where he actually is; WhatsApp messages sat unread.
+//
+// The cost is real and worth stating: wa.me takes a ?text= and Messenger does
+// not, so a purchase or a consultation can no longer arrive pre-written. What
+// the message would have said is copied to the clipboard first and the toast
+// says so, and every one of these flows has already written its record to
+// Firestore before this runs — the message is a nudge, not the delivery.
+const ADMIN_FB = 'https://www.facebook.com/raqi.faisal.ahmed';
+
+async function contactAdmin(text, note) {
+    let copied = false;
+    if (text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            copied = true;
+        } catch (e) { /* insecure context, or the user denied it */ }
+    }
+    if (text) {
+        showToast(copied
+            ? (note || '📋 তথ্য কপি হয়েছে — মেসেজে পেস্ট করে পাঠান')
+            : '✉️ মেসেজে বিস্তারিত লিখে পাঠান');
+    }
+    openExternal(ADMIN_FB);
+}
 
 let allPatients      = [];   // loaded from Firestore
 let patientFilter    = 'all';
@@ -3209,13 +3236,12 @@ window.submitPatientForm = async function() {
     document.getElementById('pf-form')?.classList.add('hidden');
     document.getElementById('pf-success')?.classList.remove('hidden');
 
-    // Open WhatsApp
-    const waText = buildWAMessage(patientData);
-    setTimeout(() => {
-        openExternal(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waText)}`);
-    }, 800);
+    // The form is already saved to patients/<uid> above, so the message is a
+    // notification rather than the submission itself.
+    const summary = buildWAMessage(patientData);
+    setTimeout(() => contactAdmin(summary, '📋 তথ্য কপি হয়েছে — ফেসবুকে পেস্ট করে পাঠান'), 800);
 
-    showToast('✅ পাঠানো হয়েছে! WhatsApp খুলছে...');
+    showToast('✅ সংরক্ষণ হয়েছে! ফেসবুক খুলছে…');
 };
 
 function buildWAMessage(d) {
@@ -6311,8 +6337,8 @@ window.exportJournalWA = function() {
         return `📅 ${d}\n  ঘুম: ${e.sleep}/৫ | শরীর: ${e.body}/৫ | মন: ${e.mind}/৫ | ইবাদত: ${e.ibadah}/৫${e.note ? `\n  📝 ${e.note}` : ''}`;
     });
     const name = userProfile?.name || currentUser?.displayName || '';
-    const msg = `📔 *রুকিয়াহ জার্নাল রিপোর্ট*${name ? `\n👤 ${name}` : ''}\n\n${lines.join('\n\n')}\n\n_Al Quranic Ruqyah Healing App থেকে পাঠানো_`;
-    openExternal(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`);
+    const msg = `📔 রুকিয়াহ জার্নাল রিপোর্ট${name ? `\n👤 ${name}` : ''}\n\n${lines.join('\n\n')}\n\nAl Quranic Ruqyah Healing App থেকে পাঠানো`;
+    contactAdmin(msg, '📋 রিপোর্ট কপি হয়েছে — মেসেজে পেস্ট করে পাঠান');
 };
 
 // ══════════════════════════════════════════════════════════
