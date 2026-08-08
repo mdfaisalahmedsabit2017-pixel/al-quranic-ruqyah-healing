@@ -1766,6 +1766,7 @@ const COURSES = [
             'প্রয়োজনীয় সতর্কতা',
             'ব্যক্তিগতকৃত গাইডলাইন',
         ],
+        note: '<strong>ফলোআপ কীভাবে চলে:</strong> ৪৫ দিনের ফলোআপের মধ্যে <strong>প্রথম ১–১৫ দিন</strong> মেসেজে সরাসরি রাকীর সাথে কথা বলতে পারবেন — আমল, অগ্রগতি বা নতুন কোনো সমস্যা নিয়ে প্রশ্ন থাকলে তখনই জিজ্ঞেস করুন।',
         badge: 'বিশেষজ্ঞ সেরা', badgeIcon: 'star', badgeColor: 'var(--green)',
         formLink: 'https://forms.gle/Wo89U8m5HWjt824e6',
         fbLink: 'https://www.facebook.com/al.quranic.ruqyah.healing1',

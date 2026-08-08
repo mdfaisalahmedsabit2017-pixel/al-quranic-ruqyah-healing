@@ -1,0 +1,114 @@
+rules_version = '2';
+
+// The security rules for al-quranic-ruqyah, in the repository rather than only
+// in the Firebase Console.
+//
+// They were console-only until 2026-08-09, and by then three separate features
+// were dead because of a rule nobody could see or review:
+//
+//   * every review load threw "Missing or insufficient permissions", so no
+//     rating ever appeared on a store card and no review could be submitted;
+//   * publishing a notice failed for the same reason;
+//   * confirming a purchase failed, because the admin cannot write to the
+//     buyer's users/<uid> document — so paying for a course unlocked nothing.
+//
+// Deploy with:  npx firebase-tools deploy --only firestore:rules
+// (or paste this file's contents into Console -> Firestore Database -> Rules)
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Matches ADMIN_EMAIL in app.js and api/push.js. The email comes off the
+    // verified token, not from anything the client can set.
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.email == 'crackdmcbuet@gmail.com';
+    }
+
+    function isSelf(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ── Profiles ──────────────────────────────────────────────────────────
+    // A signed-in user owns their profile: name, phone, favourites, recently
+    // played, and `courses` — the last of which they really do write for
+    // themselves, because a book unlocks the moment its TrxID is submitted and
+    // is revoked later if the payment turns out not to exist.
+    //
+    // `memberships` is the exception and must stay one. The live class is a
+    // monthly subscription whose private Telegram links are handed out by
+    // /api/membership on the strength of memberships['live-class'].until, so a
+    // user who could write that field could grant themselves the ৳৪৯০ product
+    // from the browser console. Only the admin may set it — which is also why
+    // the admin needs read access here: extending a membership reads the
+    // current expiry first.
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isAdmin();
+      allow create: if isAdmin()
+                    || (isSelf(uid) && !('memberships' in request.resource.data));
+      allow update: if isAdmin()
+                    || (isSelf(uid)
+                        && !request.resource.data.diff(resource.data)
+                              .affectedKeys().hasAny(['memberships']));
+      allow delete: if isAdmin();
+    }
+
+    // ── Consultation intake ───────────────────────────────────────────────
+    // One document per patient, keyed by uid. Health information: the owner and
+    // the raqi, nobody else.
+    match /patients/{uid} {
+      allow read, write: if isSelf(uid) || isAdmin();
+    }
+
+    // ── Payment submissions ───────────────────────────────────────────────
+    // A buyer files their own and may promote it to 'auto' when a book unlocks
+    // itself; everything after that is the admin's. Reading is deliberately
+    // narrow: the client-side duplicate-TrxID check queries the whole
+    // collection, so for a non-admin that query is rejected outright — which is
+    // what txidAlreadySpent() already expects, since it treats a blocked query
+    // as "unknown" rather than "clean" and still shows the warning on the
+    // dashboard.
+    match /purchases/{id} {
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow read:   if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // ── Reviews ───────────────────────────────────────────────────────────
+    // World-readable on purpose: reviews are shown to visitors who are not
+    // signed in, and the landing page's build-time snapshot reads them the same
+    // way any visitor could.
+    //
+    // The document id is uid_target, so the first rule below is what stops one
+    // person writing under another's name or stacking several ratings on the
+    // same thing. uid never contains an underscore; targets use hyphens.
+    match /reviews/{id} {
+      allow read: if true;
+      allow create, update: if isSignedIn()
+                            && id.split('_')[0] == request.auth.uid
+                            && request.resource.data.uid == request.auth.uid
+                            && request.resource.data.rating is int
+                            && request.resource.data.rating >= 1
+                            && request.resource.data.rating <= 5;
+      // Reviews publish immediately with no approval queue, so removal after
+      // the fact is the only remedy for something abusive. It belongs to the
+      // admin alone — a user deleting their own review is fine, but the button
+      // that matters is the one in the admin panel.
+      allow delete: if isAdmin();
+    }
+
+    // ── Notices ───────────────────────────────────────────────────────────
+    // Readable by anyone: seeing a notice should not require an account.
+    match /announcements/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Anything not named above is denied. New collections must be added here
+    // deliberately, which is the point of keeping this file in the repository.
+  }
+}
