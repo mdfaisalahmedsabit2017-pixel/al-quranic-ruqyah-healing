@@ -145,7 +145,8 @@ setTimeout(async () => {
         }
         const missing = [...refs].filter(r => {
             const clean = r.split('?')[0].split('#')[0];
-            return clean && clean !== '/' && !fs.existsSync(path.join(dir, clean));
+            // Exclude Vercel-specific paths that are provided at runtime
+            return clean && clean !== '/' && !clean.startsWith('/_vercel/') && !fs.existsSync(path.join(dir, clean));
         });
         check('every local file the markup references is bundled',
             missing.length === 0, missing.join(', '));
