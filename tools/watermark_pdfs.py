@@ -119,9 +119,12 @@ def main() -> int:
         # pdf/alroqya/ and the articles at pdf/articles/. Slug prefixes cannot
         # tell them apart — both the collections and the jundul topic series use
         # ayat-* — so just look in all three.
+        # Hand-maintained documents (guides_src/manual.json) keep their source PDF in
+        # guides_src/manual_pdf/ — the engine never produced them.
         for cand in (args.engine / "pdf" / f"{slug}.pdf",
                      args.engine / "pdf" / "alroqya" / f"{slug}.pdf",
-                     args.engine / "pdf" / "articles" / f"{slug}.pdf"):
+                     args.engine / "pdf" / "articles" / f"{slug}.pdf",
+                     GUIDES / "manual_pdf" / f"{slug}.pdf"):
             if cand.is_file():
                 src = cand
                 break

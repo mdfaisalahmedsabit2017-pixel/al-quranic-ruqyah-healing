@@ -1,0 +1,6 @@
+{
+ "//": "Documents maintained by hand in guides_src/ (not produced by the ruqyah pdf maker engine). tools/sync_guides.py must not delete them as stale, and tools/watermark_pdfs.py takes their source PDF from guides_src/manual_pdf/<slug>.pdf.",
+ "slugs": [
+  "tabiah-ruqyah"
+ ]
+}

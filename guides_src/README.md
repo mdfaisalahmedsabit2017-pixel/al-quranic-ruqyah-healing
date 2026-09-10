@@ -22,6 +22,18 @@
 `public/guides/<slug>/index.html`-এ বসায়, আর `tools/library.js` তার উপরে
 `public/guides/index.html` ইনডেক্সটা বানায়। native বিল্ডে এগুলো যায় না।
 
+## হাতে-বানানো ডকুমেন্ট (engine-এর বাইরে)
+
+`manual.json`-এর `slugs`-এ থাকা ডকুমেন্টগুলো engine থেকে আসে না — যেমন `tabiah-ruqyah`
+(ফাওয়াজ আল-আসওয়াদের ১২টি التابعة ভিডিও থেকে বানানো; মাস্টার কপি `C:/Users/faisa/ruqyah-guidelines/`)। নিয়ম:
+
+- `sync_guides.py` এগুলোকে stale ধরে **মোছে না** (manual.json দেখে)।
+- সোর্স PDF রাখতে হয় `manual_pdf/<slug>.pdf`-এ; `watermark_pdfs.py` ওখান থেকেও নেয়।
+- `guides.json`-এর `slugs`-এ ক্যাটাগরি বসাতে হয়, বাকিদের মতোই।
+- HTML-এ engine-এর ডকুমেন্টের মতোই `assets/fonts.css` লিংক, `<a class="home" href="index.html">`,
+  `../pdf/<slug>.pdf` ডাউনলোড লিংক, `<title>` ও `<meta name="description">` থাকতে হবে — নইলে
+  `tools/guides.js` বিল্ড থামিয়ে দেয়।
+
 ## এই ফাইলগুলো হাতে এডিট করবেন না
 
 আসল সোর্স অন্য প্রজেক্টে:

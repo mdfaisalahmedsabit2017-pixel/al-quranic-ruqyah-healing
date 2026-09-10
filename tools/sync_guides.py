@@ -22,6 +22,7 @@ Run this, then tools/watermark_pdfs.py, then `node build.js --target=web`.
 
 import argparse
 import importlib
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -92,7 +93,11 @@ def main():
 
     # Anything here that the engine no longer knows about is a document that was
     # renamed or dropped upstream, and would otherwise linger on the website.
-    stale = sorted({p.stem for p in DEST.glob("*.html")} - set(seen))
+    # Hand-maintained documents (see guides_src/manual.json) are not the engine's to
+    # know about, so they are excluded from the stale sweep rather than deleted.
+    manual_cfg = DEST / "manual.json"
+    manual = set(json.loads(manual_cfg.read_text("utf-8"))["slugs"]) if manual_cfg.is_file() else set()
+    stale = sorted({p.stem for p in DEST.glob("*.html")} - set(seen) - manual)
     for slug in stale:
         (DEST / f"{slug}.html").unlink()
         print(f"removed stale {slug}.html (engine no longer has it)")
