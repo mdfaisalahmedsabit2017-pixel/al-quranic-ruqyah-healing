@@ -1,6 +1,7 @@
 // Bump CACHE_NAME on every release that changes index.html / app.js.
 // v5 also switches the app shell off cache-first — see the fetch handler.
-const CACHE_NAME = 'ruqyah-pro-v13';  // v13: second book; admin finance tab (web only)
+const CACHE_NAME = 'ruqyah-pro-v16';  // v16: /guides/ and /audio/ pages go network-first — a new guide was invisible
+                                         // to every returning visitor because the index sat in the cache-first bucket
 const AUDIO_CACHE = 'ruqyah-audio-dl-v1';
 
 // Files that change with every deploy. Cache-first on these meant a returning
@@ -141,9 +142,16 @@ self.addEventListener('fetch', (event) => {
   // immutable once published, so they stay on the cache-first path below.
   const isBlogContent = /\/blog\//.test(url) && !/\/blog\/images\//.test(url);
 
+  // Same trap, found 2026-09-10: the guides index and the audio library pages are
+  // regenerated every deploy (a guide published today must appear today), but they
+  // fell through to the cache-first path below, so a phone that had opened /guides/
+  // once kept showing that day's list forever. The PDFs and the font sheet under
+  // /guides/_files/ and /guides/_assets/ are immutable and stay cache-first.
+  const isLibraryPage = /\/(guides|audio)\//.test(url) && !/\/guides\/_(files|assets)\//.test(url);
+
   // App shell: network-first, fall back to cache. Keeps the app updatable while
   // still working offline (the cached copy answers as soon as the network fails).
-  if (isShell(url) || isBlogContent) {
+  if (isShell(url) || isBlogContent || isLibraryPage) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
