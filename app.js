@@ -139,6 +139,8 @@ async function init() {
 
         setupCategories();
         renderAudio();
+        openFromHash();
+        window.addEventListener('hashchange', openFromHash);
         renderPDFs();
         loadBlog();               // network-bound; don't hold up first paint
         renderRecentlyPlayed();
@@ -478,6 +480,12 @@ async function pdfRender(n) {
 
 // Signature unchanged from the old iframe version, so renderPDFs and the search
 // overlay call it exactly as before.
+//
+// `url` may also be `{ data: Uint8Array, name }` — that is how a course note is
+// read. Those bytes arrive from /api/course over an authenticated request and
+// must never become a URL anyone could fetch again, so the reader is handed the
+// bytes directly. Everything downstream (toolbar, paging, the remembered page
+// under pdfBookmarks[name]) is identical.
 window.viewPDF = async (url, title, page) => {
     const modal = document.getElementById('pdf-modal');
     const modalTitle = document.getElementById('pdf-modal-title');
@@ -487,8 +495,10 @@ window.viewPDF = async (url, title, page) => {
     document.getElementById('pdf-toolbar')?.classList.add('hidden');
     pdfSetStatus('লোড হচ্ছে…');
 
-    pdfFile = url.split('/').pop();
-    const absolute = /^https?:/.test(url) ? url : `${PDF_BASE}/${url.replace(/^\//, '')}`;
+    const inline = (url && typeof url === 'object' && url.data) ? url : null;
+    pdfFile = inline ? inline.name : url.split('/').pop();
+    const absolute = inline ? null
+        : (/^https?:/.test(url) ? url : `${PDF_BASE}/${url.replace(/^\//, '')}`);
 
     try {
         const pdfjsLib = await loadPdfJs();
@@ -496,11 +506,14 @@ window.viewPDF = async (url, title, page) => {
         // Prefer a copy the reader explicitly kept offline. Checking the Cache
         // API directly rather than relying on the service worker means this
         // works on the very first launch too, before any worker has activated.
-        let source = { url: absolute };
-        try {
-            const hit = await caches.match(absolute);
-            if (hit) source = { data: new Uint8Array(await hit.arrayBuffer()) };
-        } catch (e) { /* Cache API unavailable — fall through to the network */ }
+        // A paid note is never in any cache, and must not be put in one.
+        let source = inline ? { data: inline.data } : { url: absolute };
+        if (!inline) {
+            try {
+                const hit = await caches.match(absolute);
+                if (hit) source = { data: new Uint8Array(await hit.arrayBuffer()) };
+            } catch (e) { /* Cache API unavailable — fall through to the network */ }
+        }
 
         pdfDoc = await pdfjsLib.getDocument({
             ...source,
@@ -1030,6 +1043,12 @@ function watchUnlocks(user) {
         const before = ownedIds();
         const memberBefore = MEMBERSHIPS.filter(id => membershipActive(id));
         userProfile = doc.data();
+        // Where they got to on another device. Merged rather than assigned, and
+        // merged by "further along wins" — a snapshot landing mid-lesson must
+        // not rewind the one they are watching. typeof: web-only code.
+        if (typeof mergeRemoteCourseProgress === 'function') {
+            mergeRemoteCourseProgress(userProfile.courseProgress);
+        }
         applyPersonalization();
         // A membership is not in `courses`, so the unlock notice below never sees
         // it. Announce it separately, or confirming a ৳৪৯০ payment changes the
@@ -1762,19 +1781,22 @@ const COURSES = [
             'প্রয়োজনীয় রুকিয়াহ অডিও',
             'দৈনিক ও সাপ্তাহিক আমল',
             'মানসিক দিকনির্দেশনা',
-            '৪৫ দিনের ফলোআপ',
             'প্রয়োজনীয় সতর্কতা',
             'ব্যক্তিগতকৃত গাইডলাইন',
         ],
-        note: '<strong>ফলোআপ কীভাবে চলে:</strong> ৪৫ দিনের ফলোআপের মধ্যে <strong>প্রথম ১–১৫ দিন</strong> মেসেজে সরাসরি রাকীর সাথে কথা বলতে পারবেন — আমল, অগ্রগতি বা নতুন কোনো সমস্যা নিয়ে প্রশ্ন থাকলে তখনই জিজ্ঞেস করুন।',
         badge: 'বিশেষজ্ঞ সেরা', badgeIcon: 'star', badgeColor: 'var(--green)',
         formLink: 'https://forms.gle/Wo89U8m5HWjt824e6',
         fbLink: 'https://www.facebook.com/al.quranic.ruqyah.healing1',
     },
     {
-        // Sold only through Messenger until now — someone had to write the word
-        // "Session", wait for a reply, fill a form, then pay. Every step lost
-        // people, and all of them at hours when nobody was answering.
+        // LEGACY — superseded by 'ruqyah-package' below (2026-09-09). Kept
+        // verbatim, price and all, so the ~30 lines in renderCourses() and
+        // memberCardMarkup() that read COURSES.find(c => c.id === 'live-class')
+        // keep working exactly as before for anyone who already has
+        // memberships['live-class']: same renewal price, same Telegram links,
+        // same expiry math. Only renderCourses() was changed, to stop showing
+        // this card to people who do not already own it — see the filter
+        // there. Do not delete this entry or change its price/id.
         id: 'live-class',
         emoji: 'book',
         title: 'মাসিক লাইভ রুকইয়াহ কোর্স',
@@ -1798,6 +1820,34 @@ const COURSES = [
         // is live. The Telegram links are NOT here — they come from
         // /api/membership, which checks the expiry first. See that file.
         ownedRender: () => memberCardMarkup('live-class'),
+    },
+    {
+        // Replaces 'live-class' as the promoted product (2026-09-09). This is
+        // NOT sold through the in-app bKash/Nagad auto-unlock flow — access is
+        // a separate manual Google Form + Sheet review, and delivery is a
+        // separate site (course.alquranicruqyahhealing.com), not this app's
+        // Firestore memberships. externalUrl routes the CTA to that form
+        // instead of openBuyModal(); see the check in renderCourses().
+        id: 'ruqyah-package',
+        emoji: 'book',
+        title: 'মাসিক রুকইয়াহ প্যাকেজ',
+        desc: '২ মাসে ২৪টি Live Group Session (১২+১২) — সরাসরি রুকইয়াহ পাবেন, পাশাপাশি ধীরে ধীরে নিজেই শিখে নিজের ও পরিবারের রুকইয়াহ নিজে করতে পারবেন।',
+        price: 800,
+        featuresLabel: 'প্যাকেজে যা পাচ্ছেন',
+        ctaLabel: 'ফর্ম পূরণ করে যুক্ত হোন',
+        externalUrl: 'https://forms.gle/9N22oADc1aukg4NU8',
+        features: [
+            '২ মাসে ২৪টি Live Group Session (১২+১২)',
+            'শুক্র, শনি ও রবিবার রাত ৯টা',
+            'প্রতিটি সেশনের নোট PDF',
+            '৫০+ PDF লাইব্রেরি অ্যাক্সেস',
+            'Audio+PDF App, Course Recording App, Fajr Alarm App',
+            'গ্রুপে রাকীকে সরাসরি প্রশ্ন',
+            'সদস্য থাকাকালীন Free Diagnosis',
+            'মাসে ২টি Ruqyah Book',
+        ],
+        note: '<strong>রিফান্ড:</strong> পেমেন্টের ১ সপ্তাহের মধ্যে ৩টি সেশনে অংশ নেওয়ার পরও সন্তুষ্ট না হলে ১০০% হাদিয়া ফেরত। <span style="color:var(--text-dim)">শিফা আল্লাহর হাতে, তাই আরোগ্যের নিশ্চয়তা কেউ দিতে পারে না — এই গ্যারান্টি প্যাকেজটি আপনার উপযোগী কি না, সেটুকু নিয়ে।</span><br><strong>পেমেন্টের শর্ত:</strong> ঠিক ৳৮০০ Send Money, সঠিক Transaction ID ও সঠিক Gmail ফর্মে দিতে হবে — যেকোনো একটা ভুল হলে অ্যাক্সেস unlock হবে না।',
+        badge: 'মাসিক প্যাকেজ', badgeIcon: 'star', badgeColor: 'var(--green)',
     },
 ];
 
@@ -1830,6 +1880,17 @@ const BOOKS = [
         // Has a text edition as well as page images — see showReaderHtml().
         // শেখার শিল্প has none: it exists only as scanned pages.
         html: true,
+    },
+    {
+        // A translation, not the raqi's own writing, so the card credits the
+        // original author first — that is what the title page says.
+        id: 'isme-azam',
+        title: 'ইসমে আজম',
+        subtitle: 'আল্লাহর নামসমূহের অর্থ, ব্যাখ্যা ও বর্ণিত আমল',
+        author: 'আল্লামা আলিম ফাকরী · অনুবাদ: ফয়সাল আহমেদ সাবিত ও মাওঃ শেখ শফীক',
+        desc: 'আল্লাহর নামগুলোর প্রতিটির অর্থ ও ব্যাখ্যা, আর সেই নাম ধরে ডাকার যে আমলগুলো বর্ণিত আছে — আল্লামা আলিম ফাকরীর "ইসমে আজম" গ্রন্থের পূর্ণ বাংলা অনুবাদ। শুরুতে রাকীর টীকা: কোন অংশ কুরআন ও হাদিসের, আর কোনটি বুজুর্গদের অভিজ্ঞতা — আলাদা করে বলা আছে।',
+        tags: ['১৭২ পাতা', 'বাংলা', 'অনুবাদ'],
+        price: 100,
     },
 ];
 
@@ -1935,7 +1996,10 @@ function renderBooks() {
 
     el.innerHTML = BOOKS.map(b => {
         const has = owned.has(b.id);
-        const disc = Math.round((1 - b.price / b.originalPrice) * 100);
+        // A book sold at one price has no originalPrice. Without this guard the
+        // card showed "৳undefined" and "NaN% ছাড়" — and inventing a struck-out
+        // price to avoid that would be advertising a discount nobody gave.
+        const disc = b.originalPrice ? Math.round((1 - b.price / b.originalPrice) * 100) : 0;
         return `
         <div class="book-card">
             <div class="book-cover">
@@ -1952,8 +2016,8 @@ function renderBooks() {
                 ${IS_NATIVE ? '' : `
                 <div class="course-price-row" style="margin-bottom:8px">
                     <span class="course-price">৳${b.price}</span>
-                    <span class="course-original">৳${b.originalPrice}</span>
-                    <span class="course-discount">${disc}% ছাড়</span>
+                    ${b.originalPrice ? `<span class="course-original">৳${b.originalPrice}</span>
+                    <span class="course-discount">${disc}% ছাড়</span>` : ''}
                 </div>`}
                 <div class="book-actions">
                     ${has
@@ -1978,9 +2042,18 @@ function renderCourses() {
     // reachable there through the contact card, which books an appointment
     // rather than taking a payment.
     if (IS_NATIVE) { el.innerHTML = ''; return; }
-    el.innerHTML = COURSES.map(c => {
+    // 'live-class' is superseded by 'ruqyah-package' (see the comment on that
+    // entry) but stays in COURSES so existing members can still see it, renew
+    // it and read their expiry off it — just not as something a new visitor
+    // can discover and buy.
+    el.innerHTML = COURSES
+        .filter(c => c.id !== 'live-class' || hasProduct(c.id))
+        .map(c => {
         const owned = hasProduct(c.id);
-        const disc = Math.round((1 - c.price / c.originalPrice) * 100);
+        const priceExtra = c.originalPrice
+            ? `<span class="course-original">৳${c.originalPrice}</span>
+               <span class="course-discount">${Math.round((1 - c.price / c.originalPrice) * 100)}% ছাড়</span>`
+            : '';
         return `
         <div class="course-card">
             <div class="course-banner">
@@ -1999,12 +2072,14 @@ function renderCourses() {
                 ${reviewListMarkup(c.id, 2)}
                 <div class="course-price-row">
                     <span class="course-price">৳${c.price}</span>
-                    <span class="course-original">৳${c.originalPrice}</span>
-                    <span class="course-discount">${disc}% ছাড়</span>
+                    ${priceExtra}
                 </div>
                 ${owned
                     ? (c.ownedRender ? c.ownedRender() : `<button class="course-buy-btn purchased" disabled>✅ কেনা হয়েছে — ফর্ম পূরণ করুন</button>`)
                       + `<button class="book-btn-ghost" onclick="openReviewModal('${c.id}')">${ico('star')} রিভিউ ও রেটিং দিন</button>`
+                    : c.externalUrl
+                    ? `<a class="course-buy-btn" href="${esc(c.externalUrl)}" target="_blank" rel="noopener noreferrer"
+                         onclick="openExternal(this.href);return false">${ico(c.emoji)} ${c.ctaLabel || 'যুক্ত হোন'} → ৳${c.price}</a>`
                     : `<button class="course-buy-btn" onclick="openBuyModal('${c.id}')">${ico(c.emoji)} ${c.ctaLabel || 'ডায়াগনোসিস শুরু করুন'} → মাত্র ৳${c.price}</button>`
                 }
             </div>
@@ -2015,6 +2090,11 @@ function renderCourses() {
     // where its group links go; this fills them in from the gated endpoint.
     COURSES.filter(c => isMembership(c.id) && hasProduct(c.id))
            .forEach(c => loadMemberLinks(c.id));
+
+    // The member's shelf sits above this listing and moves with it — a
+    // confirmed payment has to add the course there in the same breath as it
+    // changes the card here. typeof: the shelf is web-only code.
+    if (typeof renderMyCourses === 'function') renderMyCourses();
 }
 
 // The member's own panel on the course card: how long is left, where to go, and
@@ -2072,6 +2152,620 @@ async function loadMemberLinks(id) {
         say(`<p style="font-size:0.78rem;color:#ff6b6b">লিংক আনা গেল না: ${esc(e.message)}</p>`);
     }
 }
+
+/* #web-only — THE PREMIUM COURSE AREA.
+   ══════════════════════════════════════════════════════════════════════════
+   The ৳৪৯০ card has promised 'প্রতিটি সেশনের রেকর্ডেড ভিডিও' and 'প্রতিটি সেশনের
+   আলাদা নোট' since the day it went on sale, and until now a member got three
+   Telegram links and nothing else. This is the other half.
+
+   Nothing here is decided on the client. The syllabus, the video id, the note
+   bytes and the entitlement all come from /api/course, which re-checks the
+   membership expiry server-side — userProfile can be edited in the console,
+   /api/course cannot. What the client does is draw it, remember where the member
+   stopped, and never write a video id anywhere it could be read back.
+
+   Web-only for the same reason renderCourses() is: the APK sells nothing, and
+   shipping the course code there would put a priced product inside the store
+   listing. See tools/audit-native.js. */
+
+// The catalog is small and changes only on deploy, so it is fetched once per
+// session and kept. Fetching it at all is deferred until someone actually owns
+// something — a visitor who never bought anything should not pay for a request
+// whose answer they would never see.
+let courseCatalog = null;
+let courseCatalogPromise = null;
+
+// What is open right now. courseLessonN === null means the syllabus is showing.
+let courseOpen = null;       // { id, title, modules, lessons, access }
+let courseLessonN = null;
+let courseLessonData = null; // { host, video, notes } — the video id lives HERE
+let courseYtPlayer = null;
+let courseTickTimer = null;
+let courseNoteTab = 'video';
+
+// Progress is mirrored in two places on purpose. localStorage is instant, free
+// and works offline, so it takes the every-few-seconds writes. Firestore is what
+// makes the member's place carry to another device, and it is written rarely —
+// see flushCourseProgress() for why that matters.
+const courseProgress = JSON.parse(localStorage.getItem('courseProgress') || '{}');
+let courseFlushAt = 0;
+let courseFlushDirty = false;
+
+function courseProgressFor(courseId, n) {
+    return (courseProgress[courseId] || {})[String(n)] || null;
+}
+
+// Remote wins only where it is further along. A flush racing an onSnapshot must
+// never rewind a lesson the member is sitting in the middle of.
+function mergeRemoteCourseProgress(remote) {
+    if (!remote || typeof remote !== 'object') return;
+    let changed = false;
+    Object.keys(remote).forEach((courseId) => {
+        const lessons = remote[courseId] || {};
+        Object.keys(lessons).forEach((n) => {
+            const there = lessons[n] || {};
+            const here = courseProgressFor(courseId, n) || {};
+            const sec = Math.max(Number(there.sec) || 0, Number(here.sec) || 0);
+            const done = !!(there.done || here.done);
+            if (sec === (here.sec || 0) && done === !!here.done) return;
+            courseProgress[courseId] = courseProgress[courseId] || {};
+            courseProgress[courseId][n] = { sec, done, at: Math.max(there.at || 0, here.at || 0) };
+            changed = true;
+        });
+    });
+    if (changed) localStorage.setItem('courseProgress', JSON.stringify(courseProgress));
+}
+
+function noteCourseProgress(courseId, n, sec, done) {
+    const key = String(n);
+    courseProgress[courseId] = courseProgress[courseId] || {};
+    const prev = courseProgress[courseId][key] || {};
+    courseProgress[courseId][key] = {
+        sec: Math.max(Math.floor(sec || 0), prev.sec || 0),
+        done: !!(done || prev.done),
+        at: Date.now(),
+    };
+    localStorage.setItem('courseProgress', JSON.stringify(courseProgress));
+    courseFlushDirty = true;
+}
+
+// Firestore only on the moments that matter — pause, ended, leaving a lesson,
+// closing the view — and at most once every 30 seconds. The user document is
+// under a live onSnapshot (watchUnlocks), so a write every five seconds would
+// re-run applyPersonalization and re-render the whole home screen twelve times a
+// minute, for a number nobody is watching.
+async function flushCourseProgress(force) {
+    if (!courseFlushDirty || !db || !currentUser) return;
+    if (!force && Date.now() - courseFlushAt < 30000) return;
+    courseFlushAt = Date.now();
+    courseFlushDirty = false;
+    try {
+        await db.collection('users').doc(currentUser.uid)
+                .set({ courseProgress }, { merge: true });
+    } catch (e) {
+        courseFlushDirty = true;   // try again on the next moment that matters
+    }
+}
+
+async function courseToken() {
+    if (!currentUser) return null;
+    try { return await currentUser.getIdToken(); } catch (e) { return null; }
+}
+
+async function courseFetch(path) {
+    const token = await courseToken();
+    return fetch(`${API_BASE}/api/course${path}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+}
+
+function loadCourseCatalog() {
+    if (courseCatalog) return Promise.resolve(courseCatalog);
+    if (!courseCatalogPromise) {
+        courseCatalogPromise = fetch(`${API_BASE}/api/course`)
+            .then(r => (r.ok ? r.json() : { courses: [] }))
+            .then(d => { courseCatalog = d.courses || []; return courseCatalog; })
+            .catch(() => { courseCatalogPromise = null; return []; });
+    }
+    return courseCatalogPromise;
+}
+
+// Client-side and therefore cosmetic — it decides what to *show*, never what to
+// serve. A member who edits this open still gets 403 from /api/course.
+function courseUnlocked(c) {
+    if (c.membership && membershipActive(c.membership)) return true;
+    if (c.product && ownedIds().has(c.product)) return true;
+    return false;
+}
+
+function courseDoneCount(c) {
+    const p = courseProgress[c.id] || {};
+    return Object.keys(p).filter(k => p[k] && p[k].done).length;
+}
+
+function nextCourseLesson(c, lessons) {
+    const p = courseProgress[c.id] || {};
+    const list = lessons || [];
+    return list.find(l => !(p[String(l.n)] && p[String(l.n)].done)) || null;
+}
+
+// ── The shelf on the home screen ────────────────────────────────────────────
+async function renderMyCourses() {
+    const section = document.getElementById('my-courses-section');
+    const el = document.getElementById('my-courses-container');
+    if (!section || !el) return;
+
+    // Nothing to fetch for until they own something. hasProduct covers both
+    // shapes: the monthly membership and a permanently unlocked product.
+    const anything = currentUser
+        && (MEMBERSHIPS.some(id => membershipActive(id)) || ownedIds().size > 0);
+    if (!anything) { section.classList.add('hidden'); el.innerHTML = ''; return; }
+
+    // Owned AND with something in it. A course whose sessions have not been
+    // uploaded yet must not appear: an empty shelf turns a quiet gap into a
+    // visible broken promise, which is worse than the silence it replaced.
+    const mine = (await loadCourseCatalog())
+        .filter(courseUnlocked)
+        .filter(c => c.videoCount > 0 || c.noteCount > 0);
+    if (!mine.length) { section.classList.add('hidden'); el.innerHTML = ''; return; }
+
+    el.innerHTML = mine.map((c) => {
+        const done = courseDoneCount(c);
+        const total = c.lessonCount || 0;
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        return `
+        <div class="mycourse-card" onclick="openCourseView('${esc(c.id)}')">
+            <p class="mycourse-title">${esc(c.title)}</p>
+            <p class="mycourse-sub">${esc(c.subtitle || '')}</p>
+            <div class="cv-bar-row">
+                <span>${toBn(done)} / ${toBn(total)} ক্লাস শেষ</span><b>${toBn(pct)}%</b>
+            </div>
+            <div class="cv-bar"><i style="width:${pct}%"></i></div>
+            <p class="mycourse-next">▶ <span>খুলুন →</span></p>
+        </div>`;
+    }).join('');
+    section.classList.remove('hidden');
+}
+
+// ── The overlay ─────────────────────────────────────────────────────────────
+window.openCourseView = async function(courseId, lessonN) {
+    haptic(10);
+    const view = document.getElementById('course-view');
+    const stage = document.getElementById('course-stage');
+    if (!view || !stage) return;
+
+    view.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    courseLessonN = null;
+    courseLessonData = null;
+    stage.innerHTML = '<p style="color:var(--text-dim);padding:40px;font-size:0.85rem">লোড হচ্ছে…</p>';
+
+    try {
+        const res = await courseFetch(`?course=${encodeURIComponent(courseId)}`);
+        if (!res.ok) {
+            courseMessage('কোর্সটি খোলা গেল না', 'একটু পরে আবার চেষ্টা করুন।');
+            return;
+        }
+        const data = await res.json();
+        courseOpen = {
+            id: data.course.id,
+            title: data.course.title,
+            membership: data.course.membership,
+            product: data.course.product,
+            modules: data.modules || [],
+            lessons: data.lessons || [],
+            access: data.access || { granted: false },
+        };
+        // != null, not a truthiness test: the orientation note is lesson 0.
+        if (lessonN != null) { openCourseLesson(lessonN); return; }
+        renderCourseSyllabus();
+    } catch (e) {
+        courseMessage('কোর্সটি খোলা গেল না', esc(e.message));
+    }
+};
+
+window.closeCourseView = function() {
+    teardownCoursePlayer();
+    flushCourseProgress(true);
+    const view = document.getElementById('course-view');
+    if (view) view.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    courseOpen = null;
+    courseLessonN = null;
+    courseLessonData = null;
+    renderMyCourses();
+};
+
+// One button, two meanings: inside a lesson it goes back to the list, on the
+// list it leaves. The Android back button runs this through OVERLAY_CLOSERS, so
+// back behaves the way it reads on screen.
+window.courseBack = function() {
+    if (courseLessonN !== null) {
+        teardownCoursePlayer();
+        flushCourseProgress(true);
+        courseLessonN = null;
+        courseLessonData = null;
+        renderCourseSyllabus();
+        return;
+    }
+    closeCourseView();
+};
+
+function courseHeader(title, chip) {
+    const t = document.getElementById('course-title');
+    const c = document.getElementById('course-progress-chip');
+    const b = document.getElementById('course-back-btn');
+    if (t) t.textContent = title;
+    if (b) b.textContent = courseLessonN !== null ? '‹' : '✕';
+    if (c) {
+        c.textContent = chip || '';
+        c.classList.toggle('hidden', !chip);
+    }
+}
+
+function courseMessage(head, body, action) {
+    const stage = document.getElementById('course-stage');
+    if (!stage) return;
+    stage.innerHTML = `<div class="cv-msg"><h3>${head}</h3><p>${body}</p>${action || ''}</div>`;
+}
+
+function renderCourseSyllabus() {
+    const stage = document.getElementById('course-stage');
+    if (!stage || !courseOpen) return;
+
+    const c = courseOpen;
+    const done = courseDoneCount({ id: c.id });
+    const total = c.lessons.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    courseHeader(c.title, total ? `${toBn(done)}/${toBn(total)}` : '');
+
+    // The syllabus is readable without access — a visible lesson list is what
+    // makes the course worth buying. What it never carries is a video id.
+    const locked = !c.access.granted;
+    const gate = !locked ? '' : `
+        <div class="cv-msg" style="margin:0 auto 18px">
+            <h3>🔒 সদস্যপদ চালু নেই</h3>
+            <p>${c.access.reason === 'membership_expired'
+                ? 'মেয়াদ শেষ হয়ে গেছে। নবায়ন করলে সবগুলো সেশন আবার খুলে যাবে।'
+                : 'সদস্য হলে প্রতিটি সেশনের রেকর্ডিং ও নোট এখানেই খুলবে।'}</p>
+            ${c.membership
+                ? `<button class="cv-btn primary" onclick="closeCourseView();openBuyModal('${esc(c.membership)}')">
+                     ${c.access.reason === 'membership_expired' ? 'সদস্যপদ নবায়ন করুন' : 'কোর্সে যুক্ত হোন'}</button>`
+                : ''}
+        </div>`;
+
+    const byModule = (c.modules.length ? c.modules : [{ id: null, name: '' }]);
+    const groups = byModule.map((m) => {
+        const rows = c.lessons.filter(l => (m.id ? l.module === m.id : true));
+        if (!rows.length) return '';
+        const head = (c.modules.length > 1 && m.name)
+            ? `<p class="cv-module">${esc(m.name)}</p>` : '';
+        return head + rows.map(l => courseRowMarkup(l, locked)).join('');
+    }).join('');
+
+    stage.innerHTML = `
+        <div class="cv-wrap">
+            ${total ? `<div class="cv-bar-row"><span>${toBn(done)} / ${toBn(total)} ক্লাস শেষ</span><b>${toBn(pct)}%</b></div>
+                       <div class="cv-bar" style="margin-bottom:18px"><i style="width:${pct}%"></i></div>` : ''}
+            ${gate}
+            ${total ? groups : '<p style="color:var(--text-sub);font-size:0.82rem;text-align:center;padding:30px 0">এখনো কোনো সেশন যোগ করা হয়নি।</p>'}
+        </div>`;
+}
+
+function courseRowMarkup(l, locked) {
+    const p = courseProgressFor(courseOpen.id, l.n) || {};
+    const openable = !locked || l.free;
+    const state = p.done ? '✓'
+        : (p.sec > 5 && l.duration ? `${toBn(Math.min(99, Math.round((p.sec / (l.duration * 60)) * 100)))}%` : '');
+    const meta = [
+        l.duration ? `${toBn(l.duration)} মিনিট` : '',
+        l.hasVideo ? 'ভিডিও' : '',
+        l.hasNotes ? 'নোট' : '',
+    ].filter(Boolean).map(x => `<span>${x}</span>`).join('');
+    return `
+    <button class="cv-row ${p.done ? 'done' : ''}" ${openable ? `onclick="openCourseLesson(${l.n})"` : 'disabled'}>
+        <span class="cv-row-n">${p.done ? '✓' : toBn(l.n)}</span>
+        <span class="cv-row-mid">
+            <span class="cv-row-title">${esc(l.title)}</span>
+            <span class="cv-row-meta">${meta}</span>
+        </span>
+        <span class="cv-row-state">${openable ? state : '🔒'}</span>
+    </button>`;
+}
+
+// ── One lesson ──────────────────────────────────────────────────────────────
+window.openCourseLesson = async function(n) {
+    if (!courseOpen) return;
+    haptic(8);
+    teardownCoursePlayer();
+    flushCourseProgress(true);
+    courseLessonN = n;
+    courseLessonData = null;
+    courseNoteTab = 'video';
+
+    const lesson = courseOpen.lessons.find(l => l.n === n);
+    courseHeader(lesson ? lesson.title : courseOpen.title, `${toBn(n)}`);
+    const stage = document.getElementById('course-stage');
+    stage.innerHTML = '<p style="color:var(--text-dim);padding:40px;font-size:0.85rem">লোড হচ্ছে…</p>';
+
+    let res;
+    try {
+        res = await courseFetch(`?course=${encodeURIComponent(courseOpen.id)}&lesson=${n}`);
+    } catch (e) {
+        courseMessage('সেশনটি আনা গেল না', esc(e.message));
+        return;
+    }
+    if (courseLessonN !== n) return;                 // they moved on while it loaded
+
+    if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))).error;
+        if (err === 'login_required') {
+            courseMessage('🔒 আগে Login করুন', 'সেশনগুলো শুধু সদস্যদের জন্য।',
+                '<button class="cv-btn primary" onclick="closeCourseView();openLoginModal()">Login করুন</button>');
+        } else if (err === 'purchase_required') {
+            courseMessage('🔒 সদস্যপদ চালু নেই', 'সদস্য হলে এই সেশনের রেকর্ডিং ও নোট এখানেই খুলবে।',
+                courseOpen.membership
+                    ? `<button class="cv-btn primary" onclick="closeCourseView();openBuyModal('${esc(courseOpen.membership)}')">কোর্সে যুক্ত হোন</button>`
+                    : '');
+        } else if (err === 'lesson_not_ready') {
+            courseMessage('⏳ এখনো যুক্ত হয়নি', 'এই সেশনের ভিডিও ও নোট শীঘ্রই এখানে আসবে।');
+        } else if (err === 'course_data_not_configured') {
+            courseMessage('⚙️ এখনো সেট করা হয়নি', 'কোর্সের ভিডিও ও নোট এখনো যুক্ত করা হয়নি। রাকীর সাথে যোগাযোগ করুন।');
+        } else {
+            courseMessage('সেশনটি খোলা গেল না', 'একটু পরে আবার চেষ্টা করুন।');
+        }
+        return;
+    }
+
+    courseLessonData = await res.json();
+    renderCourseLesson();
+};
+
+function renderCourseLesson() {
+    const stage = document.getElementById('course-stage');
+    if (!stage || !courseLessonData) return;
+    const d = courseLessonData;
+    const hasNotes = d.notes && (d.notes.html || d.notes.pdf);
+
+    stage.innerHTML = `
+        <div class="cv-wrap">
+            <div class="cv-tabs">
+                <button class="cv-tab ${courseNoteTab === 'video' ? 'on' : ''}" onclick="showCourseTab('video')">ভিডিও</button>
+                <button class="cv-tab ${courseNoteTab === 'notes' ? 'on' : ''}" onclick="showCourseTab('notes')" ${hasNotes ? '' : 'disabled'}>নোট</button>
+                <button class="cv-tab ${courseNoteTab === 'review' ? 'on' : ''}" onclick="showCourseTab('review')">মতামত</button>
+            </div>
+            <div id="cv-panel"></div>
+        </div>`;
+    renderCourseTab();
+}
+
+window.showCourseTab = function(tab) {
+    if (tab === courseNoteTab) return;
+    if (tab !== 'video') teardownCoursePlayer();
+    courseNoteTab = tab;
+    renderCourseLesson();
+};
+
+function renderCourseTab() {
+    const panel = document.getElementById('cv-panel');
+    if (!panel || !courseLessonData) return;
+    const d = courseLessonData;
+
+    if (courseNoteTab === 'video') {
+        if (!d.video) {
+            panel.innerHTML = '<div class="cv-msg"><h3>⏳ ভিডিও এখনো আসেনি</h3>'
+                + '<p>এই সেশনের রেকর্ডিং যুক্ত হলে এখানেই দেখা যাবে। নোট থাকলে পাশের ট্যাবে আছে।</p></div>';
+            return;
+        }
+        // The id is written into the DOM by the player itself and nowhere else —
+        // no data- attribute, no localStorage, no URL.
+        panel.innerHTML = `
+            <div class="cv-player"><div id="cv-frame"></div>
+                <span class="cv-mark">${esc(courseWatermark())}</span>
+            </div>
+            <p style="font-size:0.75rem;color:var(--text-dim);line-height:1.6">
+                সেশনটি শুধু সদস্যদের জন্য। লিংক বা রেকর্ডিং কারও সাথে শেয়ার করবেন না।
+            </p>`;
+        const at = courseProgressFor(courseOpen.id, courseLessonN);
+        createCourseYTPlayer(d.video, at && !at.done ? at.sec : 0);
+        return;
+    }
+
+    if (courseNoteTab === 'notes') {
+        panel.innerHTML = `
+            <div id="cv-note-box"><p style="color:var(--text-dim);font-size:0.85rem;padding:30px 0;text-align:center">নোট আনা হচ্ছে…</p></div>
+            <div class="cv-actions">
+                ${d.notes.pdf ? '<button class="cv-btn primary" onclick="openCourseNotePdf()">📖 নোট পড়ুন</button>' : ''}
+                <button class="cv-btn" onclick="downloadCourseNote()" ${d.notes.pdf ? '' : 'disabled'}>⬇ ডাউনলোড</button>
+            </div>`;
+        // A note typeset as HTML reads better in place — it reflows, it scales,
+        // and it carries its own dark mode. A note that only exists as a PDF
+        // goes to the app's own pdf.js reader, the same one the free guides use.
+        if (d.notes.html) loadCourseNote();
+        else document.getElementById('cv-note-box').innerHTML =
+            '<p style="color:var(--text-sub);font-size:0.82rem;padding:24px 0;text-align:center">এই সেশনের নোট PDF হিসেবে আছে — "নোট পড়ুন" চাপুন।</p>';
+        return;
+    }
+
+    const target = `${courseOpen.id}-c${courseLessonN}`;
+    panel.innerHTML = `
+        <div class="cv-msg">
+            <h3>এই সেশনটি কেমন লাগল?</h3>
+            <p>আপনার মতামত পরের সেশনগুলো সাজাতে সাহায্য করে।</p>
+            <button class="cv-btn primary" onclick="openReviewModal('${esc(target)}')">${ico('star')} মতামত দিন</button>
+        </div>`;
+}
+
+// Their own name over their own screen. It does not stop a recording; it makes
+// one carry the account it came from, which is the part that actually deters.
+function courseWatermark() {
+    const name = (userProfile && userProfile.name) || (currentUser && currentUser.email) || '';
+    return String(name).slice(0, 34);
+}
+
+// ── The player ──────────────────────────────────────────────────────────────
+// A sibling of createYTPlayer rather than a reuse of it. That one is wired into
+// the audio library: it writes progress under currentPlayerItem.code and calls
+// handleYTEnded() to start the next recitation. Sharing it would cross-wire the
+// two and fire the audio autoplay chain at the end of a lesson.
+//
+// The differences that matter: host is set explicitly, because loadYouTubeAPI()
+// fetches youtube.com/iframe_api and the API builds a youtube.com player unless
+// told otherwise — the nocookie domain the static /audio/ pages use does not
+// come along for free here.
+function createCourseYTPlayer(videoId, startSeconds) {
+    teardownCoursePlayer();
+    loadYouTubeAPI();
+    const start = Math.floor(startSeconds || 0);
+
+    if (!window.YT || !window.YT.Player) {
+        const box = document.getElementById('cv-frame');
+        if (box) {
+            box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}`
+                + `?rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&start=${start}"`
+                + ` referrerpolicy="strict-origin-when-cross-origin"`
+                + ` allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`;
+        }
+        // The API is still loading; once it lands the member can reopen the tab
+        // to get progress tracking. The plain iframe plays either way, which is
+        // the thing they came for.
+        return;
+    }
+
+    const n = courseLessonN;
+    const courseId = courseOpen.id;
+    courseYtPlayer = new YT.Player('cv-frame', {
+        videoId,
+        host: 'https://www.youtube-nocookie.com',
+        playerVars: {
+            rel: 0, modestbranding: 1, iv_load_policy: 3, playsinline: 1,
+            start, origin: location.origin,
+        },
+        events: {
+            onStateChange(ev) {
+                if (ev.data === 1) {            // playing
+                    clearInterval(courseTickTimer);
+                    courseTickTimer = setInterval(() => {
+                        try {
+                            const t = courseYtPlayer?.getCurrentTime?.();
+                            const dur = courseYtPlayer?.getDuration?.() || 0;
+                            if (!(t > 5)) return;
+                            // 92% counts as watched: nobody sits through the
+                            // closing dua and the end card to earn a tick.
+                            noteCourseProgress(courseId, n, t, dur && t / dur > 0.92);
+                        } catch (e) {}
+                    }, 5000);
+                } else {
+                    clearInterval(courseTickTimer);
+                    try {
+                        const t = courseYtPlayer?.getCurrentTime?.();
+                        if (t > 5) noteCourseProgress(courseId, n, t, ev.data === 0);
+                    } catch (e) {}
+                    flushCourseProgress(ev.data === 0);
+                    if (ev.data === 0) onCourseLessonEnded();
+                }
+            },
+        },
+    });
+}
+
+function teardownCoursePlayer() {
+    clearInterval(courseTickTimer);
+    courseTickTimer = null;
+    if (courseYtPlayer && typeof courseYtPlayer.destroy === 'function') {
+        try { courseYtPlayer.destroy(); } catch (e) {}
+    }
+    courseYtPlayer = null;
+}
+
+function onCourseLessonEnded() {
+    if (!courseOpen) return;
+    noteCourseProgress(courseOpen.id, courseLessonN, 0, true);
+    const next = courseOpen.lessons.find(l => l.n > courseLessonN);
+    showToast(next ? '✅ সেশন শেষ — পরেরটা তালিকায় অপেক্ষা করছে' : '✅ সেশন শেষ');
+}
+
+// ── Notes ───────────────────────────────────────────────────────────────────
+// Same reasoning as showReaderHtml(): the note is a whole document with its own
+// stylesheet and its own fonts, and letting that meet the app's CSS wrecks both.
+// srcdoc keeps the parent's base URL so /fonts/ resolves to what the site
+// already serves. No allow-same-origin — a note never needs to reach back into
+// the app's storage or its Firebase session.
+async function loadCourseNote() {
+    const box = document.getElementById('cv-note-box');
+    if (!box || !courseOpen) return;
+    const n = courseLessonN;
+    try {
+        const res = await courseFetch(`?course=${encodeURIComponent(courseOpen.id)}&lesson=${n}&notes=html`);
+        if (courseLessonN !== n || courseNoteTab !== 'notes') return;
+        if (!res.ok) {
+            box.innerHTML = '<p style="color:#facc15;font-size:0.82rem;padding:24px 0;text-align:center">নোটটি আনা গেল না।</p>';
+            return;
+        }
+        const html = await res.text();
+        if (courseLessonN !== n || courseNoteTab !== 'notes') return;
+        const frame = document.createElement('iframe');
+        frame.className = 'cv-note-frame';
+        frame.setAttribute('title', 'নোট');
+        frame.setAttribute('sandbox', 'allow-popups allow-popups-to-escape-sandbox');
+        frame.srcdoc = html;
+        box.innerHTML = '';
+        box.appendChild(frame);
+    } catch (e) {
+        box.innerHTML = `<p style="color:#ff6b6b;font-size:0.82rem;padding:24px 0;text-align:center">${esc(e.message)}</p>`;
+    }
+}
+
+// Read in place, in the reader the free guides already use — so a note gets
+// paging, a remembered page and the offline-safe rendering path for nothing.
+// The bytes are handed to pdf.js directly rather than as a URL: /api/course
+// answers only an authenticated request, and a paid note must not become an
+// address that can be fetched again or cached.
+window.openCourseNotePdf = async function() {
+    if (!courseOpen || !courseLessonData || !courseLessonData.notes.pdf) return;
+    haptic(10);
+    const n = courseLessonN;
+    const lesson = courseOpen.lessons.find(l => l.n === n);
+    showToast('নোট খোলা হচ্ছে…');
+    try {
+        const res = await courseFetch(`?course=${encodeURIComponent(courseOpen.id)}&lesson=${n}&notes=pdf`);
+        if (!res.ok) { showToast('নোটটি খোলা গেল না'); return; }
+        const bytes = new Uint8Array(await res.arrayBuffer());
+        // A stable name so pdfBookmarks remembers the page per lesson, and one
+        // that gives nothing away if it is ever seen.
+        viewPDF({ data: bytes, name: `${courseOpen.id}-${n}.pdf` },
+                lesson ? lesson.title : 'নোট');
+    } catch (e) {
+        showToast('নোটটি খোলা গেল না');
+    }
+};
+
+// Fetched with the token in a header and handed over as a blob, rather than
+// linked with ?token= — a token in an href ends up in history, in the referrer
+// and in anyone's screenshot of the address bar.
+window.downloadCourseNote = async function() {
+    if (!courseOpen || !courseLessonData || !courseLessonData.notes.pdf) return;
+    haptic(10);
+    const n = courseLessonN;
+    showToast('নোট নামানো হচ্ছে…');
+    try {
+        const res = await courseFetch(`?course=${encodeURIComponent(courseOpen.id)}&lesson=${n}&notes=pdf`);
+        if (!res.ok) { showToast('নোটটি নামানো গেল না'); return; }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = courseLessonData.notes.name || `${courseOpen.id}-${n}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 20000);
+    } catch (e) {
+        showToast('নোটটি নামানো গেল না');
+    }
+};
+/* /#web-only */
 
 /* #web-only — the purchase flow: modal, payment-method picker, TrxID
    submission. build.js cuts this whole region out of the native build, so the
@@ -2600,10 +3294,31 @@ const REVIEW_TARGETS = [
       prompt: 'সাইট বা অ্যাপ ব্যবহার করে কেমন লাগল? কোন জিনিসটা কাজে দিল?' },
 ];
 
+// A single lesson inside a course: "course-live-c3". Hyphens only, never an
+// underscore — firestore.rules reads the review's document id as
+// <uid>_<target>, so an underscore in the target would split it in the wrong
+// place and the write would be denied.
+const COURSE_LESSON_TARGET = /^(course-[a-z0-9-]+)-c(\d+)$/;
+
 function reviewTargetInfo(id) {
     const p = ALL_PRODUCTS().find(x => x.id === id);
     if (p) {
         return { id, title: p.title, prompt: 'আপনার কেমন লাগল? কোন অংশটি সবচেয়ে কাজে দিল?' };
+    }
+    const m = COURSE_LESSON_TARGET.exec(id);
+    if (m) {
+        // The catalog is only loaded in the web build, and only once someone has
+        // opened a course — so the review wall can meet a lesson id it cannot
+        // name yet. Falling back to the number keeps the label honest instead of
+        // printing a raw id at a reader.
+        const cat = (typeof courseCatalog !== 'undefined' && courseCatalog) || [];
+        const course = cat.find(c => c.id === m[1]);
+        const n = parseInt(m[2], 10);
+        return {
+            id,
+            title: `${course ? course.title + ' — ' : ''}ক্লাস ${toBn(n)}`,
+            prompt: 'এই ক্লাসটি কেমন লাগল? কোন অংশটি সবচেয়ে কাজে দিল?',
+        };
     }
     return REVIEW_TARGETS.find(x => x.id === id) || null;
 }
@@ -2737,6 +3452,17 @@ window.openReviewModal = function(target) {
     if (isBookTarget(target) && !ownedIds().has(target)) {
         showToast('বইটি কেনার পর রিভিউ দিতে পারবেন');
         return;
+    }
+    // The same rule books get, for the same reason: a rating on a class has to
+    // come from someone who sat in it.
+    const lesson = COURSE_LESSON_TARGET.exec(target);
+    if (lesson && typeof courseUnlocked === 'function') {
+        const cat = (typeof courseCatalog !== 'undefined' && courseCatalog) || [];
+        const course = cat.find(c => c.id === lesson[1]);
+        if (!course || !courseUnlocked(course)) {
+            showToast('কোর্সে যুক্ত হলে ক্লাসের মতামত দিতে পারবেন');
+            return;
+        }
     }
     const info = reviewTargetInfo(target);
     if (!info) return;
@@ -3820,6 +4546,10 @@ const OVERLAY_CLOSERS = {
     'downloads-modal': 'closeDownloadsModal',
     'chat-settings-modal': 'closeChatSettings',
     'book-reader': 'closeBookReader',
+    // courseBack, not closeCourseView: inside a lesson back means "back to the
+    // list", which is what the ‹ on screen says. In the native build neither the
+    // element nor the function exists, so this entry is never reached.
+    'course-view': 'courseBack',
 };
 
 // Topmost = last one opened. DOM order is a good enough proxy here because
@@ -5352,6 +6082,27 @@ function openPlayer(code) {
     }
 }
 window.openPlayer = openPlayer;
+
+// Deep link: /app.html#audio-S04 opens that track.
+//
+// The static catalogue under /audio/ has linked here since it was written, but
+// nothing ever read location.hash, so all of those links quietly dropped people
+// at the top of the app instead. Safe to call before the YouTube API has
+// loaded — openPlayer falls back to a plain iframe and upgrades itself.
+function openFromHash() {
+    // #course/<id> and #course/<id>/<n> — so a Telegram message announcing a
+    // session can link straight at it. The gate is still the server's: an
+    // outsider following the link lands on the syllabus and a locked card.
+    const c = /^#course\/(course-[a-z0-9-]+)(?:\/(\d+))?$/.exec(location.hash);
+    if (c && typeof openCourseView === 'function') {
+        openCourseView(c[1], c[2] ? parseInt(c[2], 10) : undefined);
+        return;
+    }
+    const m = /^#audio-([A-Za-z]\d{1,4})$/.exec(location.hash);
+    if (!m) return;
+    const code = m[1].toUpperCase();
+    if (audioData.some(a => a.code === code)) openPlayer(code);
+}
 
 // Tears down whichever engine is running — YT iframe or native audio.
 // ── Mini player ─────────────────────────────────────────────────────────────

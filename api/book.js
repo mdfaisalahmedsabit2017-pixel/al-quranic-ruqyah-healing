@@ -33,6 +33,7 @@ const https = require('https');
 const BOOKS = {
     'shekhar-shilpo':  { dir: 'book_pages',       preview: 12 },
     'yasin-karishma':  { dir: 'book_pages_yasin', preview: 8, htmlDir: 'book_html_yasin' },
+    'isme-azam':       { dir: 'book_pages_isme_azam', preview: 25 },
 };
 const DEFAULT_BOOK = 'shekhar-shilpo';
 

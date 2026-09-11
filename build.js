@@ -328,22 +328,62 @@ if (fs.existsSync(pdfjsSrc)) {
     console.warn('Warning: vendor/pdfjs/ not found — run `node tools/fetch_pdfjs.js`.');
 }
 
+// The whole-site catalogue every web-only builder reads. Assembled once, up
+// front, so a blog post can link to a guide and a guide to an audio page
+// before either has been written — the builders only write, never discover.
+let catalog = null;
+function loadCatalog() {
+    const readJson = (name, fallback) => {
+        const p = path.join(__dirname, name);
+        return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : fallback;
+    };
+    const audio = readJson('audio.json', []);
+    const audioMeta = readJson('audio_meta.json', {});     // tools/fetch_audio_meta.py
+    const pdfMeta = readJson('pdf_meta.json', {});         // tools/make_pdf_previews.py
+    const pdfs = readJson('pdf_list.json', []).map((p) => ({ ...p, meta: pdfMeta[p.filename] || null }));
+    return {
+        audio, audioMeta, pdfs,
+        guides: require('./tools/guides').readGuides(),
+        posts: require('./tools/blog').readPosts(),
+        audioSlugs: require('./tools/library').SLUGS,
+    };
+}
+
 if (isNative) {
     // Everything below is web-only: the blog and the SEO catalogue pages exist
     // for crawlers, and the PDFs are streamed from the live site by the in-app
     // reader. Bundling them was what pushed the old build to 390 MB.
     console.log('Skipping blog, SEO catalogue and pdf/ — native build streams those.');
 } else {
+    const seo = require('./tools/seo');
+    catalog = loadCatalog();
+
     // Blog: posts/*.md -> public/blog/<slug>/index.html (+ JSON the app reads)
-    require('./tools/blog').buildBlog(distDir);
+    require('./tools/blog').buildBlog(distDir, catalog);
 
-    // The 70 Ruqyah documents: guides_src/*.html -> public/guides/<slug>/index.html.
+    // The Ruqyah documents: guides_src/*.html -> public/guides/<slug>/index.html.
     // Must run before buildLibrary, which writes the index that links to them.
-    const guides = require('./tools/guides').buildGuides(distDir);
+    require('./tools/guides').buildGuides(distDir, catalog, catalog.audioSlugs);
 
-    // Crawlable catalogue pages for the audio library and PDF guides, which
-    // otherwise exist only inside app.html's JavaScript where no crawler sees them.
-    require('./tools/library').buildLibrary(distDir, guides);
+    // Crawlable catalogue pages for the audio library, the PDF guides and the
+    // topic hubs, which otherwise exist only inside app.html's JavaScript where
+    // no crawler sees them. Also writes 404.html.
+    require('./tools/library').buildLibrary(distDir, catalog);
+
+    // The hand-written pages. The landing page is the one URL that should win
+    // for the brand; app.html is the product itself and gets a canonical of
+    // its own in index.html.
+    // The landing page changes when its source or the counts it quotes change.
+    const home = seo.contentDates('/', {
+        src: fs.readFileSync(path.join(__dirname, 'landing.html'), 'utf8'),
+        audio: catalog.audio.length, docs: catalog.guides.items.length + catalog.pdfs.length,
+    });
+    seo.sitemapAdd('pages', `${seo.SITE}/`, { lastmod: home.modified, changefreq: 'weekly', priority: '1.0' });
+    seo.sitemapAdd('pages', `${seo.SITE}/app.html`, { changefreq: 'weekly', priority: '0.6' });
+    seo.sitemapAdd('pages', `${seo.SITE}/features.html`, { changefreq: 'monthly', priority: '0.4' });
+    seo.sitemapAdd('pages', `${seo.SITE}/privacy.html`, { changefreq: 'yearly', priority: '0.2' });
+    seo.writeSitemaps(distDir);
+    seo.saveDates();
 
     const pdfSrc = path.join(__dirname, 'pdf');
     if (fs.existsSync(pdfSrc)) {
@@ -414,8 +454,47 @@ function injectReviews(data) {
               + `${Object.keys(data.targets || {}).length} product rating(s) in structured data`);
 }
 
+// The landing page quotes how much the library holds. Those numbers used to be
+// typed by hand and were two library expansions out of date ("২৭৮টি অডিও" when
+// audio.json had 389). landing.html now carries @@N_...@@ placeholders that
+// are filled from the catalogue, so the page cannot drift from the data.
+//
+// The FAQ section is real, visible <details> question/answer pairs, so it
+// also gets FAQPage structured data — built from the rendered markup rather
+// than a second copy of the text, which is the only way the two stay equal.
+function injectLanding() {
+    const file = path.join(distDir, 'index.html');
+    let html = fs.readFileSync(file, 'utf8');
+    const bn = (n) => String(n).replace(/\d/g, (d) => '০১২৩৪৫৬৭৮৯'[+d]);
+    const counts = {
+        N_AUDIO: catalog.audio.length,
+        N_AUDIO_CATS: new Set(catalog.audio.map((t) => t.category)).size,
+        N_GUIDES: catalog.guides.items.length,
+        N_PDF: catalog.pdfs.length,
+        N_DOCS: catalog.guides.items.length + catalog.pdfs.length,
+        N_POSTS: catalog.posts.length,
+    };
+    html = html.replace(/@@(N_[A-Z_]+)@@/g, (m, k) => {
+        if (!(k in counts)) throw new Error(`landing.html: unknown placeholder ${m}`);
+        return bn(counts[k]);
+    });
+
+    const strip = (s) => s.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+    const faqs = [...html.matchAll(/<details>\s*<summary>([\s\S]*?)<\/summary>\s*([\s\S]*?)<\/details>/g)]
+        .map((m) => ({ q: strip(m[1]), a: strip(m[2]) })).filter((f) => f.q && f.a);
+    if (faqs.length) {
+        const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage',
+            mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q,
+                acceptedAnswer: { '@type': 'Answer', text: f.a } })) };
+        html = html.replace('</head>', `<script type="application/ld+json">${JSON.stringify(faqLd)}</script>\n</head>`);
+    }
+    fs.writeFileSync(file, html);
+    console.log(`Landing: counts ${Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(' ')}, FAQPage with ${faqs.length} questions`);
+}
+
 (async () => {
     if (!isNative) {
+        injectLanding();
         injectReviews(await require('./tools/export_reviews').exportReviews());
     }
 

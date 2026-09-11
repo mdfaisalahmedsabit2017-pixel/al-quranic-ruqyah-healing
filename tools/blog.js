@@ -15,13 +15,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const seo = require('./seo');
 
 const ROOT = path.join(__dirname, '..');
 const POSTS_DIR = path.join(ROOT, 'posts');
 const IMAGES_DIR = path.join(ROOT, 'blog_images');
-const SITE = 'https://alquranicruqyahhealing.com';
-const AUTHOR = 'রাকী ফয়সাল আহমেদ সাবিত';
-const SITE_NAME = 'আল কুরআনিক রুকইয়াহ হিলিং';
+const { SITE, AUTHOR, SITE_NAME, NAV, FOOT } = seo;
 
 const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
 const BN_MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
@@ -188,6 +187,7 @@ function parsePost(file) {
 
     return {
         slug,
+        raw,
         title: meta.title,
         // The on-page headline and the search-results headline have different
         // jobs. These posts came from Facebook, where the hook wins ("ঘুমের
@@ -210,6 +210,11 @@ function parsePost(file) {
         // A hub page targets one search topic and gathers every post about it.
         // The value is the list of terms to match against titles and tags.
         hub: meta.hub ? meta.hub.split(',').map((t) => t.trim()).filter(Boolean) : null,
+        // A teaser that repeats another post's title and opening (the book
+        // promos do this on purpose) names the full post here — the page then
+        // carries that URL as its canonical and stays out of the sitemap, so
+        // the two never compete for the same query.
+        canonical: meta.canonical ? meta.canonical.trim() : '',
         html: mdToHtml(body),
         words: body.split(/\s+/).length,
     };
@@ -221,81 +226,42 @@ const readMins = (p) => Math.max(1, Math.round(p.words / 180));
 
 // Facebook shows a bare text link when a page has no og:image, so every page
 // falls back to the branded card rather than shipping none.
-const OG_FALLBACK = `${SITE}/blog/images/og-default.jpg`;
+const OG_FALLBACK = seo.OG_FALLBACK;
+const metaDesc = seo.metaDesc;
 
-// Search engines cut the description around 155–160 characters; anything past
-// that is wasted and can read as truncated mid-word in the result.
-const metaDesc = (s) => {
-    const t = String(s || '').replace(/\s+/g, ' ').trim();
-    if (t.length <= 158) return t;
-    const cut = t.slice(0, 158);
-    return cut.slice(0, cut.lastIndexOf(' ')) + '…';
+// The page <head>. Everything shared (favicon, fonts, organisation graph,
+// twitter/og tags) comes from tools/seo.js; only the blog-specific values are
+// passed in. `ld` is the page's own JSON-LD nodes.
+const HEAD = (p, canonical, ogImage, ld = [], ogDims = null) => seo.head({
+    title: `${p.seoTitle || p.title} — ${SITE_NAME}`,
+    ogTitle: p.title,
+    desc: p.description,
+    canonical,
+    ogType: p.slug ? 'article' : 'website',
+    ogImage: ogImage || undefined,
+    ogImageW: ogDims ? ogDims.w : 0, ogImageH: ogDims ? ogDims.h : 0,
+    ld,
+});
+
+// Intrinsic size of a JPEG, read from its SOF marker, so the cover <img> can
+// carry width/height and the browser reserves the space before the bytes
+// arrive — otherwise the whole article jumps down when the cover lands (CLS).
+const jpegDims = (file) => {
+    try {
+        const d = fs.readFileSync(file);
+        let i = 2;
+        while (i < d.length) {
+            if (d[i] !== 0xFF) { i++; continue; }
+            const m = d[i + 1];
+            if (m >= 0xC0 && m <= 0xCF && m !== 0xC4 && m !== 0xC8 && m !== 0xCC) {
+                return { h: d.readUInt16BE(i + 5), w: d.readUInt16BE(i + 7) };
+            }
+            i += 2 + d.readUInt16BE(i + 2);
+        }
+    } catch (e) { /* not a readable JPEG — render without dimensions */ }
+    return null;
 };
-
-const HEAD = (p, canonical, ogImage) => `<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>${esc(p.seoTitle || p.title)} — ${SITE_NAME}</title>
-<meta name="description" content="${esc(metaDesc(p.description))}">
-<meta name="author" content="${AUTHOR}">
-<meta name="theme-color" content="#080808">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-<link rel="canonical" href="${canonical}">
-<meta property="og:site_name" content="${SITE_NAME}">
-<meta property="og:title" content="${esc(p.title)}">
-<meta property="og:description" content="${esc(metaDesc(p.description))}">
-<meta property="og:type" content="${p.slug ? 'article' : 'website'}">
-<meta property="og:url" content="${canonical}">
-<meta property="og:locale" content="bn_BD">
-<meta property="og:image" content="${ogImage || OG_FALLBACK}">
-<meta property="og:image:alt" content="${esc(p.title)}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${esc(p.title)}">
-<meta name="twitter:description" content="${esc(metaDesc(p.description))}">
-<meta name="twitter:image" content="${ogImage || OG_FALLBACK}">
-<link rel="alternate" type="application/rss+xml" title="${SITE_NAME}" href="/blog/feed.xml">
-<link rel="icon" href="/assets/icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/blog/blog.css">
-<script type="application/ld+json">${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@graph': [
-        { '@type': 'Organization', '@id': `${SITE}/#org`, name: SITE_NAME, url: SITE,
-          founder: { '@type': 'Person', name: AUTHOR },
-          sameAs: ['https://www.facebook.com/al.quranic.ruqyah.healing1'] },
-        { '@type': 'WebSite', '@id': `${SITE}/#site`, url: SITE, name: SITE_NAME,
-          inLanguage: 'bn', publisher: { '@id': `${SITE}/#org` } },
-    ],
-})}</script>`;
-
-const NAV = `<nav class="nav">
-  <div class="nav-in">
-    <a class="brand" href="/"><span class="brand-dot"></span>${SITE_NAME}</a>
-    <div class="nav-links">
-      <a href="/audio/">অডিও</a>
-      <a href="/guides/">গাইড</a>
-      <a href="/blog/">ব্লগ</a>
-      <a href="/#book">বই</a>
-      <a href="/#course">কোর্স</a>
-    </div>
-    <a class="btn btn-p btn-sm" href="/app.html">অ্যাপে ঢুকুন</a>
-  </div>
-</nav>`;
-
-const FOOT = `<footer>
-  <div class="wrap">
-    <p class="disclaimer">
-      দ্রষ্টব্য: রুকইয়াহ একটি দুআ ও আত্মিক চিকিৎসা পদ্ধতি — এটি আধুনিক চিকিৎসাবিজ্ঞান বা মানসিক
-      স্বাস্থ্যসেবার বিকল্প নয়। শারীরিক বা মানসিক গুরুতর উপসর্গে অবশ্যই যোগ্য চিকিৎসকের শরণাপন্ন হোন।
-      শিফা একমাত্র আল্লাহর পক্ষ থেকে।
-    </p>
-    <div class="foot-bot">
-      <span>© ${toBn(new Date().getFullYear())} ${SITE_NAME}</span>
-      <span>${AUTHOR}</span>
-    </div>
-  </div>
-</footer>`;
+const coverDims = (p) => (p.cover ? jpegDims(path.join(IMAGES_DIR, p.cover.replace(/^\.?\/?images\//, ''))) : null);
 
 // Group posts into series, each ordered by episode; `loose` keeps everything
 // that belongs to no series.
@@ -318,59 +284,64 @@ function groupSeries(posts) {
     return { series, loose };
 }
 
-function postPage(p, others) {
-    const canonical = `${SITE}/blog/${p.slug}/`;
+function postPage(p, others, catalog) {
+    const self = `${SITE}/blog/${p.slug}/`;
+    const canonical = p.canonical ? (p.canonical.startsWith('http') ? p.canonical : `${SITE}${p.canonical}`) : self;
+    if (p.canonical && (canonical === `${SITE}/` || canonical === SITE)) throw new Error(`${p.slug}: canonical must not point at the homepage`);
     const ogImage = p.cover ? `${SITE}/blog/${p.cover.replace(/^\.?\//, '')}` : '';
+    const dims = coverDims(p);
     const shareText = encodeURIComponent(`${p.title}\n${canonical}`);
 
     // JSON-LD so Google can show it as an article with a date and an author,
     // plus a breadcrumb trail — that is what turns the grey URL line in a
-    // result into "ব্লগ › সিরিজ › লেখা".
-    const crumbs = [
-        { name: 'ব্লগ', item: `${SITE}/blog/` },
-        ...(p.series ? [{ name: p.seriesTitle, item: `${SITE}/blog/series/${p.series}/` }] : []),
-        { name: p.title, item: canonical },
-    ];
-    const ld = {
-        '@context': 'https://schema.org',
-        '@graph': [{
-            '@type': 'Article',
-            headline: p.title, description: metaDesc(p.description),
-            datePublished: p.date, dateModified: p.date,
-            inLanguage: 'bn',
-            author: { '@type': 'Person', name: AUTHOR },
-            publisher: { '@id': `${SITE}/#org` },
-            mainEntityOfPage: canonical,
-            image: ogImage || OG_FALLBACK,
-            ...(p.series ? { isPartOf: { '@type': 'CreativeWorkSeries', name: p.seriesTitle,
-                                         url: `${SITE}/blog/series/${p.series}/` } } : {}),
-        }, {
-            '@type': 'BreadcrumbList',
-            itemListElement: crumbs.map((c, i) => ({
-                '@type': 'ListItem', position: i + 1, name: c.name, item: c.item })),
-        }],
-    };
+    // result into "ব্লগ › সিরিজ › লেখা". The trail is also visible on the page.
+    const trail = seo.crumbs([
+        seo.HOME_CRUMB,
+        { name: 'ব্লগ', url: '/blog/' },
+        ...(p.series ? [{ name: p.seriesTitle, url: `/blog/series/${p.series}/` }] : []),
+        { name: p.title, url: canonical },
+    ]);
+    // dateModified: the post's own date unless the file changed since it was
+    // first built (tools/content-dates.json remembers a hash of the source).
+    const dates = seo.contentDates(`/blog/${p.slug}/`, p.raw, p.date);
+    const ld = [{
+        '@type': 'Article', '@id': `${canonical}#article`,
+        headline: p.title, description: metaDesc(p.description),
+        datePublished: p.date, dateModified: dates.modified > p.date ? dates.modified : p.date,
+        inLanguage: 'bn',
+        author: { '@id': seo.AUTHOR_ID },
+        publisher: { '@id': seo.ORG_ID },
+        mainEntityOfPage: canonical, url: canonical,
+        image: ogImage || OG_FALLBACK,
+        ...(p.tags.length ? { keywords: p.tags.join(', ') } : {}),
+        ...(p.series ? { isPartOf: { '@type': 'CreativeWorkSeries', name: p.seriesTitle,
+                                     url: `${SITE}/blog/series/${p.series}/` } } : {}),
+    }, trail.ld];
 
     const nav = p.series && p.nav ? `<nav class="ep-nav">
       ${p.nav.prev ? `<a href="/blog/${p.nav.prev.slug}/">← আগের পর্ব</a>` : '<span></span>'}
       ${p.nav.next ? `<a href="/blog/${p.nav.next.slug}/">পরের পর্ব →</a>` : '<span></span>'}
     </nav>` : '';
 
+    // The guides, audio and PDFs on the same topic, from the registry in
+    // tools/seo.js. Before this, no blog post linked to any guide or audio page.
+    const related = catalog ? seo.relatedHtml(seo.topicsForPost(p), catalog, `/blog/${p.slug}/`, { audioSlugs: catalog.audioSlugs }) : '';
+
     return `<!DOCTYPE html>
 <html lang="bn">
 <head>
-${HEAD(p, canonical, ogImage)}
-<script type="application/ld+json">${JSON.stringify(ld)}</script>
+${HEAD(p, canonical, ogImage, ld, dims)}
 </head>
 <body>
 ${NAV}
 <article class="post">
   <div class="wrap post-in">
+    ${trail.html}
     <a class="back" href="${p.series ? `/blog/series/${p.series}/` : '/blog/'}">← ${p.series ? esc(p.seriesTitle) : 'সব লেখা'}</a>
     <p class="post-meta">${p.series ? `পর্ব ${toBn(p.episode)} · ` : ''}${p.dateBn} · ${toBn(readMins(p))} মিনিট পড়া</p>
     <h1>${esc(p.title)}</h1>
     ${p.tags.length ? `<div class="tags">${p.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
-    ${p.cover ? `<img class="cover" src="${esc(imgSrc(p.cover))}" alt="${esc(p.title)}">` : ''}
+    ${p.cover ? `<img class="cover" src="${esc(imgSrc(p.cover))}" alt="${esc(p.title)}"${dims ? ` width="${dims.w}" height="${dims.h}"` : ''} fetchpriority="high">` : ''}
     <div class="prose">
 ${p.html}
     </div>
@@ -380,6 +351,7 @@ ${p.html}
       <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(canonical)}" target="_blank" rel="noopener noreferrer">Facebook</a>
       <a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
     </div>
+    ${related}
     ${others.length ? `<section class="more">
       <h2>আরও পড়ুন</h2>
       <div class="cards">${others.slice(0, 3).map(card).join('')}</div>
@@ -413,21 +385,28 @@ const seriesCard = (s) => `<a class="card series-card" href="/blog/series/${s.sl
 function indexPage(posts) {
     const { series, loose } = groupSeries(posts);
     const hubList = posts.filter((p) => p.hub);
+    const canonical = `${SITE}/blog/`;
     const meta = {
-        title: 'ব্লগ ও রুকইয়াহ গাইডলাইন',
+        title: `ব্লগ ও রুকইয়াহ গাইডলাইন — ${toBn(posts.length)}টি লেখা`,
         description: 'রুকইয়াহ, বদনজর, জাদু ও জ্বীন সংক্রান্ত কুরআন-সুন্নাহভিত্তিক লেখা ও গাইডলাইন — রাকী ফয়সাল আহমেদ সাবিত।',
         slug: '',
     };
     const withCover = posts.find((p) => p.cover);
+    const trail = seo.crumbs([seo.HOME_CRUMB, { name: 'ব্লগ', url: canonical }]);
+    const dates = seo.contentDates('/blog/', posts.map((p) => p.slug));
+    const ld = [{ '@type': 'CollectionPage', '@id': canonical, url: canonical, name: 'ব্লগ ও রুকইয়াহ গাইডলাইন',
+                  description: meta.description, inLanguage: 'bn', isPartOf: { '@id': seo.SITE_ID },
+                  breadcrumb: trail.ld, datePublished: dates.published, dateModified: dates.modified }];
     return `<!DOCTYPE html>
 <html lang="bn">
 <head>
-${HEAD(meta, `${SITE}/blog/`, withCover ? `${SITE}${imgSrc(withCover.cover)}` : '')}
+${HEAD(meta, canonical, withCover ? `${SITE}${imgSrc(withCover.cover)}` : '', ld, withCover ? coverDims(withCover) : null)}
 </head>
 <body>
 ${NAV}
 <header class="blog-hd">
   <div class="wrap">
+    ${trail.html}
     <h1>ব্লগ ও গাইডলাইন</h1>
     <p>রুকইয়াহ, বদনজর, হাসাদ, জাদু ও জ্বীন সংক্রান্ত কুরআন ও সহীহ সুন্নাহভিত্তিক লেখা।
        মোট ${toBn(posts.length)}টি লেখা।</p>
@@ -453,20 +432,29 @@ ${FOOT}
 // programme are looking for "where was I", not browsing.
 function seriesPage(s) {
     const meta = {
-        title: s.title,
-        description: `${s.title} — ${s.posts.length}টি পর্ব। ${s.posts[0].description}`.slice(0, 300),
+        title: `${s.title} — ${toBn(s.posts.length)} পর্বের সিরিজ`,
+        description: `${s.title} — ${toBn(s.posts.length)}টি পর্ব। ${s.posts[0].description}`.slice(0, 300),
         slug: '',
     };
     const canonical = `${SITE}/blog/series/${s.slug}/`;
+    const trail = seo.crumbs([seo.HOME_CRUMB, { name: 'ব্লগ', url: '/blog/' }, { name: s.title, url: canonical }]);
+    const dates = seo.contentDates(`/blog/series/${s.slug}/`, s.posts.map((p) => p.slug));
+    const ld = [{ '@type': 'CollectionPage', '@id': canonical, url: canonical, name: s.title,
+                  description: metaDesc(meta.description), inLanguage: 'bn', isPartOf: { '@id': seo.SITE_ID },
+                  breadcrumb: trail.ld, datePublished: dates.published, dateModified: dates.modified,
+                  mainEntity: { '@type': 'ItemList', numberOfItems: s.posts.length,
+                      itemListElement: s.posts.slice(0, 100).map((p, i) => ({ '@type': 'ListItem', position: i + 1,
+                          name: p.title, url: `${SITE}/blog/${p.slug}/` })) } }];
     return `<!DOCTYPE html>
 <html lang="bn">
 <head>
-${HEAD(meta, canonical, s.cover ? `${SITE}${imgSrc(s.cover)}` : '')}
+${HEAD(meta, canonical, s.cover ? `${SITE}${imgSrc(s.cover)}` : '', ld, s.cover ? coverDims({ cover: s.cover }) : null)}
 </head>
 <body>
 ${NAV}
 <header class="blog-hd">
   <div class="wrap">
+    ${trail.html}
     <a class="back" href="/blog/">← সব লেখা</a>
     <h1>${esc(s.title)}</h1>
     <p>${toBn(s.posts.length)}টি পর্ব · শুরু থেকে ক্রমানুসারে পড়ুন।</p>
@@ -666,16 +654,12 @@ function copyDir(src, dest) {
     }
 }
 
-function buildBlog(distDir) {
-    const outDir = path.join(distDir, 'blog');
-    fs.mkdirSync(outDir, { recursive: true });
-    fs.writeFileSync(path.join(outDir, 'blog.css'), CSS);
-
-    if (fs.existsSync(IMAGES_DIR)) copyDir(IMAGES_DIR, path.join(outDir, 'images'));
-
+// Pass 1: the published posts, parsed and sorted, without writing anything.
+// build.js puts these in the site catalogue so topic hubs and guide pages can
+// link to posts before the blog itself is written.
+function readPosts() {
     const files = fs.existsSync(POSTS_DIR)
         ? fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith('.md') && f !== 'README.md') : [];
-
     const posts = [];
     for (const f of files) {
         try {
@@ -687,6 +671,19 @@ function buildBlog(distDir) {
         }
     }
     posts.sort((a, b) => (a.date < b.date ? 1 : -1));    // newest first
+    return posts;
+}
+
+// Pass 2. `catalog` is the site catalogue from build.js (see there); its
+// `posts` are the ones readPosts() returned.
+function buildBlog(distDir, catalog) {
+    const outDir = path.join(distDir, 'blog');
+    fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(path.join(outDir, 'blog.css'), CSS);
+
+    if (fs.existsSync(IMAGES_DIR)) copyDir(IMAGES_DIR, path.join(outDir, 'images'));
+
+    const posts = (catalog && catalog.posts) || readPosts();
 
     // Hub pages list every post on their topic. Building the list here rather
     // than by hand means a hub stays current as posts are added — the reason
@@ -726,43 +723,37 @@ function buildBlog(distDir) {
         // programme reader isn't thrown into an unrelated post mid-series.
         const pool = p.series ? (series.find((s) => s.slug === p.series).posts) : loose;
         fs.writeFileSync(path.join(dir, 'index.html'),
-            postPage(p, pool.filter((x) => x.slug !== p.slug)));
+            postPage(p, pool.filter((x) => x.slug !== p.slug), catalog));
         // The app renders from this rather than scraping the page. Inside the
         // APK the origin is the device's own server, so /blog/... would resolve
         // to nothing — the JSON gets fully-qualified URLs instead.
-        fs.writeFileSync(path.join(dir, 'post.json'), JSON.stringify(forApp(p)));
+        const { raw, ...appPost } = forApp(p);
+        fs.writeFileSync(path.join(dir, 'post.json'), JSON.stringify(appPost));
+        // lastmod is the post's date, or the day its source last changed. A
+        // post that canonicalises to another URL is not a sitemap row.
+        const d = seo.datesOf(`/blog/${p.slug}/`);
+        if (!p.canonical) {
+            seo.sitemapAdd('blog', `${SITE}/blog/${p.slug}/`,
+                { lastmod: d.modified > p.date ? d.modified : p.date, changefreq: 'monthly', priority: '0.7' });
+        }
     }
 
     fs.writeFileSync(path.join(outDir, 'index.html'), indexPage(posts));
     fs.writeFileSync(path.join(outDir, 'index.json'), JSON.stringify(
         posts.map((p) => {
-            const { html, words, nav, ...rest } = forApp(p);
+            const { html, words, nav, raw, ...rest } = forApp(p);
             return { ...rest, mins: readMins({ words: p.words }) };
         })));
 
-    // Sitemap: the blog is only worth writing if Google can find the posts.
-    // lastmod tells a crawler what actually changed, and priority stops 291
-    // articles from competing with the pages that should rank first.
-    const newest = posts.length ? posts[0].date : today();
-    const entries = [
-        { loc: `${SITE}/`, lastmod: newest, freq: 'weekly', pri: '1.0' },
-        { loc: `${SITE}/blog/`, lastmod: newest, freq: 'daily', pri: '0.9' },
-        { loc: `${SITE}/app.html`, lastmod: newest, freq: 'weekly', pri: '0.8' },
-        { loc: `${SITE}/features.html`, lastmod: newest, freq: 'monthly', pri: '0.5' },
-        ...series.map((s) => ({
-            loc: `${SITE}/blog/series/${s.slug}/`, lastmod: newest, freq: 'weekly', pri: '0.8' })),
-        ...posts.map((p) => ({
-            loc: `${SITE}/blog/${p.slug}/`, lastmod: p.date, freq: 'monthly', pri: '0.7' })),
-        { loc: `${SITE}/privacy.html`, lastmod: newest, freq: 'yearly', pri: '0.2' },
-    ];
-    fs.writeFileSync(path.join(distDir, 'sitemap.xml'),
-        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + entries.map((e) => `  <url><loc>${e.loc}</loc><lastmod>${e.lastmod}</lastmod>`
-            + `<changefreq>${e.freq}</changefreq><priority>${e.pri}</priority></url>`).join('\n')
-        + '\n</urlset>\n');
-
-    fs.writeFileSync(path.join(distDir, 'robots.txt'),
-        `User-agent: *\nAllow: /\n\n# The paid book is served per-request by /api/book — never index it.\nDisallow: /api/\n\nSitemap: ${SITE}/sitemap.xml\n`);
+    // Sitemap rows for the blog section. The file itself is written once by
+    // build.js (tools/seo.js writeSitemaps) after every section has added its
+    // rows. lastmod tells a crawler what actually changed, and priority stops
+    // 300 articles from competing with the pages that should rank first.
+    seo.sitemapAdd('blog', `${SITE}/blog/`, { lastmod: seo.datesOf('/blog/').modified, changefreq: 'daily', priority: '0.9' });
+    for (const s of series) {
+        seo.sitemapAdd('blog', `${SITE}/blog/series/${s.slug}/`,
+            { lastmod: seo.datesOf(`/blog/series/${s.slug}/`).modified, changefreq: 'weekly', priority: '0.8' });
+    }
 
     // RSS: how readers subscribe, and how aggregators discover new posts.
     const rssDate = (d) => new Date(`${d}T09:00:00+06:00`).toUTCString();
@@ -782,4 +773,4 @@ function buildBlog(distDir) {
     return posts.length;
 }
 
-module.exports = { buildBlog, mdToHtml, parsePost };
+module.exports = { buildBlog, readPosts, mdToHtml, parsePost };

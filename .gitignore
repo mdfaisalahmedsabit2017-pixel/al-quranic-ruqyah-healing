@@ -34,6 +34,23 @@ pdf_archive/
 book_pages/
 book_pages_yasin/
 book_html_yasin/
+book_pages_isme_azam/
+
+# রাকীর টীকার পাতা: HTML-টা উৎস (ট্র্যাকড), PNG-টা tools/make_note_page.js
+# এর আউটপুট — book_pages_*/ এর ভেতরে বসে যায়, আলাদা করে রাখার দরকার নেই।
+book_notes/*.png
+
+# কোর্সের গোপন অর্ধেক। catalog.json ট্র্যাকড থাকে — ওটা আসলে বিক্রির কপি, ক্লাসের
+# তালিকা দেখানোই কোর্স বিক্রির সবচেয়ে বড় যুক্তি। কিন্তু private.json-এ থাকে
+# ইউটিউবের ভিডিও ID, আর course_notes/-এ পেইড নোটের বাইট। রিপোজিটরিটা পাবলিক, তাই
+# এই দুটো কমিট করা মানে ৳৪৯০-এর কোর্স বিনামূল্যে বিলিয়ে দেওয়া।
+#
+# এগুলো প্রোডাকশনে পৌঁছায় শুধু vercel.json-এর includeFiles দিয়ে — অর্থাৎ
+# book_pages_*/ এর ঠিক একই নিয়ম, একই ফাঁদসহ: `git push` ডিপ্লয়ে ফাংশন খালি হাতে
+# যায় আর ছাত্র 404 পায়, বিল্ড লগে কোনো চিহ্ন থাকে না। ডিপ্লয় সবসময়
+# ওয়ার্কিং কপি থেকে `vercel --prod`।
+course_data/private.json
+course_notes/
 
 # tools/ now holds Python helpers (sync_guides.py, watermark_pdfs.py) that are
 # run from the repo root, so their bytecode lands here.
@@ -44,3 +61,18 @@ __pycache__/
 *.keystore
 keystore.properties
 google-services.json
+
+# Never in the (public) repository — added 2026-09-12 after a `git add -A`
+# pushed them once. node_modules is restored by `npm install`; docx/ holds
+# editable guide sources (the watermark policy forbids publishing them) and
+# stray quiz result sheets with students' names; research_src/ is scanned
+# book material; the rest is local scratch.
+node_modules/
+docx/
+research_src/
+book_notes/
+Master_Template.html
+pdf_list.json.bak
+conversion_progress.json
+run_app.bat
+.claude/settings.local.json

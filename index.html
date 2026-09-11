@@ -6,13 +6,24 @@
          values; without it Android 15 still draws edge-to-edge but the insets
          report 0 and the header hides under the status bar. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Al Quranic Ruqyah Healing</title>
+    <title>রুকইয়াহ অ্যাপ — অডিও, গাইড, দৈনিক আমল ও বই | Al Quranic Ruqyah Healing</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#080808">
-    <meta name="description" content="Al Quranic Ruqyah Healing — কুরআন ও সুন্নাহভিত্তিক রুকিয়াহ অডিও লাইব্রেরি।">
-    <meta property="og:title" content="Al Quranic Ruqyah Healing">
-    <meta property="og:description" content="কুরআন ও সুন্নাহভিত্তিক রুকিয়াহ অডিও এবং গাইডলাইনের একটি পূর্ণাঙ্গ ডিজিটাল প্ল্যাটফর্ম।">
+    <meta name="description" content="Al Quranic Ruqyah Healing অ্যাপ — কুরআন ও সুন্নাহভিত্তিক রুকইয়াহ অডিও লাইব্রেরি, বাংলা গাইড ও PDF, দৈনিক আমল, AI সহায়ক ও বই — ব্রাউজারেই চলে, অ্যাকাউন্ট ছাড়াই।">
+    <!-- On the web this page is /app.html; the marketing page at / is the
+         brand's URL. Both are indexable, but each must be the canonical of
+         itself — without this line Google saw two title-less copies. Harmless
+         inside the APK, where nothing reads it. -->
+    <link rel="canonical" href="https://alquranicruqyahhealing.com/app.html">
+    <meta property="og:site_name" content="আল কুরআনিক রুকইয়াহ হিলিং">
+    <meta property="og:title" content="রুকইয়াহ অ্যাপ — Al Quranic Ruqyah Healing">
+    <meta property="og:description" content="কুরআন ও সুন্নাহভিত্তিক রুকইয়াহ অডিও, বাংলা গাইড, দৈনিক আমল ও বই — একটি পূর্ণাঙ্গ ডিজিটাল প্ল্যাটফর্ম।">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://alquranicruqyahhealing.com/app.html">
+    <meta property="og:locale" content="bn_BD">
+    <meta property="og:image" content="https://alquranicruqyahhealing.com/blog/images/og-default.jpg">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://alquranicruqyahhealing.com/blog/images/og-default.jpg">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
     <!-- Self-hosted (tools/fetch_fonts.js). Loading these from Google cost a
          round trip on every cold start, left Bengali in a fallback face on the
@@ -36,6 +47,7 @@
     <link rel="stylesheet" href="styles/04-features.css">
     <link rel="stylesheet" href="styles/05-overlays.css">
     <link rel="stylesheet" href="styles/06-chat-shell.css">
+    <link rel="stylesheet" href="styles/07-course.css">
 </head>
 
 <body>
@@ -126,6 +138,17 @@
                     <p class="profile-role">Founder, Al Quranic Ruqyah Healing</p>
                     <p class="profile-sub">Medical Student, Comilla Medical College</p>
                 </div>
+            </div>
+
+            <!-- ── MY COURSES ────────────────────────────────── -->
+            <!-- The member's own shelf, above the shop. Empty and hidden for
+                 everyone who owns nothing, which is almost everyone — so it is
+                 renderMyCourses() that unhides it, never the markup. -->
+            <div class="my-courses-section hidden" id="my-courses-section">
+                <div class="section-header-row" style="margin-bottom:12px">
+                    <h2 class="section-title"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m10 8 6 4-6 4V8Z"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>আমার কোর্স</h2>
+                </div>
+                <div id="my-courses-container"></div>
             </div>
 
             <!-- ── COURSES ───────────────────────────────────── -->
@@ -485,7 +508,6 @@
                             <div class="rx-feat-item">প্রয়োজনীয় রুকিয়াহ অডিও</div>
                             <div class="rx-feat-item">দৈনিক ও সাপ্তাহিক আমল</div>
                             <div class="rx-feat-item">মানসিক দিকনির্দেশনা</div>
-                            <div class="rx-feat-item">১৫ দিনের ফলোআপ</div>
                             <div class="rx-feat-item">প্রয়োজনীয় সতর্কতা</div>
                             <div class="rx-feat-item">ব্যক্তিগতকৃত গাইডলাইন</div>
                         </div>
@@ -1000,6 +1022,27 @@
             <button onclick="readerGo(1)" class="reader-nav-btn" id="reader-next">পরের ›</button>
         </div>
     </div>
+
+    <!-- ── COURSE VIEW ───────────────────────────────────── -->
+    <!-- #web-only : the whole premium course area is web. The APK sells nothing
+         and ships no course code — see the note above renderCourses().
+
+         An overlay rather than a seventh bottom-nav tab. A nav slot is a promise
+         to every visitor that there is something behind it, and this is empty for
+         all but the members; six items is already tight on a 360px phone, and the
+         blog and the guides were both kept out of the nav for exactly that
+         reason. Being a sibling of #book-reader also means the Android back
+         button already closes it (OVERLAY_CLOSERS) and the service worker needs
+         no new shell entry, because this is not a new page. -->
+    <div id="course-view" class="reader hidden">
+        <div class="reader-bar">
+            <button onclick="courseBack()" class="reader-icon-btn" id="course-back-btn" aria-label="পিছনে">✕</button>
+            <span class="reader-bar-title" id="course-title"></span>
+            <span class="cv-chip hidden" id="course-progress-chip"></span>
+        </div>
+        <div class="reader-stage" id="course-stage"></div>
+    </div>
+    <!-- /#web-only -->
 
     <!-- ── REVIEW MODAL ──────────────────────────────────── -->
     <!-- Serves books, courses and the general targets alike; openReviewModal()

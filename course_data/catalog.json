@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "courses": [
+    {
+      "id": "course-live",
+      "title": "মাসিক লাইভ রুকইয়াহ কোর্স",
+      "subtitle": "সেশনের রেকর্ডিং ও নোট",
+      "desc": "লাইভ সেশনগুলোর রেকর্ডিং, প্রতিটির সাথে সেই সেশনের নোট। যে মাসে সদস্যপদ চালু আছে, সে মাসে সবগুলো খোলা থাকে।",
+      "membership": "live-class",
+      "product": null,
+      "modules": [
+        {
+          "id": "aug-2026",
+          "name": "আগস্ট ২০২৬"
+        }
+      ],
+      "lessons": [
+        {
+          "n": 0,
+          "module": "aug-2026",
+          "title": "ওরিয়েন্টেশন — কোর্স কীভাবে চলবে",
+          "brief": "১ আগস্ট ২০২৬ — ব্যাচের পদ্ধতি, সেশনের ধরন ও কী কী পাবেন, তার সারসংক্ষেপ।",
+          "duration": null,
+          "hasVideo": false,
+          "hasNotes": true,
+          "free": false
+        },
+        {
+          "n": 1,
+          "module": "aug-2026",
+          "title": "সেশন ১–৪ — ধারাবাহিক আলোচনার সারসংক্ষেপ",
+          "brief": "প্রথম চারটি সেশনের আলোচনা দিনভিত্তিকভাবে সাজানো, প্রতিটি অংশের সাথে ভিডিওর টাইমকোড।",
+          "duration": null,
+          "hasVideo": false,
+          "hasNotes": true,
+          "free": false
+        },
+        {
+          "n": 6,
+          "module": "aug-2026",
+          "title": "পড়ালেখার রুকইয়াহ ও মাথা-সংক্রান্ত রুকইয়াহ",
+          "brief": "৭ আগস্ট ২০২৬ — পড়ায় বসার পূর্ণাঙ্গ সিস্টেম, ইলম-সংক্রান্ত আয়াতের তাফসীর ও বিশেষ আমল।",
+          "duration": null,
+          "hasVideo": false,
+          "hasNotes": true,
+          "free": false
+        },
+        {
+          "n": 9,
+          "module": "aug-2026",
+          "title": "আশিক জিন ও সন্তান না হওয়া",
+          "brief": "১১ আগস্ট ২০২৬ — আশিক জ্বীন ও সন্তান না হওয়ার রুকইয়াহ।",
+          "duration": null,
+          "hasVideo": true,
+          "hasNotes": false,
+          "free": false
+        },
+        {
+          "n": 10,
+          "module": "aug-2026",
+          "title": "রিজিকের বাধা ও বরকত",
+          "brief": "১৩ আগস্ট ২০২৬ — রিজিকে বাধা কোথায়, কোন আয়াত ও দোয়া দিয়ে রুকইয়াহ, আর কেন সেই আয়াতগুলোই।",
+          "duration": null,
+          "hasVideo": true,
+          "hasNotes": true,
+          "free": false
+        },
+        {
+          "n": 11,
+          "module": "aug-2026",
+          "title": "নক্ষত্রের জাদু, পাহাড়ের জাদু, মারীদ ও কারিন জ্বীন",
+          "brief": "১৪ আগস্ট ২০২৬ — তিন ধরনের সমস্যার রুকইয়াহ।",
+          "duration": null,
+          "hasVideo": true,
+          "hasNotes": false,
+          "free": false
+        }
+      ]
+    }
+  ]
+}

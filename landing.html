@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>আল কুরআনিক রুকইয়াহ হিলিং — কুরআন ও সুন্নাহভিত্তিক রুকইয়াহ</title>
-<meta name="description" content="২৭৮টি রুকইয়াহ অডিও, ৮৩টি গাইড, রুকইয়াহ পরামর্শ ও 'শেখার শিল্প' বই — রাকী ফয়সাল আহমেদ সাবিতের আল কুরআনিক রুকইয়াহ হিলিং।">
+<!-- @@N_...@@ placeholders are filled by build.js from audio.json, guides_src
+     and pdf_list.json, so the counts on this page can no longer go stale. -->
+<meta name="description" content="@@N_AUDIO@@টি রুকইয়াহ অডিও, @@N_DOCS@@টি বাংলা গাইড ও PDF, রুকইয়াহ পরামর্শ ও 'শেখার শিল্প' বই — রাকী ফয়সাল আহমেদ সাবিতের আল কুরআনিক রুকইয়াহ হিলিং। কুরআন ও সুন্নাহভিত্তিক, বিনামূল্যে।">
 <meta name="theme-color" content="#080808">
 <link rel="canonical" href="https://alquranicruqyahhealing.com/">
 <meta property="og:title" content="আল কুরআনিক রুকইয়াহ হিলিং">
@@ -23,12 +25,14 @@
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <link rel="alternate" type="application/rss+xml" title="আল কুরআনিক রুকইয়াহ হিলিং — ব্লগ" href="/blog/feed.xml">
 <link rel="manifest" href="./manifest.json">
+<link rel="icon" href="/icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
  {"@type":"Organization","@id":"https://alquranicruqyahhealing.com/#org",
   "name":"আল কুরআনিক রুকইয়াহ হিলিং","alternateName":"Al Quranic Ruqyah Healing",
   "url":"https://alquranicruqyahhealing.com/",
-  "logo":"https://alquranicruqyahhealing.com/blog/images/og-default.jpg",
+  "logo":"https://alquranicruqyahhealing.com/icons/icon-512.png",
   "founder":{"@type":"Person","name":"রাকী ফয়সাল আহমেদ সাবিত"},
   "areaServed":"BD","knowsLanguage":"bn",
   "sameAs":["https://www.facebook.com/al.quranic.ruqyah.healing1"]},
@@ -45,16 +49,20 @@
   "url":"https://alquranicruqyahhealing.com/app.html#books-section",
   "offers":{"@type":"Offer","price":"100","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
   "aggregateRating":"@@RATING:yasin-karishma@@"},
- {"@type":"Course","name":"মাসিক লাইভ রুকইয়াহ কোর্স",
-  "description":"প্রতি মাসে কমপক্ষে ১২টি লাইভ সেশন — আয়াতের তাফসীর ও রুকইয়াহয় তার ব্যবহার, তিলাওয়াত ও প্রশ্নোত্তর।",
-  "inLanguage":"bn","provider":{"@id":"https://alquranicruqyahhealing.com/#org"},
+ {"@type":"Book","name":"ইসমে আজম","author":{"@type":"Person","name":"আল্লামা আলিম ফাকরী"},
+  "translator":[{"@type":"Person","name":"ফয়সাল আহমেদ সাবিত"},{"@type":"Person","name":"মাওঃ শেখ শফীক"}],
+  "inLanguage":"bn","numberOfPages":172,
+  "url":"https://alquranicruqyahhealing.com/app.html#books-section",
+  "offers":{"@type":"Offer","price":"100","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
+  "aggregateRating":"@@RATING:isme-azam@@"},
+ {"@type":"Service","name":"মাসিক রুকইয়াহ প্যাকেজ",
+  "description":"২ মাসে ২৪টি লাইভ গ্রুপ সেশনে সরাসরি রুকইয়াহ — শুক্র, শনি ও রবিবার রাত ৯টায়।",
+  "provider":{"@id":"https://alquranicruqyahhealing.com/#org"},"areaServed":"BD",
   "url":"https://alquranicruqyahhealing.com/#live-class",
-  "offers":{"@type":"Offer","price":"490","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
-  "hasCourseInstance":{"@type":"CourseInstance","courseMode":"online",
-   "courseWorkload":"PT12H","inLanguage":"bn"},
-  "aggregateRating":"@@RATING:live-class@@"},
+  "offers":{"@type":"Offer","price":"800","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
+  "aggregateRating":"@@RATING:ruqyah-package@@"},
  {"@type":"Service","name":"রুকইয়াহ ডায়াগনোসিস ও গাইডলাইন",
-  "description":"২৫০+ প্রশ্নভিত্তিক মূল্যায়নের মাধ্যমে ব্যক্তিগতকৃত রুকইয়াহ পরিকল্পনা ও ৪৫ দিনের ফলোআপ।",
+  "description":"২৫০+ প্রশ্নভিত্তিক মূল্যায়নের মাধ্যমে ব্যক্তিগতকৃত রুকইয়াহ পরিকল্পনা।",
   "provider":{"@id":"https://alquranicruqyahhealing.com/#org"},"areaServed":"BD",
   "url":"https://alquranicruqyahhealing.com/#course",
   "offers":{"@type":"Offer","price":"300","priceCurrency":"BDT","availability":"https://schema.org/InStock"},
@@ -158,6 +166,11 @@ h2{font-size:clamp(1.5rem,4.2vw,2.15rem);font-weight:700;letter-spacing:-.02em;l
 .sec-sub{color:var(--sub);font-size:.95rem}
 
 /* ── Feature grid ── */
+.topics{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:26px}
+.topics-l{width:100%;color:var(--sub);font-size:.86rem;font-weight:600;margin-bottom:2px}
+.topics a{display:inline-flex;align-items:center;padding:8px 15px;border-radius:100px;font-size:.84rem;font-weight:700;
+  background:var(--surface);border:1px solid var(--border);color:var(--text);transition:border-color .16s var(--ease),color .16s var(--ease)}
+.topics a:hover{border-color:rgba(0,229,153,.35);color:var(--green)}
 .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 @media(min-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -267,11 +280,12 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
   <div class="nav-in">
     <a class="brand" href="#top"><span class="brand-dot"></span>আল কুরআনিক রুকইয়াহ হিলিং</a>
     <div class="nav-links">
+      <a href="/topics/">বিষয়</a>
       <a href="/audio/">অডিও</a>
       <a href="/guides/">গাইড</a>
       <a href="/blog/">ব্লগ</a>
       <a href="#book">বই</a>
-      <a href="#live-class">লাইভ কোর্স</a>
+      <a href="#live-class">রুকইয়াহ প্যাকেজ</a>
       <a href="#course">ডায়াগনোসিস</a>
       <a href="#about">পরিচিতি</a>
       <a href="#faq">প্রশ্নোত্তর</a>
@@ -288,7 +302,7 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
     </span>
     <h1>রুকইয়াহর সব কিছু<br><em>এক জায়গায়</em></h1>
     <p class="lede">
-      ২৭৮টি রুকইয়াহ অডিও, ৮৩টি বাংলা গাইড, দৈনিক আমল, রুকইয়াহ পরামর্শ ও শেখার বই —
+      @@N_AUDIO@@টি রুকইয়াহ অডিও, @@N_DOCS@@টি বাংলা গাইড ও PDF, দৈনিক আমল, রুকইয়াহ পরামর্শ ও শেখার বই —
       জাদু, বদনজর ও জ্বিনের সমস্যায় কুরআন-সুন্নাহর আলোকে সাজানো একটি পূর্ণাঙ্গ প্ল্যাটফর্ম।
     </p>
     <div class="hero-cta">
@@ -310,9 +324,9 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
     </div>
 
     <div class="stats">
-      <div class="stat"><div class="stat-n">২৭৮</div><div class="stat-l">রুকইয়াহ অডিও</div></div>
-      <div class="stat"><div class="stat-n">৮৩</div><div class="stat-l">বাংলা গাইড (PDF)</div></div>
-      <div class="stat"><div class="stat-n">১২</div><div class="stat-l">সমস্যাভিত্তিক বিভাগ</div></div>
+      <div class="stat"><div class="stat-n">@@N_AUDIO@@</div><div class="stat-l">রুকইয়াহ অডিও</div></div>
+      <div class="stat"><div class="stat-n">@@N_DOCS@@</div><div class="stat-l">বাংলা গাইড ও PDF</div></div>
+      <div class="stat"><div class="stat-n">@@N_AUDIO_CATS@@</div><div class="stat-l">সমস্যাভিত্তিক বিভাগ</div></div>
       <div class="stat"><div class="stat-n">৩১৮</div><div class="stat-l">পাতার বই</div></div>
     </div>
   </div>
@@ -329,12 +343,12 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
       <div class="card">
         <div class="card-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
         <h3>রুকইয়াহ অডিও লাইব্রেরি</h3>
-        <p>২৭৮টি অডিও — জাদু, বদনজর, জ্বিন, গিঁট ও বাঁধন, কারীন, অসুখ সহ ১২টি বিভাগে সাজানো। অফলাইনে ডাউনলোড করে শোনা যায়।</p>
+        <p>@@N_AUDIO@@টি অডিও — জাদু, বদনজর, জ্বিন, গিঁট ও বাঁধন, কারীন, অসুখ সহ @@N_AUDIO_CATS@@টি বিভাগে সাজানো। অফলাইনে ডাউনলোড করে শোনা যায়।</p>
       </div>
       <div class="card">
         <div class="card-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/></svg></div>
-        <h3>৮৩টি বাংলা গাইড</h3>
-        <p>প্রতিটি সমস্যার জন্য ধাপে ধাপে লেখা PDF গাইড — কী পড়বেন, কতবার, কীভাবে, আর কী কী এড়িয়ে চলবেন।</p>
+        <h3>@@N_DOCS@@টি বাংলা গাইড ও PDF</h3>
+        <p>প্রতিটি সমস্যার জন্য ধাপে ধাপে লেখা গাইড ও PDF — কী পড়বেন, কতবার, কীভাবে, আর কী কী এড়িয়ে চলবেন।</p>
       </div>
       <div class="card">
         <div class="card-ico"><svg class="ico" viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></div>
@@ -356,6 +370,23 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
         <h3>শেখার শিল্প — বই</h3>
         <p>৩১৮ পাতার বই: শেখার আধুনিক বিজ্ঞান, সাথে ইলম, দুআ ও রুকইয়াহর আমল — শিক্ষার্থীর প্রস্তুতি ও আত্মিক সুরক্ষা একই মলাটে।</p>
       </div>
+    </div>
+    <!-- Topic hubs (/topics/, built by tools/library.js): each gathers the
+         guides, audio, PDFs and posts on one subject, so a visitor with one
+         problem does not have to search four sections for it. -->
+    <div class="topics">
+      <p class="topics-l">সমস্যা অনুযায়ী খুঁজুন —</p>
+      <a href="/topics/jadu/">সিহর ও জাদু</a>
+      <a href="/topics/bad-nazar/">বদনজর ও হাসাদ</a>
+      <a href="/topics/jinn/">জ্বিন ও কারীন</a>
+      <a href="/topics/git-o-badhon/">গিঁট ও বাঁধন</a>
+      <a href="/topics/waswasa/">ওয়াসওয়াসা</a>
+      <a href="/topics/osukh-o-shifa/">অসুখ ও শিফা</a>
+      <a href="/topics/suroksha-o-amol/">সুরক্ষা ও আমল</a>
+      <a href="/topics/biye-o-poribar/">বিয়ে ও পরিবার</a>
+      <a href="/topics/rizik-o-kaj/">রিজিক ও কাজ</a>
+      <a href="/topics/ruqyah-guide/">রুকইয়াহ কীভাবে করবেন</a>
+      <a href="/topics/">সব বিষয় →</a>
     </div>
   </div>
 </section>
@@ -438,43 +469,76 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
         </div>
       </div>
     </div>
+
+    <div class="prod" style="margin-top:26px">
+      <div class="prod-cover">
+        <img src="/api/book?book=isme-azam&thumb=1" alt="ইসমে আজম বইয়ের মলাট" loading="lazy"
+             onerror="var c=this.closest('.prod-cover');c.style.display='none';c.closest('.prod').style.gridTemplateColumns='1fr'">
+      </div>
+      <div>
+        <span class="prod-tag">অনুবাদ</span>
+        <h3>ইসমে আজম</h3>
+        <p class="prod-sub">আল্লামা আলিম ফাকরী · অনুবাদ: ফয়সাল আহমেদ সাবিত ও মাওঃ শেখ শফীক · ১৭২ পাতা · বাংলা</p>
+        <ul>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>ইসমে আজম কী — পরিচয় ও ব্যাখ্যা</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>আল্লাহর নামগুলো এক এক করে, প্রতিটির অর্থ</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রতিটি নামের সাথে বর্ণিত যিকির ও আমল</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>যিকিরের ফজিলত — ক্ষমা, ইখলাস ও আন্তরিকতা</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>শুরুতে রাকীর টীকা — কোনটি কুরআন ও হাদিসের, কোনটি বুজুর্গদের অভিজ্ঞতা</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>মূল গ্রন্থের পূর্ণ বাংলা অনুবাদ</li>
+        </ul>
+        <div class="price-row">
+          <span class="price">৳১০০</span>
+        </div>
+        <div class="prod-cta">
+          <a class="btn btn-p" href="/app.html#books-section">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M2 3h2.2l2.1 11.2a1.6 1.6 0 0 0 1.6 1.3h8.6a1.6 1.6 0 0 0 1.6-1.3L20 7H5.3"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>
+            কিনুন — ৳১০০
+          </a>
+          <a class="btn btn-g" href="/app.html#books-section">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/></svg>
+            প্রথম ২৫ পাতা ফ্রি পড়ুন
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="live-class">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">মাসিক সদস্যপদ</span>
-      <h2>লাইভ রুকইয়াহ কোর্স</h2>
-      <p class="sec-sub">রাকীর কাছে বারবার যাওয়ার বদলে নিজেই শিখে নিন — যাতে নিজের ও পরিবারের রুকইয়াহ নিজেই করতে পারেন।</p>
+      <span class="eyebrow">মাসিক প্যাকেজ</span>
+      <h2>মাসিক রুকইয়াহ প্যাকেজ</h2>
+      <p class="sec-sub">রাকীর কাছে বারবার যাওয়ার বদলে লাইভ গ্রুপ সেশনে সরাসরি রুকইয়াহ পান, পাশাপাশি ধীরে ধীরে নিজেই শিখে নিন যাতে নিজের ও পরিবারের রুকইয়াহ নিজেই করতে পারেন।</p>
     </div>
     <div class="prod" style="grid-template-columns:minmax(0,1fr)">
       <div>
-        <span class="prod-tag">প্রতি মাসে কমপক্ষে ১২টি লাইভ সেশন</span>
-        <h3>শেখা, তিলাওয়াত আর প্রশ্নোত্তর — প্রতি সেশনে</h3>
-        <p class="prod-sub">প্রতিটি সেশনে আয়াতের তাফসীর ও রুকইয়াহয় তার ব্যবহার, তারপর তিলাওয়াত ও প্রশ্নোত্তর</p>
+        <span class="prod-tag">২ মাসে ২৪টি লাইভ গ্রুপ সেশন (১২+১২)</span>
+        <h3>শুক্র, শনি ও রবিবার রাত ৯টায় — সরাসরি রুকইয়াহ</h3>
+        <p class="prod-sub">প্রতি সপ্তাহে ৩টি লাইভ সেশন, সরাসরি রুকইয়াহ পাবেন এবং একই সাথে নিজে শিখবেন</p>
         <ul>
-          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>কমপক্ষে ১২টি লাইভ সেশন</li>
-          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রতিটি সেশনের রেকর্ডেড ভিডিও</li>
-          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রতিটি সেশনের আলাদা নোট</li>
-          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>রাকীর সাথে গ্রুপে কনসাল্ট</li>
-          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>ভাই ও বোনদের ভিন্ন গ্রুপ</li>
-          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>আলাদা সমস্যায় আলাদা সেশন</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>২ মাসে ২৪টি Live Group Session (১২+১২)</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রতিটি সেশনের নোট PDF</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>৫০+ PDF লাইব্রেরি অ্যাক্সেস</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>Audio+PDF App, Course Recording App, Fajr Alarm App</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>গ্রুপে রাকীকে সরাসরি প্রশ্ন</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>সদস্য থাকাকালীন Free Diagnosis</li>
+          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>মাসে ২টি Ruqyah Book</li>
         </ul>
         <p class="guarantee">
-          <strong>৩ সেশনের গ্যারান্টি —</strong> প্রথম ৩টি লাইভ সেশনে অংশ নেওয়ার পরও যদি মনে হয়
-          কোর্সটি আপনার কাজে আসছে না, চলতি মাস শেষ হওয়ার আগে জানালে পুরো হাদিয়া ফেরত।
-          শর্ত একটাই — অন্তত ৩টি সেশনে উপস্থিত থাকতে হবে।
-          <span class="guarantee-note">শিফা আল্লাহর হাতে, তাই আরোগ্যের নিশ্চয়তা কেউ দিতে পারে না।
-          এই গ্যারান্টি কোর্সটি আপনার উপযোগী কি না, সেটুকু নিয়েই।</span>
+          <strong>রিফান্ড —</strong> পেমেন্টের ১ সপ্তাহের মধ্যে ৩টি সেশনে অংশ নেওয়ার পরও সন্তুষ্ট না হলে ১০০% হাদিয়া ফেরত।
+          <span class="guarantee-note">শিফা আল্লাহর হাতে, তাই আরোগ্যের নিশ্চয়তা কেউ দিতে পারে না — এই গ্যারান্টি প্যাকেজটি আপনার উপযোগী কি না, সেটুকু নিয়ে।</span>
+        </p>
+        <p class="guarantee">
+          <strong>পেমেন্টের শর্ত —</strong> ঠিক ৳৮০০ Send Money (কম/বেশি নয়), সঠিক Transaction ID ও সঠিক Gmail ফর্মে দিতে হবে — যেকোনো একটা ভুল হলে অ্যাক্সেস unlock হবে না।
         </p>
         <div class="price-row">
-          <span class="price">৳৪৯০</span>
-          <span class="price-old">৳৭০০</span>
-          <span class="price-off">পুরো মাস</span>
+          <span class="price">৳৮০০</span>
+          <span class="price-off">২ মাসের হাদিয়া</span>
         </div>
         <div class="prod-cta">
-          <a class="btn btn-p" href="/app.html#courses-section">কোর্সে যুক্ত হোন</a>
+          <a class="btn btn-p" href="https://forms.gle/9N22oADc1aukg4NU8" target="_blank" rel="noopener">ফর্ম পূরণ করে যুক্ত হোন</a>
         </div>
       </div>
     </div>
@@ -492,20 +556,14 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
       <div>
         <span class="prod-tag">বিশেষজ্ঞ সেরা</span>
         <h3>আপনার জন্য আলাদা পরিকল্পনা</h3>
-        <p class="prod-sub">রাকী ফয়সাল আহমেদ সাবিতের তত্ত্বাবধানে · ৪৫ দিনের ফলোআপসহ</p>
+        <p class="prod-sub">রাকী ফয়সাল আহমেদ সাবিতের তত্ত্বাবধানে</p>
         <ul>
           <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>বিস্তারিত লক্ষণ বিশ্লেষণ</li>
           <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>ব্যক্তিগতকৃত প্রেসক্রিপশন</li>
           <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>প্রয়োজনীয় রুকইয়াহ অডিও</li>
           <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>দৈনিক ও সাপ্তাহিক আমল</li>
           <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>মানসিক দিকনির্দেশনা</li>
-          <li><svg class="ico" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>৪৫ দিনের ফলোআপ</li>
         </ul>
-        <p class="guarantee">
-          <strong>ফলোআপ কীভাবে চলে —</strong> ৪৫ দিনের ফলোআপের মধ্যে <strong>প্রথম ১–১৫ দিন</strong>
-          মেসেজে সরাসরি রাকীর সাথে কথা বলতে পারবেন। আমল, অগ্রগতি বা নতুন কোনো সমস্যা নিয়ে
-          প্রশ্ন থাকলে তখনই জিজ্ঞেস করুন।
-        </p>
         <div class="price-row">
           <span class="price">৳৩০০</span>
           <span class="price-old">৳৫০০</span>
@@ -575,7 +633,7 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
     <div class="faq">
       <details>
         <summary>অ্যাপ ব্যবহার করতে কি টাকা লাগে?</summary>
-        <p>না। ২৭৮টি রুকইয়াহ অডিও, ৮৩টি PDF গাইড, দৈনিক আমল ও AI সহায়ক — সবই সম্পূর্ণ ফ্রি। শুধু বই ও ডায়াগনোসিস সেবার জন্য আলাদা মূল্য।</p>
+        <p>না। @@N_AUDIO@@টি রুকইয়াহ অডিও, @@N_DOCS@@টি গাইড ও PDF, দৈনিক আমল ও AI সহায়ক — সবই সম্পূর্ণ ফ্রি। শুধু বই ও ডায়াগনোসিস সেবার জন্য আলাদা মূল্য।</p>
       </details>
       <details>
         <summary>বই না কিনে আগে দেখা যাবে?</summary>
@@ -624,8 +682,10 @@ footer{border-top:1px solid var(--border);padding:44px 0 34px;margin-top:60px}
       <div>
         <h4>প্ল্যাটফর্ম</h4>
         <ul>
+          <li><a href="/topics/">বিষয় অনুযায়ী</a></li>
           <li><a href="/audio/">অডিও লাইব্রেরি</a></li>
-          <li><a href="/guides/">PDF গাইড</a></li>
+          <li><a href="/guides/">গাইড ও প্রোটোকল</a></li>
+          <li><a href="/guides/pdf/">PDF গাইড</a></li>
           <li><a href="/blog/">ব্লগ ও গাইডলাইন</a></li>
           <li><a href="#book">শেখার শিল্প বই</a></li>
           <li><a href="#course">ডায়াগনোসিস সেবা</a></li>

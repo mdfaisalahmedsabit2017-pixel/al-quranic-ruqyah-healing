@@ -362,6 +362,174 @@ setTimeout(async () => {
         check('close clears the bar state', !d.body.classList.contains('player-mini'));
     }
 
+    // Book cards. A book sold at a single price carries no originalPrice, and
+    // the card used to divide by it regardless — printing "৳undefined" and
+    // "NaN% ছাড়" straight onto the shop.
+    {
+        const shop = d.getElementById('books-container');
+        const cards = q('#books-container .book-card');
+        check('every book renders a card', cards.length >= 3, `${cards.length} cards`);
+        check('no book card prints NaN or undefined',
+            !!shop && !/NaN|undefined/.test(shop.innerHTML));
+        // The APK may not show a price at all — selling a digital good outside
+        // Play Billing is a policy breach, which is what audit-native.js guards.
+        for (const c of cards) {
+            const title = c.querySelector('.book-title')?.textContent;
+            const price = (c.querySelector('.course-price')?.textContent || '').trim();
+            if (target === 'native') {
+                check(`no price shown in the APK: ${title}`, price === '', price);
+            } else {
+                check(`priced: ${title}`, /^৳\d+$/.test(price), price);
+            }
+        }
+    }
+
+    // The premium course area. Everything it shows is fetched, so a boot can
+    // only prove that the surfaces exist, start closed, and that nothing paid
+    // rode along inside the markup — which is the part worth proving.
+    {
+        const view = d.getElementById('course-view');
+        const shelf = d.getElementById('my-courses-section');
+        if (target === 'native') {
+            check('the APK carries no course surface', !view && !shelf);
+        } else {
+            check('the course view exists and starts closed',
+                !!view && view.classList.contains('hidden'));
+            check('the course shelf exists and starts hidden',
+                !!shelf && shelf.classList.contains('hidden'));
+            // A video id in the shipped page would defeat the whole gate. The
+            // page must carry the player's empty container and nothing to play.
+            const shipped = fs.readFileSync(htmlFile, 'utf8')
+                + fs.readFileSync(path.join(dir, 'app.js'), 'utf8');
+            check('no youtube id is baked into the build',
+                !/youtube(?:-nocookie)?\.com\/embed\/[A-Za-z0-9_-]{11}/.test(shipped));
+            check('no course secret file is named in the build',
+                !/course_notes|private\.json/.test(shipped));
+            for (const fn of ['openCourseView', 'openCourseLesson', 'courseBack',
+                              'showCourseTab', 'downloadCourseNote', 'closeCourseView']) {
+                check(`${fn}() is defined`, typeof window[fn] === 'function');
+            }
+        }
+    }
+
+    // The static catalogue links here as /app.html#audio-<CODE>. Those links sat
+    // dead for as long as they existed, because nothing read location.hash.
+    if (code) {
+        try { window.closePlayer(); } catch (e) { /* already closed */ }
+        window.location.hash = `#audio-${code}`;
+        window.dispatchEvent(new window.HashChangeEvent('hashchange'));
+        check('#audio-<CODE> deep link opens that track',
+            !d.getElementById('yt-modal')?.classList.contains('hidden'), `#audio-${code}`);
+        try { window.closePlayer(); } catch (e) { /* fine */ }
+    }
+
+    // ── The crawlable catalogue under public/audio/ ─────────────────────────
+    // Native never builds these, so only the web dist is checked.
+    if (target !== 'native') {
+        const root = path.resolve(__dirname, '..');
+        const read = (p) => fs.readFileSync(p, 'utf8');
+        const trackPage = (c) => path.join(dir, 'audio', c, 'index.html');
+
+        const missing = audio.filter((t) => !fs.existsSync(trackPage(t.code)));
+        check('every track has its own page', missing.length === 0,
+            missing.length ? `missing: ${missing.slice(0, 5).map(t => t.code).join(', ')}` : `${audio.length} pages`);
+
+        const wrong = audio.filter((t) => {
+            if (!fs.existsSync(trackPage(t.code))) return false;
+            const h = read(trackPage(t.code));
+            return !h.includes(t.code) || !h.includes(t.title_bn.trim().slice(0, 24));
+        });
+        check('each track page carries its own code and title', wrong.length === 0,
+            wrong.slice(0, 5).map(t => t.code).join(', '));
+
+        // The listing pages must reach the track pages, not the app's home screen.
+        const listings = [path.join(dir, 'audio', 'index.html'),
+            ...fs.readdirSync(path.join(dir, 'audio'), { withFileTypes: true })
+                .filter((e) => e.isDirectory() && !audio.some((t) => t.code === e.name))
+                .map((e) => path.join(dir, 'audio', e.name, 'index.html'))];
+        const stillDead = listings.filter((p) => fs.existsSync(p) && read(p).includes('app.html#audio-'));
+        check('no listing page links into the app instead of a track page',
+            stillDead.length === 0, stillDead.map((p) => path.basename(path.dirname(p))).join(', '));
+
+        // /sitemap.xml is an index (tools/seo.js); the track rows live in the
+        // audio section's file, and the index has to point at that file.
+        const smIndex = read(path.join(dir, 'sitemap.xml'));
+        check('sitemap.xml is an index that lists the audio sitemap',
+            smIndex.includes('<sitemapindex') && smIndex.includes('/sitemap-audio.xml</loc>'));
+        const sm = read(path.join(dir, 'sitemap-audio.xml'));
+        const inMap = audio.filter((t) => sm.includes(`/audio/${t.code}/</loc>`));
+        check('every track page is in the sitemap', inMap.length === audio.length,
+            `${inMap.length}/${audio.length}`);
+        check('no sitemap row points at a page that was not built', (() => {
+            const files = fs.readdirSync(dir).filter((f) => /^sitemap-.*\.xml$/.test(f));
+            const locs = files.flatMap((f) => [...read(path.join(dir, f)).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]));
+            const missing = locs.filter((u) => {
+                const p = u.replace('https://alquranicruqyahhealing.com', '');
+                const file = p.endsWith('/') ? path.join(dir, p, 'index.html') : path.join(dir, p);
+                return !fs.existsSync(file);
+            });
+            if (missing.length) console.log('    missing:', missing.slice(0, 5).join(', '));
+            return missing.length === 0;
+        })());
+        check('the catalogues are not empty', audio.length > 0 && pdfs.length > 0, `${audio.length} audio, ${pdfs.length} pdf`);
+        check('a PDF landing page exists for every legacy PDF',
+            pdfs.every((p) => fs.existsSync(path.join(dir, 'guides', 'pdf', p.filename.replace(/\.pdf$/i, ''), 'index.html'))));
+        check('404.html was written', fs.existsSync(path.join(dir, '404.html')));
+        check('robots.txt allows the site and names the sitemap', (() => {
+            const r = read(path.join(dir, 'robots.txt'));
+            return /Allow: \//.test(r) && /Sitemap: https:\/\/alquranicruqyahhealing\.com\/sitemap\.xml/.test(r) && !/Disallow: \/(audio|guides|blog|topics)/.test(r);
+        })());
+
+        // Topic hubs: one per registry entry, each real (>= 3 resources) and in the sitemap.
+        const { TOPICS } = require('./seo');
+        const topicsSm = read(path.join(dir, 'sitemap-topics.xml'));
+        check('every topic hub was built and is in the sitemap', TOPICS.every((t) =>
+            fs.existsSync(path.join(dir, 'topics', t.slug, 'index.html')) && topicsSm.includes(`/topics/${t.slug}/</loc>`)),
+            `${TOPICS.length} hubs`);
+        check('every topic hub lists resources', TOPICS.every((t) =>
+            (read(path.join(dir, 'topics', t.slug, 'index.html')).match(/class="ep-list"/g) || []).length > 0));
+
+        // Every JSON-LD block on every generated page must parse and carry a non-empty @graph.
+        const walk = (d, out = []) => {
+            for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+                const p = path.join(d, e.name);
+                if (e.isDirectory()) { if (!/^(vendor|pdf|fonts|icons|_files|_assets|_previews|images)$/.test(e.name)) walk(p, out); }
+                else if (e.name.endsWith('.html')) out.push(p);
+            }
+            return out;
+        };
+        let ldPages = 0, ldBad = [];
+        for (const f of walk(dir)) {
+            const h = read(f);
+            for (const m of h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+                ldPages++;
+                try {
+                    const j = JSON.parse(m[1]);
+                    if (m[1].includes('undefined') || (j['@graph'] && !j['@graph'].length)) ldBad.push(f);
+                } catch (e) { ldBad.push(f); }
+            }
+        }
+        check('every JSON-LD block parses', ldBad.length === 0, ldBad.length ? ldBad.slice(0, 3).join(', ') : `${ldPages} blocks`);
+
+        const idx = read(path.join(dir, 'audio', 'index.html'));
+        check('the audio index has a search box', idx.includes('id="lib-q"'));
+        check('the catalogue is still in the HTML without JavaScript',
+            idx.includes('id="lib-body"') && (idx.match(/class="ep-list"/g) || []).length > 0);
+    }
+
+    // Codes are what patients were given; a code that changes silently sends
+    // someone to the wrong recitation. The lock is the only thing standing
+    // between a bulk edit of audio.json and that happening unnoticed.
+    const lockPath = path.resolve(__dirname, 'audio-codes.lock.json');
+    if (fs.existsSync(lockPath)) {
+        const locked = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
+        const now = Object.fromEntries(audio.map((t) => [t.code, t.url]));
+        const lost = Object.keys(locked).filter((c) => !(c in now));
+        const moved = Object.keys(locked).filter((c) => c in now && locked[c] !== now[c]);
+        check('no code disappeared', lost.length === 0, lost.join(', '));
+        check('no code points at a different video', moved.length === 0, moved.join(', '));
+    }
+
     console.log(lines.join('\n'));
 
     // Exit explicitly. The app sets progress intervals and jsdom keeps its own

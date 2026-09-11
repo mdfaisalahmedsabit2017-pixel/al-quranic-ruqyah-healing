@@ -32,8 +32,8 @@ android {
         // rejects a versionCode it has already seen. Deliberately not derived
         // from the CI run number, so a local build and a CI build of the same
         // commit produce the same artifact.
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

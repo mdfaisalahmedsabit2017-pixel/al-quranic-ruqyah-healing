@@ -23,7 +23,26 @@
 
 ## ১. Keystore তৈরি (একবারই, জীবনে একবার)
 
-`keytool` লাগে, যেটা JDK-র সাথে আসে। **এই মেশিনে এখন কোনো JDK নেই** (`JAVA_HOME` খালি)।
+> **২০২৬-০৯-০১ — এই ধাপটা করা হয়ে গেছে।** JDK 21 (Temurin 21.0.12) ইনস্টল করা,
+> `JAVA_HOME` মেশিন-লেভেলে সেট, আর keystore তৈরি:
+>
+> | | |
+> |---|---|
+> | ফাইল | `A:\keys\ruqyah-upload.keystore` (PKCS12, RSA 4096, মেয়াদ ২০৫৪) |
+> | alias | `ruqyah-upload` |
+> | পাসওয়ার্ড | `A:\keys\CREDENTIALS.txt` — **রিপোর বাইরে, কখনো কমিট নয়** |
+> | কপি | `C:\Users\faisa\keys-backup\` |
+> | SHA-1 | `C5:6D:0C:AC:0E:30:5E:48:BC:BA:94:41:81:39:D3:19:20:93:47:93` |
+> | SHA-256 | `48:63:35:65:92:C9:64:FD:26:59:1D:AD:88:8D:18:7A:2C:80:AF:50:E8:DD:F4:24:73:48:2E:45:E2:23:0E:EE` |
+>
+> দুটো SHA-ই Firebase-এর `com.selfruqyah.app` অ্যাপে বসানো আছে।
+> **এখনো বাকি: keystore-টা অফ-মেশিন ব্যাকআপ করা** (ক্লাউড ড্রাইভ + পেনড্রাইভ)।
+> এই ফাইল হারানো = অ্যাপ আর কোনোদিন আপডেট করা যাবে না (Play App Signing-এ
+> enroll করার আগ পর্যন্ত)।
+>
+> নিচের ধাপগুলো ইতিহাসের জন্য রাখা — নতুন কী বানাতে হলে এভাবেই বানাবেন।
+
+`keytool` লাগে, যেটা JDK-র সাথে আসে।
 
 ### ধাপ ১ক — JDK 21 ইনস্টল
 
@@ -105,6 +124,24 @@ keyPassword=...
 ---
 
 ## ৩. AAB বানানো
+
+> **লোকালি বানানোই এখন সবচেয়ে সোজা** — `android/keystore.properties` ও
+> `android/local.properties` বসানো আছে, তাই GitHub secrets ছাড়াই চলে:
+>
+> ```powershell
+> $env:JAVA_HOME='C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot'
+> cd 'A:\Ruqyah Audio App'
+> npm run sync
+> cd android; .\gradlew.bat bundleRelease --no-daemon
+> ```
+>
+> ফল: `android\app\build\outputs\bundle\release\app-release.aab`।
+> সাইন হয়েছে কিনা দেখার সোজা উপায় — AAB-টা zip হিসেবে খুলে
+> `META-INF/RUQYAH-U.RSA` আছে কিনা দেখা। **`local.properties`-এ Windows পাথ
+> ফরওয়ার্ড স্ল্যাশে লিখুন** (`sdk.dir=C:/Users/...`); ব্যাকস্ল্যাশ ঠিকমতো
+> এস্কেপ না হলে Gradle "The filename, directory name, or volume label syntax
+> is incorrect" বলে থামে, আর ওই বার্তা থেকে কারণটা বোঝার কোনো উপায় নেই।
+
 
 ```powershell
 git tag v1.0.0

@@ -12,8 +12,15 @@ rules_version = '2';
 //   * confirming a purchase failed, because the admin cannot write to the
 //     buyer's users/<uid> document — so paying for a course unlocked nothing.
 //
-// Deploy with:  npx firebase-tools deploy --only firestore:rules
+// Deploy with:  npm run deploy:rules
 // (or paste this file's contents into Console -> Firestore Database -> Rules)
+//
+// EDITING THIS FILE DOES NOT MAKE THE CHANGE LIVE. `vercel --prod` ships the
+// site and nothing else; the rules are a separate system, and a mismatch
+// between the two is silent on both sides — the app just starts getting
+// "Missing or insufficient permissions" for something that reads fine here.
+// Run the deploy above every time this file changes, and after any Console
+// edit copy the Console's version back into this file.
 
 service cloud.firestore {
   match /databases/{database}/documents {

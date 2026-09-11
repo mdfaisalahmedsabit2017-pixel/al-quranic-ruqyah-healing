@@ -1,6 +1,30 @@
 {
  "//": "Documents maintained by hand in guides_src/ (not produced by the ruqyah pdf maker engine). tools/sync_guides.py must not delete them as stale, and tools/watermark_pdfs.py takes their source PDF from guides_src/manual_pdf/<slug>.pdf.",
  "slugs": [
-  "tabiah-ruqyah"
+  "tabiah-ruqyah",
+  "gl-0001",
+  "ruq-0001",
+  "ruq-0002",
+  "ruq-0003",
+  "ruq-0004",
+  "ruq-0005",
+  "ruq-0006",
+  "ruq-0007",
+  "ruq-0008",
+  "ruq-0009",
+  "ruq-0010",
+  "ruq-0011",
+  "ruq-0012",
+  "ruq-0013",
+  "ruq-0014",
+  "ruq-0015",
+  "ruq-0016",
+  "ruq-0017",
+  "ruq-0018",
+  "ruq-0019",
+  "ruq-0020",
+  "ruq-0021",
+  "ruq-0022",
+  "ruq-0023"
  ]
 }

@@ -1,6 +1,8 @@
 // Bump CACHE_NAME on every release that changes index.html / app.js.
 // v5 also switches the app shell off cache-first — see the fetch handler.
-const CACHE_NAME = 'ruqyah-pro-v16';  // v16: /guides/ and /audio/ pages go network-first — a new guide was invisible
+const CACHE_NAME = 'ruqyah-pro-v17';  // v17: /topics/ hubs and /guides/pdf/ landing pages join the network-first set;
+                                         // non-OK responses are no longer cached (a 404 used to be pinned forever)
+                                         // v16: /guides/ and /audio/ pages go network-first — a new guide was invisible
                                          // to every returning visitor because the index sat in the cache-first bucket
 const AUDIO_CACHE = 'ruqyah-audio-dl-v1';
 
@@ -147,7 +149,16 @@ self.addEventListener('fetch', (event) => {
   // fell through to the cache-first path below, so a phone that had opened /guides/
   // once kept showing that day's list forever. The PDFs and the font sheet under
   // /guides/_files/ and /guides/_assets/ are immutable and stay cache-first.
-  const isLibraryPage = /\/(guides|audio)\//.test(url) && !/\/guides\/_(files|assets)\//.test(url);
+  // /topics/ (hubs) and /guides/pdf/ (landing pages) are regenerated the same
+  // way, so they sit in the same bucket. The PDF previews under
+  // /guides/_previews/ are images and stay cache-first.
+  const isLibraryPage = /\/(guides|audio|topics)\//.test(url) && !/\/guides\/_(files|assets|previews)\//.test(url);
+
+  // Only a successful, same-origin, non-redirect response is worth keeping. A
+  // 404 cached here used to be served forever; and an opaque redirect
+  // (/audio -> /audio/) stored under the un-slashed URL would fail as a
+  // navigation response the next time it was read back offline.
+  const cacheable = (response) => response && response.ok && response.type !== 'opaqueredirect';
 
   // App shell: network-first, fall back to cache. Keeps the app updatable while
   // still working offline (the cached copy answers as soon as the network fails).
@@ -155,8 +166,10 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(event.request, clone)).catch(() => {});
+          if (cacheable(response)) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(event.request, clone)).catch(() => {});
+          }
           return response;
         })
         .catch(() => caches.match(event.request).then((r) => r || caches.match('/app.html')))
@@ -168,10 +181,12 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((res) => {
       return res || fetch(event.request).then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME)
-          .then((cache) => cache.put(event.request, clone))
-          .catch(() => {});
+        if (cacheable(response)) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME)
+            .then((cache) => cache.put(event.request, clone))
+            .catch(() => {});
+        }
         return response;
       });
     })

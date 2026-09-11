@@ -1,0 +1,938 @@
+{
+ "after-salah-azkar.pdf": {
+  "bytes": 473689,
+  "pages": 25,
+  "preview": "after-salah-azkar.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "5a6f5a0d9fbffe1a859b583a4a1cef2b34656d0fe0ff12e5fc4a6084ce025e97",
+  "slug": "after-salah-azkar"
+ },
+ "ashik-jinn-sihr-ruqyah.pdf": {
+  "bytes": 3777962,
+  "pages": 22,
+  "preview": "ashik-jinn-sihr-ruqyah.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "b1059c18b88a4363455a380d3b9ef90cbb0b978740af006fd53cd08b3235ecef",
+  "slug": "ashik-jinn-sihr-ruqyah"
+ },
+ "ashik-jinn.pdf": {
+  "bytes": 5068251,
+  "pages": 26,
+  "preview": "ashik-jinn.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "ad5acccee4b9b06b37f7c00e2ff833013efe025e2816506da983e4d882122bd0",
+  "slug": "ashik-jinn"
+ },
+ "bind-jinn.pdf": {
+  "bytes": 1101232,
+  "pages": 3,
+  "preview": "bind-jinn.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "856f056f384b6290a9243aba2b9d139d864254cb4df9e797430dd9a079019594",
+  "slug": "bind-jinn"
+ },
+ "body-blood-magic.pdf": {
+  "bytes": 1528603,
+  "pages": 8,
+  "preview": "body-blood-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "22449ed507014766b1cd3a21a630fdec23f5bd577a42ca1444c5d2b20449f0a7",
+  "slug": "body-blood-magic"
+ },
+ "brain-knots.pdf": {
+  "bytes": 2202866,
+  "pages": 5,
+  "preview": "brain-knots.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "7ce91b999de62622c70f1214b1e35fa0e644d844797c374128da5fb30facf179",
+  "slug": "brain-knots"
+ },
+ "burning-punishment.pdf": {
+  "bytes": 2550560,
+  "pages": 17,
+  "preview": "burning-punishment.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "b9aa79d9601931f20b0c0ec82fd35fd05d3def6dbe6016abd8e0b6c74c3ac58f",
+  "slug": "burning-punishment"
+ },
+ "cancer-tumor.pdf": {
+  "bytes": 1801168,
+  "pages": 8,
+  "preview": "cancer-tumor.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "686f1f5d5f423a17b57fad80b96a720ad6bab82a9c69734b1a6b0ce6aba148ef",
+  "slug": "cancer-tumor"
+ },
+ "chest-breath.pdf": {
+  "bytes": 670288,
+  "pages": 3,
+  "preview": "chest-breath.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "de25420ef887fbc6f522ba7472c1925b32eb4cf275f9ccde0db542c533c9d785",
+  "slug": "chest-breath"
+ },
+ "chest-pain-ruqyah.pdf": {
+  "bytes": 305079,
+  "pages": 4,
+  "preview": "chest-pain-ruqyah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "8dabc3303c472aef7b2894a39307660b2ad261efc28796660f1d9f4e265c108e",
+  "slug": "chest-pain-ruqyah"
+ },
+ "child-home-protection.pdf": {
+  "bytes": 1807430,
+  "pages": 9,
+  "preview": "child-home-protection.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "b6574ecb64bede3b04f8cad4718b8a09fe174de077f9a0737d4bd77d898a27c1",
+  "slug": "child-home-protection"
+ },
+ "daily-azkar.pdf": {
+  "bytes": 2091983,
+  "pages": 16,
+  "preview": "daily-azkar.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "186acd47661e890e22db1f07e8936e4bbb1d5fb46f384869bfd6dab7eb746e0e",
+  "slug": "daily-azkar"
+ },
+ "dhul-hijjah-magic-renewal.pdf": {
+  "bytes": 675272,
+  "pages": 3,
+  "preview": "dhul-hijjah-magic-renewal.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "48058e9b1fc2da0e040015587c0def4183ed24f7e81bad57336f52a343f451cd",
+  "slug": "dhul-hijjah-magic-renewal"
+ },
+ "dream-magic-renewal-treatment.pdf": {
+  "bytes": 1054429,
+  "pages": 11,
+  "preview": "dream-magic-renewal-treatment.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "40c93ce454e7184deb326ab0abba844219f50a3b13d600e7168b8545a9aeba50",
+  "slug": "dream-magic-renewal-treatment"
+ },
+ "evil-eye-body-knots-ruqyah.pdf": {
+  "bytes": 291215,
+  "pages": 9,
+  "preview": "evil-eye-body-knots-ruqyah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "ce97f78ab6cb9de6bc8c08c30eef5372b00f05fa6348be7386b60c932337e8a7",
+  "slug": "evil-eye-body-knots-ruqyah"
+ },
+ "evil-eye-removal.pdf": {
+  "bytes": 755873,
+  "pages": 4,
+  "preview": "evil-eye-removal.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "c3e75744fbf7e396e0a6e35a326881dee2573ea2271f8adab99c441e28c17a7c",
+  "slug": "evil-eye-removal"
+ },
+ "evil-eye.pdf": {
+  "bytes": 426747,
+  "pages": 12,
+  "preview": "evil-eye.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "87a499baccd3ed31aa4b33b623b7d9a4fe7062779743b62eb221654eebc4f120",
+  "slug": "evil-eye"
+ },
+ "eyes-evil-eye.pdf": {
+  "bytes": 629745,
+  "pages": 6,
+  "preview": "eyes-evil-eye.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "5a2f89b9ccb423f425b26fee29ce95671eb0b9b48e04c525b483a0b686e39c2c",
+  "slug": "eyes-evil-eye"
+ },
+ "fakkut-tatil-rizq-blockage.pdf": {
+  "bytes": 646970,
+  "pages": 20,
+  "preview": "fakkut-tatil-rizq-blockage.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "92fbfa2c6b25b6432a3088873be6e802c302fd91a12acf3f01d3733ea146eb6a",
+  "slug": "fakkut-tatil-rizq-blockage"
+ },
+ "fortress-destruction.pdf": {
+  "bytes": 3748766,
+  "pages": 27,
+  "preview": "fortress-destruction.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "4959eabdc7484f2a16a0f5c1bb863b0cba5e1c93311882448b68de56dd6c47f2",
+  "slug": "fortress-destruction"
+ },
+ "general-magic.pdf": {
+  "bytes": 1118775,
+  "pages": 8,
+  "preview": "general-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "7ff642039c00e7954f3c33d979a92a9ca82999a037f18ca099727e674e469e34",
+  "slug": "general-magic"
+ },
+ "git-bondhon-dhongsho.pdf": {
+  "bytes": 1666322,
+  "pages": 15,
+  "preview": "git-bondhon-dhongsho.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "8ab1fb9d97e77cc7c5b21dc73f80f340799a7877a75e6d464376d6f54b508e7a",
+  "slug": "git-bondhon-dhongsho"
+ },
+ "git-bongshogoto.pdf": {
+  "bytes": 1872054,
+  "pages": 21,
+  "preview": "git-bongshogoto.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "5e0e82b6705ed41cefac61f88a809371113071a6660e56eaf8a3c634d0f86e79",
+  "slug": "git-bongshogoto"
+ },
+ "git-buk-jalapora.pdf": {
+  "bytes": 1772000,
+  "pages": 17,
+  "preview": "git-buk-jalapora.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "9ec3197070a38b92bd145c34260c36312bd1061f42e2c4c87a7ee1259166e199",
+  "slug": "git-buk-jalapora"
+ },
+ "git-durgo-nazar.pdf": {
+  "bytes": 1896183,
+  "pages": 27,
+  "preview": "git-durgo-nazar.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "844c76cf70c21a483c8f568ace217c23001ff072ff244b30b289c276b0dcc8e2",
+  "slug": "git-durgo-nazar"
+ },
+ "git-gopon-badha.pdf": {
+  "bytes": 1888457,
+  "pages": 24,
+  "preview": "git-gopon-badha.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "49e6eb70fe6eaa9dc91c08992c5be5feb7422d03f01bc29b1ba1d4486e12b558",
+  "slug": "git-gopon-badha"
+ },
+ "git-jinn-shikol.pdf": {
+  "bytes": 1717070,
+  "pages": 17,
+  "preview": "git-jinn-shikol.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "10e533704b065e7b8a9f80b8f6ed0b3d368d38180084c32ebdbb9be9d79ea2cd",
+  "slug": "git-jinn-shikol"
+ },
+ "git-kandh-ghar-bhari.pdf": {
+  "bytes": 1670862,
+  "pages": 15,
+  "preview": "git-kandh-ghar-bhari.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "b75030db9e2611f72ac3908214865eb67d2fe9d69aa6f70a6d072f116db0c07d",
+  "slug": "git-kandh-ghar-bhari"
+ },
+ "git-kandher-betha.pdf": {
+  "bytes": 1720074,
+  "pages": 18,
+  "preview": "git-kandher-betha.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "2189117ff0496b70db15325caa0fcdf97b987d19cd95b1e2628ecf7bc421b9dd",
+  "slug": "git-kandher-betha"
+ },
+ "git-kopat-tala.pdf": {
+  "bytes": 1794842,
+  "pages": 19,
+  "preview": "git-kopat-tala.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "03002c4b2579b95a0b0598d1621ada55b20cac15a7fcef8e0f717e7f0c05cb21",
+  "slug": "git-kopat-tala"
+ },
+ "git-lukano.pdf": {
+  "bytes": 1696479,
+  "pages": 16,
+  "preview": "git-lukano.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "c2c8603934af4f413d46a8e05aadb2081fff18eaf6e80de2a8af9337366ebb84",
+  "slug": "git-lukano"
+ },
+ "git-matha-ghar.pdf": {
+  "bytes": 1742818,
+  "pages": 17,
+  "preview": "git-matha-ghar.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "59d0a664670d6ffbd6245425759fac5ac719e6c0c13d93c4f97e3e938721d9ad",
+  "slug": "git-matha-ghar"
+ },
+ "git-matha-snayu.pdf": {
+  "bytes": 1733574,
+  "pages": 17,
+  "preview": "git-matha-snayu.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "89c39515b26ba9cc3559891b0de588fbbcece0a90fa464c22165216de38bb8f8",
+  "slug": "git-matha-snayu"
+ },
+ "git-matha-theke-pa.pdf": {
+  "bytes": 1675738,
+  "pages": 17,
+  "preview": "git-matha-theke-pa.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "ff99d80cd838b2c71ed4f500b61e3d17cef2305e78edba5da9df5fd7ef04c2a9",
+  "slug": "git-matha-theke-pa"
+ },
+ "git-mathay-shoytani-git.pdf": {
+  "bytes": 1661588,
+  "pages": 15,
+  "preview": "git-mathay-shoytani-git.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "8a578e49d8d1f4f079ba90ab5b608268fe0d348c548a0148886eb88ab8aa78db",
+  "slug": "git-mathay-shoytani-git"
+ },
+ "git-mostishko.pdf": {
+  "bytes": 1685287,
+  "pages": 15,
+  "preview": "git-mostishko.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "445f8508c7c4f133c86b84f2e7ef72c9d0aa81dd733a6e20e99adbb7644af17b",
+  "slug": "git-mostishko"
+ },
+ "git-mukh-buk-hat.pdf": {
+  "bytes": 1858324,
+  "pages": 23,
+  "preview": "git-mukh-buk-hat.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "418c98a5de5ea71111ec7b7e7c429d96985265d9cc48201be72b2d2169a91cfb",
+  "slug": "git-mukh-buk-hat"
+ },
+ "git-nazar-hasad.pdf": {
+  "bytes": 1684541,
+  "pages": 16,
+  "preview": "git-nazar-hasad.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "9ea7068561babcc4864850256cbb81c97d823ef6614a17a9206b6a5fe9d1f64e",
+  "slug": "git-nazar-hasad"
+ },
+ "git-pa-badha.pdf": {
+  "bytes": 1643637,
+  "pages": 14,
+  "preview": "git-pa-badha.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "d4c4cbdba9eb465ab0e47ee1db24abf088e99c8027d7807cbe50e0c364aa36e4",
+  "slug": "git-pa-badha"
+ },
+ "git-pa-hatu.pdf": {
+  "bytes": 1999535,
+  "pages": 27,
+  "preview": "git-pa-hatu.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "d90a2b8d1996f4d0ccb9d214a2471899eb8f7861bb4dc96a4d8b88ab300728d8",
+  "slug": "git-pa-hatu"
+ },
+ "git-payer-bhari.pdf": {
+  "bytes": 1688907,
+  "pages": 15,
+  "preview": "git-payer-bhari.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "162299b875508412cb7e98593ada5269f3b41cfbeb269e309aa8b788bfe02447",
+  "slug": "git-payer-bhari"
+ },
+ "git-purnango.pdf": {
+  "bytes": 1982531,
+  "pages": 27,
+  "preview": "git-purnango.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "8b7cd1ee9ec5792cc4d232400228185ee473fb7471c3dfcb627569c2472006a7",
+  "slug": "git-purnango"
+ },
+ "git-shonakto.pdf": {
+  "bytes": 1758816,
+  "pages": 17,
+  "preview": "git-shonakto.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "1635c34425f17d24246d7a5734d9aec2b4943d752cb365f789a1f01a1abbfaa4",
+  "slug": "git-shonakto"
+ },
+ "grave-magic.pdf": {
+  "bytes": 5910029,
+  "pages": 22,
+  "preview": "grave-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "8fd12369ee58038ff69339a5b83dcc81fd88156186ff2d9986837f26268e29ee",
+  "slug": "grave-magic"
+ },
+ "hasadul-qarin-magic-renewal.pdf": {
+  "bytes": 343554,
+  "pages": 8,
+  "preview": "hasadul-qarin-magic-renewal.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "2c8f29d24155135ed5233fdcecb74c654c9f8e4b9026855e39fb4cf3334aa023",
+  "slug": "hasadul-qarin-magic-renewal"
+ },
+ "hasbanah.pdf": {
+  "bytes": 1085555,
+  "pages": 4,
+  "preview": "hasbanah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "ab1dc415996a6f52942478312135d633467085dc49899fb68185fc1b66fbcb7d",
+  "slug": "hasbanah"
+ },
+ "hasbunallah.pdf": {
+  "bytes": 1376629,
+  "pages": 5,
+  "preview": "hasbunallah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "7bd1fc9d42afd59d45436100f0f9116f28715a2c8c995120bbb717b12a12518f",
+  "slug": "hasbunallah"
+ },
+ "head-face-shoulder-magic-knots.pdf": {
+  "bytes": 395259,
+  "pages": 7,
+  "preview": "head-face-shoulder-magic-knots.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "0acd9d84f06e5d1e1ba900045f7552b062b64b011ec8fe6ab14bbffe04b43f31",
+  "slug": "head-face-shoulder-magic-knots"
+ },
+ "head-face-shoulder.pdf": {
+  "bytes": 1275068,
+  "pages": 4,
+  "preview": "head-face-shoulder.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "1c2702f3f552ca5134775bd5092c0a9a8a4ed570de5d99380a33a30b4e2a367b",
+  "slug": "head-face-shoulder"
+ },
+ "head-knots.pdf": {
+  "bytes": 842468,
+  "pages": 6,
+  "preview": "head-knots.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "d31e477d53843b05ff3ac574a4063ad2dee834e94d2495b1948d7ebf68b84255",
+  "slug": "head-knots"
+ },
+ "head-waswasa-jinn.pdf": {
+  "bytes": 2024429,
+  "pages": 12,
+  "preview": "head-waswasa-jinn.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "00101a4234fdfe7380945280d85b4fef4b177b4fc3bce08de4aadb6d24779106",
+  "slug": "head-waswasa-jinn"
+ },
+ "hereditary-jinn.pdf": {
+  "bytes": 2097706,
+  "pages": 9,
+  "preview": "hereditary-jinn.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "53595e5d740c186392b3b08d0fe659386bd81c81705d70f92bb83663150b0941",
+  "slug": "hereditary-jinn"
+ },
+ "hizbus-saiful-qatit.pdf": {
+  "bytes": 419600,
+  "pages": 19,
+  "preview": "hizbus-saiful-qatit.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "76d96d16cea0c050a8f24efb30f36b4f8647ba73a510f1e516b6286b2901b0f6",
+  "slug": "hizbus-saiful-qatit"
+ },
+ "home-body-protection-tahreez.pdf": {
+  "bytes": 1086336,
+  "pages": 5,
+  "preview": "home-body-protection-tahreez.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "93945ad29203ee3dea04e47ceefc3e0329d091fe5069f4164021b852eb00c44c",
+  "slug": "home-body-protection-tahreez"
+ },
+ "home-body-tafreej-ruqyah.pdf": {
+  "bytes": 5907476,
+  "pages": 22,
+  "preview": "home-body-tafreej-ruqyah.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "da9cdac5f1a7a012d8df118d622f416aff9b041b6b80ed221d0cf4a33163ca50",
+  "slug": "home-body-tafreej-ruqyah"
+ },
+ "hsc-ssc-admission.pdf": {
+  "bytes": 2100520,
+  "pages": 10,
+  "preview": "hsc-ssc-admission.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "9e4c8017510f1cb92d943d6358c37a5491b3875112789b2731951348ac6d5989",
+  "slug": "hsc-ssc-admission"
+ },
+ "husband-rectification.pdf": {
+  "bytes": 329365,
+  "pages": 2,
+  "preview": "husband-rectification.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "f4f6155dbad6d1509e0ec6e07bc48a871462a0b11a628d22884b4a6036da7a25",
+  "slug": "husband-rectification"
+ },
+ "ilm-hikmah-verses.pdf": {
+  "bytes": 1816354,
+  "pages": 15,
+  "preview": "ilm-hikmah-verses.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "3d39bf8a872e71a5f6115ec7d53cf0cfc47757414653ab333cb6c4ceda341f34",
+  "slug": "ilm-hikmah-verses"
+ },
+ "jinn-body-life-secrets.pdf": {
+  "bytes": 845010,
+  "pages": 3,
+  "preview": "jinn-body-life-secrets.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "dc25453d751e8a8dd45b6f2d3eebfc26a7eee8626b4ffa21ae7ca8b2b2516800",
+  "slug": "jinn-body-life-secrets"
+ },
+ "jinn-evil-eye-shifa.pdf": {
+  "bytes": 1264428,
+  "pages": 5,
+  "preview": "jinn-evil-eye-shifa.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "82cc8a003199ae3662d89484ae7d855758bff109f2d173defb4f630fc67df3c7",
+  "slug": "jinn-evil-eye-shifa"
+ },
+ "jinn-money-theft.pdf": {
+  "bytes": 1118832,
+  "pages": 4,
+  "preview": "jinn-money-theft.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "33e8e42ea6fb13ca1be66ac0608acc8a6449430b028a375e1c785b08141a9f8e",
+  "slug": "jinn-money-theft"
+ },
+ "justice-rights.pdf": {
+  "bytes": 259064,
+  "pages": 2,
+  "preview": "justice-rights.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "89ceb7f3cc8bcce71e01e6cadfa9ef2e6e43e8617353eb75d01f02b78c5201f0",
+  "slug": "justice-rights"
+ },
+ "knots.pdf": {
+  "bytes": 1528603,
+  "pages": 8,
+  "preview": "knots.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "22449ed507014766b1cd3a21a630fdec23f5bd577a42ca1444c5d2b20449f0a7",
+  "slug": "knots"
+ },
+ "leg-magic-knots-ruqyah.pdf": {
+  "bytes": 382906,
+  "pages": 9,
+  "preview": "leg-magic-knots-ruqyah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "db84634dc9dce185acfbb81bb18bf891977a06d91a4969890df5ac892e12f8f7",
+  "slug": "leg-magic-knots-ruqyah"
+ },
+ "leg-walking-magic.pdf": {
+  "bytes": 246281,
+  "pages": 3,
+  "preview": "leg-walking-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "5a2bdede9830b4ed99bb53f0f8c00b45698f186db08b7d751f157e9a3fb23025",
+  "slug": "leg-walking-magic"
+ },
+ "magic-knots.pdf": {
+  "bytes": 2922279,
+  "pages": 19,
+  "preview": "magic-knots.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "4c168cc205bedf900f7873a581411bbe7ea17fed997726e6ecdeb252256a93c3",
+  "slug": "magic-knots"
+ },
+ "marriage-blockage.pdf": {
+  "bytes": 1603509,
+  "pages": 16,
+  "preview": "marriage-blockage.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "e283edf30f13ff97041fb70770ccdce736e77cb5d894dec3ab758ac90501cca5",
+  "slug": "marriage-blockage"
+ },
+ "marriage-sihr-sufli-private-parts-ashik-jinn.pdf": {
+  "bytes": 352553,
+  "pages": 8,
+  "preview": "marriage-sihr-sufli-private-parts-ashik-jinn.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "a5747e9860cdc838884ba6fa034181c2b1f78b7354a5f19787b6f90846cb3ee3",
+  "slug": "marriage-sihr-sufli-private-parts-ashik-jinn"
+ },
+ "missing-person.pdf": {
+  "bytes": 603433,
+  "pages": 2,
+  "preview": "missing-person.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "823a15037b45c823024208fb26072928a44df45f22163fdc9bac66bee6997e70",
+  "slug": "missing-person"
+ },
+ "nausea-gastric.pdf": {
+  "bytes": 914238,
+  "pages": 3,
+  "preview": "nausea-gastric.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "ff64876a76d84e01b49705d4eeb2f04b8628a11153a0b3bdcdf42011d089f7e2",
+  "slug": "nausea-gastric"
+ },
+ "new-vs-old-magic.pdf": {
+  "bytes": 305101,
+  "pages": 6,
+  "preview": "new-vs-old-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "cd403834a632513f86e0b73a6f13cb31db5954361aa8c669109f5b64a686b8c7",
+  "slug": "new-vs-old-magic"
+ },
+ "offensive-ruqyah.pdf": {
+  "bytes": 848818,
+  "pages": 4,
+  "preview": "offensive-ruqyah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "33d90bfd4c1c30d552fbf1c99937557d3f46a50a073551303b3de6bebc36daa7",
+  "slug": "offensive-ruqyah"
+ },
+ "physical-spiritual-ruqyah-guideline.pdf": {
+  "bytes": 1454408,
+  "pages": 7,
+  "preview": "physical-spiritual-ruqyah-guideline.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "b6298ddeaf20849ee97675760f84ce81621768153468ef682673b06ec2fb2a27",
+  "slug": "physical-spiritual-ruqyah-guideline"
+ },
+ "piles-shifa-dua.pdf": {
+  "bytes": 1639951,
+  "pages": 8,
+  "preview": "piles-shifa-dua.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "1450fc1bd6eb8402dae623189e5773c6f99646b5ca5c6a1a42c0d33c75cfe1b6",
+  "slug": "piles-shifa-dua"
+ },
+ "problem-source.pdf": {
+  "bytes": 284416,
+  "pages": 3,
+  "preview": "problem-source.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "df6272a48032efef5a656aedacaf124308108baa045b8ec9746d665acf468d4c",
+  "slug": "problem-source"
+ },
+ "ramadan-ruhani.pdf": {
+  "bytes": 6255364,
+  "pages": 18,
+  "preview": "ramadan-ruhani.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "2ef836b5339f2ba80dba28760799766f8c4eae2d9fd55c2af5c12165c5bc6285",
+  "slug": "ramadan-ruhani"
+ },
+ "rizq-blessings.pdf": {
+  "bytes": 1058863,
+  "pages": 5,
+  "preview": "rizq-blessings.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "3a895147212622425deae96344d7bf90314ae57292d2db140293296e640ea3db",
+  "slug": "rizq-blessings"
+ },
+ "ruqyah-dua-sabit.pdf": {
+  "bytes": 671670,
+  "pages": 49,
+  "preview": "ruqyah-dua-sabit.jpg",
+  "previewHeight": 1018,
+  "previewWidth": 720,
+  "sha256": "ab148e073238ce5a6f69cdd731c3a6470ff51a707d3acc2558a5bd8a31021e67",
+  "slug": "ruqyah-dua-sabit"
+ },
+ "ruqyah-for-eyes-sight-evileye.pdf": {
+  "bytes": 629745,
+  "pages": 6,
+  "preview": "ruqyah-for-eyes-sight-evileye.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "5a2f89b9ccb423f425b26fee29ce95671eb0b9b48e04c525b483a0b686e39c2c",
+  "slug": "ruqyah-for-eyes-sight-evileye"
+ },
+ "ruqyah-guideline-aruchi-pet.pdf": {
+  "bytes": 2875935,
+  "pages": 17,
+  "preview": "ruqyah-guideline-aruchi-pet.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "5a1ed677e11d6e003147edd511b44656cb76d154100a9265d98ba5022441f40a",
+  "slug": "ruqyah-guideline-aruchi-pet"
+ },
+ "ruqyah-result-obstruction-reasons.pdf": {
+  "bytes": 1287743,
+  "pages": 4,
+  "preview": "ruqyah-result-obstruction-reasons.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "52a0b91dbd8716dba5da6c88fa1c536ccdf452881ea9555f5b26639f71f8f99c",
+  "slug": "ruqyah-result-obstruction-reasons"
+ },
+ "sadr-chest-verses.pdf": {
+  "bytes": 102667,
+  "pages": 4,
+  "preview": "sadr-chest-verses.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "cdfb843b734ff5b7b11035f702946db6078ed2cfce992d642348c26438785e9c",
+  "slug": "sadr-chest-verses"
+ },
+ "salatul-fatih.pdf": {
+  "bytes": 610947,
+  "pages": 3,
+  "preview": "salatul-fatih.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "683f786a6475cdfff6e5ceb6b7ffdf72a6356fdf7dc74e41f91e5cb0358ec62e",
+  "slug": "salatul-fatih"
+ },
+ "self-ruqyah-guide.pdf": {
+  "bytes": 6773532,
+  "pages": 25,
+  "preview": "self-ruqyah-guide.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "d1b44a161f3ae5a3a391a3fa837d756676271575ea57ddd9626a8517f79d2bc6",
+  "slug": "self-ruqyah-guide"
+ },
+ "self-ruqyah.pdf": {
+  "bytes": 2024429,
+  "pages": 12,
+  "preview": "self-ruqyah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "00101a4234fdfe7380945280d85b4fef4b177b4fc3bce08de4aadb6d24779106",
+  "slug": "self-ruqyah"
+ },
+ "sihr-marshush-strong.pdf": {
+  "bytes": 2097522,
+  "pages": 9,
+  "preview": "sihr-marshush-strong.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "c01d43fc09d0a7dbe61d037c1932fccec2a4e89c5964abd564ffe39944ad6d38",
+  "slug": "sihr-marshush-strong"
+ },
+ "sihr-marshush.pdf": {
+  "bytes": 756015,
+  "pages": 5,
+  "preview": "sihr-marshush.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "28384c319cb9562b9ab65cd49733861f64cd42f938544a384bb0b1510f5c54f4",
+  "slug": "sihr-marshush"
+ },
+ "sihr-mashmum-smell-magic.pdf": {
+  "bytes": 2574644,
+  "pages": 15,
+  "preview": "sihr-mashmum-smell-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "a5c459c2ebba7889737a692a3bab7fafa50d60d390ba488b8cc9f1910a6a557e",
+  "slug": "sihr-mashmum-smell-magic"
+ },
+ "sleeping-dua.pdf": {
+  "bytes": 889797,
+  "pages": 5,
+  "preview": "sleeping-dua.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "a85fc109f0d5be7b14d21635770a00801ffc2a1a8b6fdf0029f0fe40ea4da5a1",
+  "slug": "sleeping-dua"
+ },
+ "snake-jinn.pdf": {
+  "bytes": 527566,
+  "pages": 3,
+  "preview": "snake-jinn.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "f8f8735a305098372447a7f9b60eba4c933647e9ea9d1cd36f8bdebe11d551f8",
+  "slug": "snake-jinn"
+ },
+ "spouse-return.pdf": {
+  "bytes": 184429,
+  "pages": 2,
+  "preview": "spouse-return.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "5e7832981311d21acf41f7fd3f2c834fb0bd1e1a60f3eccf9f4d7c2327b10c89",
+  "slug": "spouse-return"
+ },
+ "spouse-separation-magic-destruction.pdf": {
+  "bytes": 756410,
+  "pages": 19,
+  "preview": "spouse-separation-magic-destruction.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "cd848ff069fcbcb49f4194c4104d1ba92840b15fbf55c1e046f277ec3e2ce9bb",
+  "slug": "spouse-separation-magic-destruction"
+ },
+ "step-1-41days.pdf": {
+  "bytes": 2150203,
+  "pages": 12,
+  "preview": "step-1-41days.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "622a53cd0e477f82eb615c48b5babec7eadf5a398c23c1d53f9c82fa9b62b5bf",
+  "slug": "step-1-41days"
+ },
+ "stomach-evil-eye.pdf": {
+  "bytes": 1388497,
+  "pages": 6,
+  "preview": "stomach-evil-eye.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "d7cc134c17507388127e708b20e56725c325407391d7c62c3935d68faaed5b3b",
+  "slug": "stomach-evil-eye"
+ },
+ "stomach-magic.pdf": {
+  "bytes": 2747327,
+  "pages": 17,
+  "preview": "stomach-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "ecf15bb8e0899ea2f3428de440cd8bd04a81ad99024c134aa57e4ac0fa1e5534",
+  "slug": "stomach-magic"
+ },
+ "stubborn-jinn.pdf": {
+  "bytes": 411047,
+  "pages": 2,
+  "preview": "stubborn-jinn.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "b94548a4f551587279c577868736a884588a55eb54a977033555f3812ffb5cea",
+  "slug": "stubborn-jinn"
+ },
+ "student-evil-eye.pdf": {
+  "bytes": 973034,
+  "pages": 4,
+  "preview": "student-evil-eye.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "9c9b5ec5f46d626662ae2340a8903660215899fe41b5bbd1b7d64e39226edcee",
+  "slug": "student-evil-eye"
+ },
+ "study-obstruction-magic-ruqyah.pdf": {
+  "bytes": 4080879,
+  "pages": 15,
+  "preview": "study-obstruction-magic-ruqyah.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "26377f1d6489fc6fb591071d7b8c6cdae8c26d352f901f501db00d5092fb1fbe",
+  "slug": "study-obstruction-magic-ruqyah"
+ },
+ "surah-yasin-amal.pdf": {
+  "bytes": 2681089,
+  "pages": 8,
+  "preview": "surah-yasin-amal.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "d6d48f9e6c8a37a1e8e01f3013ab082d0b09799bf034a2b6a28364e0f80a1c28",
+  "slug": "surah-yasin-amal"
+ },
+ "terminal-illness.pdf": {
+  "bytes": 3974015,
+  "pages": 17,
+  "preview": "terminal-illness.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "574e37b5fc888fbd85efd418e05dd8c32a7a59c28971ca65f7d6ce4bd22197a4",
+  "slug": "terminal-illness"
+ },
+ "uterus-magic.pdf": {
+  "bytes": 6495639,
+  "pages": 31,
+  "preview": "uterus-magic.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "e75fbc67df28d9557bd8b3e54dea46985e203256e3fc4d3fe94d3bb39358cf6b",
+  "slug": "uterus-magic"
+ },
+ "veins-blood-magic-guideline.pdf": {
+  "bytes": 581541,
+  "pages": 21,
+  "preview": "veins-blood-magic-guideline.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "d0b8b60a4d34f01face1052d9d7dee8bef3c343aed7abb967cade7a30ebebecc",
+  "slug": "veins-blood-magic-guideline"
+ },
+ "voodoo-doll.pdf": {
+  "bytes": 439576,
+  "pages": 10,
+  "preview": "voodoo-doll.jpg",
+  "previewHeight": 932,
+  "previewWidth": 720,
+  "sha256": "d673047caca31cccaae60e2c32ec1013f46e829bdf36c769e27052ac985f5b3d",
+  "slug": "voodoo-doll"
+ },
+ "written-sihr-amulet-destruction.pdf": {
+  "bytes": 3350695,
+  "pages": 11,
+  "preview": "written-sihr-amulet-destruction.jpg",
+  "previewHeight": 1019,
+  "previewWidth": 720,
+  "sha256": "ddb65d231c38c423777ba5c9fb652cd533b67c111d75450f023239c469c86723",
+  "slug": "written-sihr-amulet-destruction"
+ }
+}

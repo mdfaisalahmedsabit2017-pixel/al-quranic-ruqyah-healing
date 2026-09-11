@@ -1,0 +1,104 @@
+/* #web-only — the premium course area. The APK sells nothing and ships no
+   course markup, so none of these rules would have anything to style there.
+   build.js strips this region out of the native stylesheet the same way it
+   strips the markup out of index.html; keeping them in step is the reason the
+   markers exist. See the note above inlineStyles() in build.js. */
+
+/* ── The member's shelf on the home screen ── */
+.my-courses-section { margin-bottom: 26px; }
+.my-courses-section.hidden { display: none; }
+
+.mycourse-card { background: var(--surface); border: 1px solid var(--border-md);
+                 border-radius: var(--r-lg); padding: 15px 16px; cursor: pointer;
+                 transition: border-color 0.15s, transform 0.15s; }
+.mycourse-card + .mycourse-card { margin-top: 10px; }
+.mycourse-card:hover { border-color: rgba(0,229,153,0.35); transform: translateY(-1px); }
+.mycourse-title { font-size: 0.95rem; font-weight: 800; margin-bottom: 3px; }
+.mycourse-sub { font-size: 0.76rem; color: var(--text-sub); margin-bottom: 11px; }
+.mycourse-next { font-size: 0.76rem; color: var(--text-sub); margin-top: 9px;
+                 display: flex; align-items: center; gap: 6px; }
+.mycourse-next b { color: var(--text); font-weight: 700; }
+
+/* One bar, used on the shelf card and in the course header alike. */
+.cv-bar { height: 6px; border-radius: 999px; background: var(--raised); overflow: hidden; }
+.cv-bar > i { display: block; height: 100%; border-radius: 999px;
+              background: var(--green); transition: width 0.3s; }
+.cv-bar-row { display: flex; align-items: center; justify-content: space-between;
+              font-size: 0.72rem; color: var(--text-sub); margin-bottom: 6px; }
+.cv-bar-row b { color: var(--green); font-weight: 800; }
+
+.cv-chip { flex-shrink: 0; font-size: 0.7rem; font-weight: 700; padding: 3px 9px;
+           border-radius: 999px; background: var(--green-dim); color: var(--green); }
+.cv-chip.hidden { display: none; }
+
+/* ── Inside the overlay ──
+   #course-view reuses .reader for the shell (fixed, full screen, bar + stage),
+   so only what is specific to a course lives here. .reader-stage centres its
+   child, which is right for a book page and wrong for a list, hence the width. */
+.cv-wrap { width: 100%; max-width: 720px; align-self: flex-start; }
+
+.cv-head { margin-bottom: 16px; }
+.cv-head h3 { font-size: 1.02rem; font-weight: 800; margin-bottom: 4px; }
+.cv-head p { font-size: 0.78rem; color: var(--text-sub); line-height: 1.6; }
+
+.cv-module { font-size: 0.71rem; font-weight: 800; text-transform: uppercase;
+             letter-spacing: 0.08em; color: var(--text-dim); margin: 18px 0 8px; }
+
+.cv-row { display: flex; align-items: center; gap: 11px; width: 100%;
+          text-align: right; background: var(--surface); border: 1px solid var(--border);
+          border-radius: var(--r-md); padding: 11px 13px; cursor: pointer;
+          font-family: inherit; color: var(--text); transition: border-color 0.15s; }
+.cv-row + .cv-row { margin-top: 7px; }
+.cv-row:hover { border-color: var(--border-hi); }
+.cv-row[disabled] { cursor: default; opacity: 0.55; }
+.cv-row-n { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+            background: var(--raised); color: var(--text-sub);
+            font-size: 0.72rem; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; }
+.cv-row.done .cv-row-n { background: var(--green-dim); color: var(--green); }
+.cv-row-mid { flex: 1; min-width: 0; }
+.cv-row-title { font-size: 0.84rem; font-weight: 700; }
+.cv-row-meta { font-size: 0.71rem; color: var(--text-sub); margin-top: 2px;
+               display: flex; gap: 8px; flex-wrap: wrap; }
+.cv-row-state { flex-shrink: 0; font-size: 0.72rem; color: var(--text-dim); }
+.cv-row.done .cv-row-state { color: var(--green); }
+
+/* ── A lesson ── */
+.cv-player { position: relative; width: 100%; aspect-ratio: 16 / 9;
+             background: #000; border-radius: var(--r-md); overflow: hidden;
+             margin-bottom: 14px; }
+.cv-player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* The watermark is a deterrent, not a lock: it makes a screen recording carry
+   the account it came from. Pointer-events off so it never eats a play tap, and
+   it sits under the YouTube controls rather than over them. */
+.cv-mark { position: absolute; right: 10px; bottom: 44px; z-index: 2;
+           pointer-events: none; font-size: 0.68rem; letter-spacing: 0.02em;
+           color: rgba(255,255,255,0.34); text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+
+.cv-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.cv-tab { flex: 1; background: var(--surface); border: 1px solid var(--border);
+          color: var(--text-sub); border-radius: var(--r-sm); padding: 8px 6px;
+          font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.cv-tab.on { background: var(--green-dim); border-color: rgba(0,229,153,0.3); color: var(--green); }
+
+.cv-note-frame { width: 100%; min-height: 68vh; border: 0; display: block;
+                 border-radius: var(--r-md); background: #faf7ef; }
+
+.cv-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.cv-btn { background: var(--raised); border: 1px solid var(--border-md); color: var(--text);
+          border-radius: var(--r-sm); padding: 9px 14px; font-family: inherit;
+          font-size: 0.79rem; font-weight: 700; cursor: pointer; }
+.cv-btn:hover { border-color: var(--border-hi); }
+.cv-btn.primary { background: var(--green-dim); border-color: rgba(0,229,153,0.3); color: var(--green); }
+.cv-btn[disabled] { opacity: 0.5; cursor: default; }
+
+.cv-msg { text-align: center; padding: 40px 24px; color: var(--text-sub);
+          max-width: 380px; margin: auto; }
+.cv-msg h3 { font-size: 1rem; color: var(--text); margin-bottom: 8px; font-weight: 800; }
+.cv-msg p { font-size: 0.82rem; line-height: 1.6; margin-bottom: 16px; }
+
+@media (min-width: 640px) {
+    .cv-note-frame { min-height: 76vh; }
+}
+/* /#web-only */
