@@ -1838,7 +1838,7 @@ const COURSES = [
         externalUrl: 'https://forms.gle/9N22oADc1aukg4NU8',
         features: [
             '২ মাসে ২৪টি Live Group Session (১২+১২)',
-            'শুক্র, শনি ও রবিবার রাত ৯টা',
+            'শুক্র, শনি ও সোমবার রাত ৯টা',
             'প্রতিটি সেশনের নোট PDF',
             '৫০+ PDF লাইব্রেরি অ্যাক্সেস',
             'Audio+PDF App, Course Recording App, Fajr Alarm App',
@@ -7157,8 +7157,20 @@ window.sendChatMessage = async function() {
     if (!input) return;
     const text = input.value.trim();
     if (!text) return;
-    haptic(10);
 
+    // The server proxy (api/chat.js) now requires a signed-in caller, so it
+    // can rate-limit per user instead of being an open tap on GEMINI_API_KEY.
+    // A visitor with their own key in chat settings skips the proxy entirely
+    // and never needs to sign in.
+    const usingCustomKey = !!localStorage.getItem('gemini_api_key');
+    if (!usingCustomKey && !currentUser) {
+        haptic(10);
+        showToast('⚠️ চ্যাট ব্যবহার করতে লগইন করুন, অথবা সেটিংসে নিজের Gemini API Key দিন');
+        openLoginModal();
+        return;
+    }
+
+    haptic(10);
     input.value = '';
     
     // Add User Message to local state and UI
@@ -7252,12 +7264,31 @@ Guidelines:
         if (!reply) throw new Error('Invalid response structure from Gemini API');
         return reply;
     } else {
-        // Proxy call to Vercel serverless function
+        // Proxy call to Vercel serverless function — requires a signed-in
+        // caller so the server can rate-limit per user (see api/chat.js).
+        const idToken = currentUser ? await currentUser.getIdToken().catch(() => null) : null;
+        if (!idToken) {
+            openLoginModal();
+            throw new Error('চ্যাট ব্যবহার করতে লগইন করুন।');
+        }
+
         const res = await fetch('/api/chat', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
             body: JSON.stringify({ contents })
         });
+
+        if (res.status === 401) {
+            openLoginModal();
+            throw new Error('লগইন সেশনের মেয়াদ শেষ হয়ে গেছে, আবার লগইন করুন।');
+        }
+        if (res.status === 429) {
+            const data = await res.json().catch(() => ({}));
+            const secs = data.retryAfterMs ? Math.ceil(data.retryAfterMs / 1000) : null;
+            throw new Error(secs
+                ? `অনেক বেশি প্রশ্ন করা হয়েছে। ${secs} সেকেন্ড পর আবার চেষ্টা করুন।`
+                : 'অনেক বেশি প্রশ্ন করা হয়েছে, কিছুক্ষণ পর আবার চেষ্টা করুন।');
+        }
 
         if (!res.ok) {
             const data = await res.json().catch(() => ({}));
