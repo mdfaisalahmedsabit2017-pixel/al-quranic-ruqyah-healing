@@ -147,8 +147,26 @@ function plannedCardsHtml() {
       </div>`).join('');
 }
 
+// Single source of truth for each page's title/description — used both for
+// this page's own <head> and by tools/content.js's ContentItem normalizer,
+// so the two can never drift apart the way hand-duplicated copy would.
+function pageMeta(catalog) {
+    const facts = libraryFacts(catalog);
+    return {
+        home: {
+            title: `${SITE_NAME_EN} — Qur'an & Sunnah-Based Ruqyah Education (English)`,
+            desc: `An Islamic Ruqyah education and resource platform by ${AUTHOR_EN}. The full library — ${facts.audio}+ Ruqyah audio recitations and ${facts.docs}+ guides — is live today in Bengali, with an English edition being built module by module.`,
+        },
+        startHere: {
+            title: `Start Here — ${SITE_NAME_EN}`,
+            desc: "What Ruqyah is, how this platform is organised, and the safety boundaries it holds to — read this before anything else.",
+        },
+    };
+}
+
 function homePage(catalog) {
     const facts = libraryFacts(catalog);
+    const meta = pageMeta(catalog).home;
     const ld = [{
         '@type': 'CollectionPage', '@id': `${SITE}/en/#page`, url: `${SITE}/en/`,
         name: `${SITE_NAME_EN} — English`, inLanguage: 'en', isPartOf: { '@id': EN_SITE_ID },
@@ -156,11 +174,7 @@ function homePage(catalog) {
     return `<!DOCTYPE html>
 <html lang="en" class="en">
 <head>
-${head({
-    title: `${SITE_NAME_EN} — Qur'an & Sunnah-Based Ruqyah Education (English)`,
-    desc: `An Islamic Ruqyah education and resource platform by ${AUTHOR_EN}. The full library — ${facts.audio}+ Ruqyah audio recitations and ${facts.docs}+ guides — is live today in Bengali, with an English edition being built module by module.`,
-    path: '/en/', ld,
-})}
+${head({ title: meta.title, desc: meta.desc, path: '/en/', ld })}
 </head>
 <body>
 ${NAV}
@@ -211,7 +225,8 @@ ${FOOT}
 </html>`;
 }
 
-function startHerePage() {
+function startHerePage(catalog) {
+    const meta = pageMeta(catalog).startHere;
     const trail = seo.crumbs([{ name: 'Home', url: '/en/' }, { name: 'Start Here', url: '/en/start-here/' }]);
     const ld = [{
         '@type': 'WebPage', '@id': `${SITE}/en/start-here/#page`, url: `${SITE}/en/start-here/`,
@@ -220,11 +235,7 @@ function startHerePage() {
     return `<!DOCTYPE html>
 <html lang="en" class="en">
 <head>
-${head({
-    title: `Start Here — ${SITE_NAME_EN}`,
-    desc: "What Ruqyah is, how this platform is organised, and the safety boundaries it holds to — read this before anything else.",
-    path: '/en/start-here/', ld,
-})}
+${head({ title: meta.title, desc: meta.desc, path: '/en/start-here/', ld })}
 </head>
 <body>
 ${NAV}
@@ -318,7 +329,7 @@ function buildEn(distDir, catalog) {
 
     const startHereDir = path.join(enDir, 'start-here');
     fs.mkdirSync(startHereDir, { recursive: true });
-    const startHereHtml = startHerePage();
+    const startHereHtml = startHerePage(catalog);
     fs.writeFileSync(path.join(startHereDir, 'index.html'), startHereHtml);
     const startHereDates = contentDates('/en/start-here/', startHereHtml);
     sitemapAdd('en', `${SITE}/en/start-here/`, { lastmod: startHereDates.modified, changefreq: 'monthly', priority: '0.6' });
@@ -329,4 +340,4 @@ function buildEn(distDir, catalog) {
     console.log(`English foundation: 2 pages -> public/en/ (library facts: ${libraryFacts(catalog).audio} audio, ${libraryFacts(catalog).docs} docs)`);
 }
 
-module.exports = { buildEn, PLANNED_MODULES };
+module.exports = { buildEn, PLANNED_MODULES, pageMeta };

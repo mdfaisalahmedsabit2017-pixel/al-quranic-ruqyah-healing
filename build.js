@@ -390,6 +390,12 @@ if (isNative) {
     seo.writeSitemaps(distDir);
     seo.saveDates();
 
+    // One normalized ContentItem[] over every source above — the keystone for
+    // search, RAG and i18n (ARCHITECTURE.md §4.3). Read-only; nothing above is
+    // migrated or changed by this running.
+    const content = require('./tools/content');
+    content.writeContentIndex(distDir, content.buildContentItems(catalog));
+
     const pdfSrc = path.join(__dirname, 'pdf');
     if (fs.existsSync(pdfSrc)) {
         console.log('Copying pdf directory recursively to public/pdf...');

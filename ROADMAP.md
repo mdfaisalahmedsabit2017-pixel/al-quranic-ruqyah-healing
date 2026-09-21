@@ -37,8 +37,8 @@ Not in the owner's original phase list, but everything after it is riskier witho
 | 1.3 | Brand assets, icons, splash, self-hosted fonts | **DONE** | `tools/make_brand_assets.js`, `icons/`, `fonts/`, `npm run brand` |
 | 1.4 | PWA shell + service worker with a network-first strategy for changing pages | **DONE** | `service-worker.js` v17 |
 | 1.5 | Test/verify harness | **DONE** | `npm run check` = build ×2 + `audit-native` + `check-android` + `smoke` ×3 |
-| 1.6 | **`tools/content.js`** — normalize all five content sources into one `ContentItem[]` | **NEW** | The keystone for Phases 3, 9, 11. See `ARCHITECTURE.md` §4.3 |
-| 1.7 | **`content_overrides.json`** — overlay for `lang`, `status`, `visibility`, order, `translationOf` | **NEW** | Lets the owner unpublish/reorder/retag without editing HTML |
+| 1.6 | **`tools/content.js`** — normalize all content sources into one `ContentItem[]` | **DONE (2026-09-21)** | The keystone for Phases 3, 9, 11. See `ARCHITECTURE.md` §4.3 and `DECISIONS.md` ADR-017. 979 items (389 audio + 169 guide + 104 pdf + 315 post + 2 `/en/` page), zero migration of the 5 source files. **Not yet covered:** `COURSES`/`BOOKS` (still hardcoded in `app.js` — see 3.7-style note) |
+| 1.7 | **`content_overrides.json`** — overlay for `lang`, `status`, `visibility`, order, `translationOf` | **DONE (2026-09-21)** | Lets the owner unpublish/reorder/retag without editing HTML. Currently `{}` — no overrides in use yet |
 | 1.8 | **Design tokens audited for RTL and for a second locale** (logical properties where cheap) | **NEW** | Bounded because `01-base.css` is the only place properties are defined |
 
 **Ends in:** identical output, plus a normalized content view every later phase consumes.
@@ -259,5 +259,6 @@ Why this one, ahead of everything the owner is more excited about:
   no URL, no data model and no user-visible behaviour, and they make every later phase safer to ship.
 - **Neither requires an owner decision.** Q1–Q5 in `PROJECT_MASTER_SPEC.md` §8 can stay open.
 
-Immediately after: **Phase 1.6 (`tools/content.js`)**, because search, RAG, the admin overlay and i18n all
-consume it, and building it three times is the most expensive mistake available here.
+Immediately after: **Phase 1.6 (`tools/content.js`)** — **done, 2026-09-21** — because search, RAG, the admin
+overlay and i18n all consume it, and building it three times would have been the most expensive mistake
+available here. Next up per this same logic: **7.x (search)**, the first real consumer of `ContentItem[]`.

@@ -433,3 +433,63 @@ is not yet reciprocated, because both live in `landing.html`, which had an unrel
 deploy time. Add both once that edit lands — tracked in `ROADMAP.md` 11.3.
 
 **Date.** 2026-09-21.
+
+---
+
+## ADR-017 — `tools/content.js`: a normalizer, not a migration, and what it deliberately leaves out
+
+**Context.** `ARCHITECTURE.md` §4.3 specified a `ContentItem[]` normalizer over the five content sources as the
+keystone for search, RAG, i18n and the admin panel — built once rather than three times. Three implementation
+questions weren't settled by that spec and needed a call: what happens to dates, what happens to the `/en/`
+pages, and what happens to `COURSES`/`BOOKS`.
+
+**Choice 1 — dates are independent, not borrowed from the page builders.** `tools/seo.js`'s `contentDates()` /
+`datesOf()` pair is keyed per URL and populated by whichever builder writes that page — `tools/library.js`,
+`tools/blog.js`, etc. Those builders run *before* `tools/content.js` in `build.js`'s sequence today, but nothing
+enforces that ordering, and coupling the normalizer to it would make `tools/content.js` silently wrong if the
+sequence ever changed. Audio/guide/pdf items carry no `publishedAt`/`updatedAt` for now (left `null`) rather than
+risk a stale or absent read; blog posts use their own frontmatter `date` directly, which is a real authored fact
+independent of build ordering.
+
+**Choice 2 — the two `/en/` pages are ContentItems too, sourced from `tools/en.js`'s `pageMeta(catalog)`, not a
+second copy of their title/description.** The first version of this file hardcoded its own title/desc strings for
+the 2 pages, on the theory that the dependency should run one way (`content.js` knows about `en.js`, not the
+reverse). An independent review caught that the hand-typed copies had already drifted from the real pages — the
+home page's real description is dynamic (built from live catalogue counts, `libraryFacts()`), so a static
+hardcoded string could never match it. Fixed by having `tools/en.js` export `pageMeta(catalog)` — the same
+function it uses to build each page's own `<head>` — and having `content.js` call it too. The dependency still
+runs one way (`content.js` requires `en.js`, never the reverse); what changed is that the *copy* now has exactly
+one source instead of two.
+
+**Choice 2b (found in the same review) — a post's `canonical` frontmatter can be a path or a full URL; the
+normalizer initially only handled the full-URL case.** `tools/blog.js`'s own canonical logic accepts either
+and prepends `SITE` for a bare path; `content.js` originally didn't, so the one real post that sets a relative
+`canonical` (`posts/boi-promo-post-3.md`) produced a non-absolute `seo.canonical` — the only one of 979 items
+that would have been. Fixed to mirror `blog.js` exactly. Same review also caught that guide items were using the
+long, SEO-suffixed `<title>` text as their display `title` (every other type uses the clean short name there) and
+that `author` was unset for guides despite the suffix naming one — both fixed.
+
+**Choice 3 — `COURSES`/`BOOKS` (hardcoded in `app.js`) are explicitly NOT normalized here.** They're already a
+named violation of "no content hardcoded into a component" (`PROJECT_MASTER_SPEC.md` §4.1, `ROADMAP.md` 3.7-style
+notes). Extracting them requires either parsing `app.js`'s JS source or moving the data to a JSON file first —
+both are real work belonging to a dedicated migration, not a side effect of building the normalizer. `ROADMAP.md`
+1.6 records this as a known gap rather than silently pretending the content layer is complete.
+
+**Choice 4 — `content_overrides.json` starts empty (`{}`) and stays empty until something needs it.** No admin UI
+writes to it yet; it exists so the shape is real and testable (`tools/content.js`'s `applyOverride()` merges by
+`type:slug`, and the id-uniqueness/title/canonical validation in `buildContentItems()` runs *after* overrides are
+applied, so a bad override can't silently produce a broken item — the build fails loudly instead).
+
+The same review found two gaps in `applyOverride()` itself, dormant today because the file is `{}` but real once
+it isn't: an override could set `id`/`type`/`slug`, letting two different overrides rename their items to the
+same effective identity without the duplicate check ever seeing it (each keeps its own original `id`); and an
+override setting `seo` to a non-object (a plausible hand-editing mistake) would spread garbage keys into the
+item's `seo` object without the canonical-truthiness check catching it. Fixed: `applyOverride()` now drops
+`id`/`type`/`slug` from an override before merging, and only merges `seo` when it is actually a plain object.
+
+**Output.** `public/content-index.json` — a slim, real, inspectable artifact (979 items at write time: 389 audio
++ 169 guide + 104 pdf + 315 post + 2 page), not just a build-time intermediate nobody can see. `tools/smoke.js`
+asserts its counts match the other builders' own output, so the normalizer cannot silently drift out of sync
+with the site it's describing.
+
+**Date.** 2026-09-21.

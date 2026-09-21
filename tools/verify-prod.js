@@ -60,6 +60,17 @@ async function run() {
     // in the repo root is a local export/seed (tools/export_reviews.js), never
     // copied into public/. Nothing to check here.
 
+    // tools/content.js's normalized view — same "not zero" concern as the
+    // catalogs above, plus every content-type kind should be represented.
+    {
+        const { status, json } = await getJSON('/content-index.json');
+        check('content-index.json is reachable', status === 200, `status ${status}`);
+        const types = Array.isArray(json) ? new Set(json.map((i) => i.type)) : new Set();
+        check('content-index.json covers every content type', Array.isArray(json) && json.length > 900
+            && ['audio', 'guide', 'pdf', 'post', 'page'].every((t) => types.has(t)),
+            Array.isArray(json) ? `${json.length} items, types: ${[...types].join(',')}` : typeof json);
+    }
+
     // ── SEO surface (tools/seo.js output) actually deployed ─────────────────
     {
         const { status, text } = await getText('/sitemap.xml');

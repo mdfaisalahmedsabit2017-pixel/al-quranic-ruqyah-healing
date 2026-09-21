@@ -514,6 +514,36 @@ setTimeout(async () => {
             check('sitemap includes the /en/ pages', read(path.join(dir, 'sitemap-en.xml')).includes('/en/start-here/</loc>'));
         }
 
+        // ContentItem[] index (tools/content.js): a read-only view over every
+        // source, not a new source of truth — so this checks it stays in sync
+        // with what the other builders actually produced, not just that the
+        // file exists.
+        {
+            const items = JSON.parse(read(path.join(dir, 'content-index.json')));
+            check('content-index.json is a non-trivial array', Array.isArray(items) && items.length > 900,
+                `${items.length} items`);
+            const ids = items.map((i) => i.id);
+            check('every ContentItem id is unique', new Set(ids).size === ids.length);
+            check('every ContentItem has a title and a canonical url',
+                items.every((i) => i.title && i.url));
+            const byType = {};
+            for (const i of items) byType[i.type] = (byType[i.type] || 0) + 1;
+            const audio = JSON.parse(read(path.join(dir, 'audio.json')));
+            const pdfs = JSON.parse(read(path.join(dir, 'pdf_list.json')));
+            check('audio items in the index match audio.json', byType.audio === audio.length,
+                `${byType.audio} vs ${audio.length}`);
+            check('pdf items in the index match pdf_list.json', byType.pdf === pdfs.length,
+                `${byType.pdf} vs ${pdfs.length}`);
+            check('guide items in the index match the guides catalogue',
+                byType.guide === (fs.readdirSync(path.join(dir, 'guides'))
+                    .filter((n) => fs.existsSync(path.join(dir, 'guides', n, 'index.html')) && n !== 'pdf').length),
+                `${byType.guide}`);
+            check('the two /en/ pages are both in the index as lang="en"',
+                items.filter((i) => i.type === 'page' && i.lang === 'en').length === 2);
+            check('no draft post leaked into the public index',
+                items.every((i) => i.type !== 'post' || i.status !== 'draft'));
+        }
+
         // Every JSON-LD block on every generated page must parse and carry a non-empty @graph.
         const walk = (d, out = []) => {
             for (const e of fs.readdirSync(d, { withFileTypes: true })) {
