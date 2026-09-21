@@ -489,6 +489,31 @@ setTimeout(async () => {
         check('every topic hub lists resources', TOPICS.every((t) =>
             (read(path.join(dir, 'topics', t.slug, 'index.html')).match(/class="ep-list"/g) || []).length > 0));
 
+        // English foundation (/en/): additive-only, so this checks it exists and
+        // stayed honest — no fabricated content, no dead links to unbuilt pages,
+        // the Bengali site untouched by its presence.
+        {
+            const enHome = read(path.join(dir, 'en', 'index.html'));
+            const enStart = read(path.join(dir, 'en', 'start-here', 'index.html'));
+            check('/en/ homepage exists and is lang="en"', /<html lang="en"/.test(enHome));
+            check('/en/start-here/ exists and is lang="en"', /<html lang="en"/.test(enStart));
+            check('/en/ carries hreflang bn/en/x-default', ['bn', 'en', 'x-default']
+                .every((h) => enHome.includes(`hreflang="${h}"`)));
+            check('/en/ links back to the Bengali homepage', enHome.includes('href="/"'));
+            check('every "Planned" module card has no href (nothing not yet built looks live)',
+                !/Planned[\s\S]{0,20}<a /.test(enHome));
+            const { PLANNED_MODULES } = require('./en');
+            check('every planned module named on /en/ is actually marked Planned, not live',
+                PLANNED_MODULES.every((m) => enHome.includes(m.name)));
+            // index.html (the landing page) is built from landing.html directly and
+            // does not use seo.js's shared NAV/FOOT — landing.html is the owner's
+            // own in-flight file this milestone must not touch, so the /en/ link
+            // added to NAV/FOOT is checked on a page that actually uses them.
+            check('the Bengali site (via shared NAV) links to /en/',
+                read(path.join(dir, 'blog', 'index.html')).includes('href="/en/"'));
+            check('sitemap includes the /en/ pages', read(path.join(dir, 'sitemap-en.xml')).includes('/en/start-here/</loc>'));
+        }
+
         // Every JSON-LD block on every generated page must parse and carry a non-empty @graph.
         const walk = (d, out = []) => {
             for (const e of fs.readdirSync(d, { withFileTypes: true })) {

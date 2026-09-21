@@ -130,6 +130,7 @@ const NAV = `<nav class="nav">
       <a href="/blog/">ব্লগ</a>
       <a href="/#book">বই</a>
       <a href="/#course">কোর্স</a>
+      <a href="/en/">English</a>
     </div>
     <a class="btn btn-p btn-sm" href="/app.html">অ্যাপে ঢুকুন</a>
   </div>
@@ -145,6 +146,7 @@ const FOOT = `<footer>
       <a href="/blog/">ব্লগ</a>
       <a href="/#book">বই</a>
       <a href="/privacy.html">প্রাইভেসি</a>
+      <a href="/en/">English</a>
     </nav>
     <p class="disclaimer">
       দ্রষ্টব্য: রুকইয়াহ একটি দুআ ও আত্মিক চিকিৎসা পদ্ধতি — এটি আধুনিক চিকিৎসাবিজ্ঞান বা মানসিক

@@ -370,6 +370,11 @@ if (isNative) {
     // no crawler sees them. Also writes 404.html.
     require('./tools/library').buildLibrary(distDir, catalog);
 
+    // The English-first international platform's foundation: /en/. Additive
+    // only — it reads the same catalogue, links back to the Bengali site for
+    // everything not yet built in English, and never touches a Bengali URL.
+    require('./tools/en').buildEn(distDir, catalog);
+
     // The hand-written pages. The landing page is the one URL that should win
     // for the brand; app.html is the product itself and gets a canonical of
     // its own in index.html.
