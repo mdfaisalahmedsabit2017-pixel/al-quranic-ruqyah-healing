@@ -122,6 +122,18 @@ function normalizePosts(catalog) {
     }));
 }
 
+function normalizeCarousels(catalog) {
+    return (catalog.carousels || []).map((c) => baseItem({
+        type: 'carousel', slug: c.slug, source: 'fawaz-carousel/exports (synced via tools/sync_carousels.py)',
+        title: c.title_bn, description: c.caption, category: c.topic || null, tags: c.hashtags || [],
+        author: 'শাইখ ফাওয়াজ আল-আসওয়াদ (মাদিনাতুল ইলম)',
+        publishedAt: c.published_at || null, updatedAt: c.published_at || null,
+        references: c.youtube_url ? [c.youtube_url] : [],
+        seo: { title: c.title_bn, description: c.caption, ogImage: `${SITE}/carousels/${c.slug}/${c.images[0]}`,
+               canonical: `${SITE}/carousels/${c.slug}/` },
+    }));
+}
+
 // tools/en.js's two foundation pages. Titles/descriptions come from
 // en.pageMeta(catalog) — the same function en.js itself uses to build each
 // page's <head> — so this can never drift out of sync with the real pages
@@ -152,6 +164,7 @@ function buildContentItems(catalog) {
         ...normalizeGuides(catalog),
         ...normalizePdfs(catalog),
         ...normalizePosts(catalog),
+        ...normalizeCarousels(catalog),
         ...normalizeEnPages(catalog),
     ].map((item) => applyOverride(item, overrides));
 

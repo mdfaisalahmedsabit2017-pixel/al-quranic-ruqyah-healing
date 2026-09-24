@@ -128,6 +128,7 @@ const NAV = `<nav class="nav">
       <a href="/audio/">অডিও</a>
       <a href="/guides/">গাইড</a>
       <a href="/blog/">ব্লগ</a>
+      <a href="/carousels/">ক্যারোসেল</a>
       <a href="/#book">বই</a>
       <a href="/#course">কোর্স</a>
       <a href="/en/">English</a>
@@ -144,6 +145,7 @@ const FOOT = `<footer>
       <a href="/guides/">গাইড ও প্রোটোকল</a>
       <a href="/guides/pdf/">PDF গাইড</a>
       <a href="/blog/">ব্লগ</a>
+      <a href="/carousels/">ক্যারোসেল</a>
       <a href="/#book">বই</a>
       <a href="/privacy.html">প্রাইভেসি</a>
       <a href="/en/">English</a>

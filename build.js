@@ -345,6 +345,7 @@ function loadCatalog() {
         audio, audioMeta, pdfs,
         guides: require('./tools/guides').readGuides(),
         posts: require('./tools/blog').readPosts(),
+        carousels: require('./tools/carousels').readCarousels(),
         audioSlugs: require('./tools/library').SLUGS,
     };
 }
@@ -364,6 +365,11 @@ if (isNative) {
     // The Ruqyah documents: guides_src/*.html -> public/guides/<slug>/index.html.
     // Must run before buildLibrary, which writes the index that links to them.
     require('./tools/guides').buildGuides(distDir, catalog, catalog.audioSlugs);
+
+    // 242 Facebook carousel posts, synced from the separate fawaz-carousel
+    // project by tools/sync_carousels.py -> carousels_src/. Independent of
+    // guides/library; order relative to them does not matter.
+    require('./tools/carousels').buildCarousels(distDir, catalog);
 
     // Crawlable catalogue pages for the audio library, the PDF guides and the
     // topic hubs, which otherwise exist only inside app.html's JavaScript where
